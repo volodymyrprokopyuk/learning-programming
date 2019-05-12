@@ -40,6 +40,14 @@ test $STR = "B" -o $STR != "A" || echo "Not equal B OR not equal A OR this messa
 [[ -z $STR ]] || echo "Non zero length"
 [[ -n "" ]] || echo "Zero length"
 [[ -z "" ]] && echo "Zero length"
+VAR="FOUR"
+(( ${#VAR} == 4 )) && echo "Length is four"
 
-# Comparing whether string output from a subshell command is not empty
+# Comparing whether STRING OUTPUT from a subshell command is not empty
 [[ $(grep 'vld' /etc/passwd) ]] && echo "vld is in users"
+
+# Comparing the RETURN CODE of a command
+# ping -c 1 www.google.com >/dev/null 2>&1 && echo "Connected to Google"
+# if ping -c 1 www.google.com >/dev/null 2>&1; then
+#     echo "Connected to Google"
+# fi
