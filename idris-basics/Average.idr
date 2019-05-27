@@ -106,3 +106,12 @@ pythagoras x y = sqrt (square x + square y)
   where
       square : Double -> Double
       square x = x * x
+
+myAverage : String -> Double
+myAverage str =
+    let
+        listOfWords = words str
+        numberOfWords = length listOfWords
+        totalLength = the Double $ cast $ sum $ map length listOfWords
+    in
+        totalLength / cast numberOfWords
