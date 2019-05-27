@@ -1,0 +1,3 @@
+*.ibc
+bin/*
+!bin/run.sh
