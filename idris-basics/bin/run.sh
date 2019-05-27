@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SOURCE=Hello.idr
+SOURCE=Average.idr
 TARGET_DIR=bin
 TARGET=$TARGET_DIR/${SOURCE%.idr}
 

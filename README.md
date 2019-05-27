@@ -3,3 +3,7 @@
 ## Python basics
 
 ## Bash basics
+
+## PostgreSQL basics
+
+## Idris basics
