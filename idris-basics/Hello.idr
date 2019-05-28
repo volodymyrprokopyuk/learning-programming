@@ -1,20 +1,22 @@
 module Main
 
--- * First-class types *
---     - Treat types as values
---     - Function can compute types
---     - Prove program correctness
--- * Dependent types *
---     - Types are dependent on other values
---     - append : Vect m elem -> Vect n elem -> Vect (m + n) elem
---     - Allow to express detailed properties of programs
---     - Simple: Vect (Concrete type)
---     - > Generic Vect m (m is type variable)
---     - > Dependent Vect 4 m (vector length)
--- * Type-driven development *
---     - 1. Type -> model
---     - 2. Define -> functions
---     - 3. Refine -> types and functions
+{-
+* First-class types *
+    - Treat types as values
+    - Function can compute types
+    - Prove program correctness
+* Dependent types *
+    - Types are dependent on other values
+    - append : Vect m elem -> Vect n elem -> Vect (m + n) elem
+    - Allow to express detailed properties of programs
+    - Simple: Vect (Concrete type)
+    - > Generic Vect m (m is type variable)
+    - > Dependent Vect 4 m (vector length)
+* Type-driven development *
+    - 1. Type -> model
+    - 2. Define -> functions
+    - 3. Refine -> types and functions
+-}
 
 main : IO ()
 -- main = putStrLn "Hello Idris"

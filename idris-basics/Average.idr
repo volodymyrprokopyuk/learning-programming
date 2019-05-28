@@ -1,22 +1,28 @@
 module Main
 
--- * Standard types *
---     - Numerics
---         - Int fixed-length, signed
---         - Integer unbounded, signed
---         - Nat unbounded, unsigned, not negative
---         - Double double-precision float
---     - Strings
---         - Char 'a'
---         - String "ab"
---     - Booleans
---         - Bool: True | False
---         - if x /= y then "Not equial" else "Equal"
--- * Funcitons *
---     - Function type declaration (required): f : a -> b
---     - Funciton body definition with equitions: f x = y
---     - An expression is evaluated by rewriting/reducing the expression according to
---       the function equations until to further rewriting could be done
+{-
+* Standard types *
+    - Numerics
+        - Int fixed-length, signed
+        - Integer unbounded, signed
+        - Nat unbounded, unsigned, not negative
+        - Double double-precision float
+    - Strings
+        - Char 'a'
+        - String "ab"
+    - Booleans
+        - Bool: True | False
+        - if x /= y then "Not equial" else "Equal"
+* Funcitons *
+    - Function type declaration (required): f : a -> b
+    - Funciton body definition with equitions: f x = y
+    - An expression is evaluated by rewriting/reducing the expression according to
+    the function equations until to further rewriting could be done
+* Comments *
+    - One-line comments
+    - Multiline comments
+    - Documentation comments
+-}
 
 -- Optional argument name (str)
 average : (str : String) -> Double
@@ -39,7 +45,7 @@ average str =
 showAverage : String -> String
 showAverage str = "The average word length is: " ++ show (average str) ++ "\n"
 
--- Main.main is always entry point to an Idris program
+-- Main.main : IO () is always entry point to an Idris program
 main : IO ()
 -- Read from STDIN, Evaluate a function, Print result to STDOUT, Loop
 main = repl "Enter a stirng: " showAverage
@@ -107,7 +113,9 @@ pythagoras x y = sqrt (square x + square y)
       square : Double -> Double
       square x = x * x
 
-myAverage : String -> Double
+||| Calculate the average length of words in a string
+||| @str a string containing words separated by a whitespace
+myAverage : (str : String) -> Double
 myAverage str =
     let
         listOfWords = words str
@@ -115,3 +123,16 @@ myAverage str =
         totalLength = the Double $ cast $ sum $ map length listOfWords
     in
         totalLength / cast numberOfWords
+
+palindrome : (len : Nat) -> (str : String) -> Bool
+palindrome len str =
+    if length str >= len then (toLower str) == (reverse $ toLower str) else False
+
+counts : (str : String) -> (Nat, Nat)
+counts str = (length str, length $ words str)
+
+top_n : Ord a => (n : Nat) -> (l : List a) -> List a
+top_n n l = take n $ reverse $ sort l
+
+over_length : (len : Nat) -> (l : List String) -> List String
+over_length len l = filter (\x => length x >= len) l
