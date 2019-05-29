@@ -42,7 +42,7 @@ FROM aircrafts_data
 WHERE range BETWEEN 3000 AND 6000;
 
 -- Compured attributes with alias
-SELECT *, round(range / 1.609, 2) miles
+SELECT *, ROUND(range / 1.609, 2) miles
 FROM aircrafts_data;
 
 -- Sort result by an attribute
@@ -133,3 +133,65 @@ UNION -- INTERSECT, EXCEPT
 SELECT DISTINCT arrival_city
 FROM routes
 WHERE departure_city = 'Санкт-Петербург'
+
+-- Aggragete functions: AVG, MIN, MAX
+SELECT ROUND(AVG(total_amount), 2), MIN(total_amount), MAX(total_amount) FROM bookings;
+
+-- GROUP BY and COUNT
+SELECT arrival_city, COUNT(*)
+FROM routes
+WHERE departure_city = 'Москва'
+GROUP BY arrival_city
+ORDER BY COUNT(*) DESC;
+
+SELECT ARRAY_LENGTH(days_of_week, 1) days_per_week, COUNT(*) number_of_routes
+FROM routes
+GROUP BY days_per_week
+ORDER BY days_per_week DESC;
+
+-- GROUP BY and HAVING
+SELECT arrival_city, COUNT(*) number_of_routes
+FROM routes
+GROUP BY arrival_city
+HAVING COUNT(*) >=15
+ORDER BY COUNT(*) DESC;
+
+-- ** WINDOW FUNCTION = aggregate() OVER **
+-- WINDOW FUNCTION does not require GROUP BY clause
+-- When GROUP BY is present in a query, then WINDOW FUNCTION is applied AFTER GROUP BY summarizing already grouped data
+-- WINDOW FUNCTION periodically accumulates data within every PARTITION
+-- WINDOW FUNCTION resets accumulator at the beginning of every PARTITION
+-- PARTITION is a set of rows for which PARTITION BY <expression> gives the same value
+-- WINDOW FUNCTION computes aggregate for the current row within a WINDOW FRAME of the current row
+-- WINDOW FRAME for an unordered partition is PARTITION[begin..end]
+-- WINDOW FRAME for an ordered partition is PARTITION[begin..current row]
+-- Ordering within a PARTITION is defined by ORDER BY <expression>
+
+SELECT b.book_ref, b.book_date,
+    EXTRACT('month' FROM b.book_date) booking_month,
+    EXTRACT('day' FROM b.book_date) booking_day,
+    -- WINDOW FUNCTION
+    COUNT(*) OVER (
+        PARTITION BY DATE_TRUNC('month', b.book_date)
+        ORDER BY b.book_date
+    ) booking_count
+FROM ticket_flights tf
+    JOIN tickets t ON t.ticket_no = tf.ticket_no
+    JOIN bookings b ON b.book_ref = t.book_ref
+WHERE tf.flight_id = 1
+ORDER BY b.book_date;
+
+SELECT airport_name, city, timezone, coordinates,
+    -- WINDOW FUNCTION
+    RANK() OVER (PARTITION BY timezone ORDER BY coordinates[1] DESC)
+FROM airports_data
+ORDER BY timezone, rank;
+
+-- WINDOW clause for defining named PARTITION
+SELECT airport_name, city, timezone, coordinates,
+    -- Named PARTITION usage
+    RANK() OVER timezone_ordered_by_coordinates
+FROM airports_data
+-- Named PARTITION definition
+WINDOW timezone_ordered_by_coordinates AS (PARTITION BY timezone ORDER BY coordinates[1] DESC)
+ORDER BY timezone, rank;
