@@ -100,6 +100,13 @@ FROM aircrafts_data a
 GROUP BY a.aircraft_code, a.model, route_aircraft_code
 ORDER BY COUNT(r.aircraft_code) DESC;
 
+-- Number of seats per aircraft and per fare conditions
+SELECT a.aircraft_code, a.model, s.fare_conditions, COUNT(s.*) seat_count, a.range
+FROM aircrafts_data a
+    JOIN seats s ON s.aircraft_code = a.aircraft_code
+GROUP BY a.aircraft_code, s.fare_conditions
+ORDER BY a.model, s.fare_conditions
+
 -- Multiple JOINs. JOINs are left associative
 SELECT COUNT(*)
 FROM flights f
