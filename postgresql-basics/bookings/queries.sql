@@ -195,3 +195,104 @@ FROM airports_data
 -- Named PARTITION definition
 WINDOW timezone_ordered_by_coordinates AS (PARTITION BY timezone ORDER BY coordinates[1] DESC)
 ORDER BY timezone, rank;
+
+-- Scalar subquery in WHERE
+SELECT COUNT(*)
+FROM bookings
+WHERE total_amount > (SELECT AVG(total_amount) FROM bookings);
+
+-- Uncorrelated (only one time per outer query) subquery in WHERE
+SELECT flight_no, departure_city, arrival_city
+FROM routes
+WHERE departure_city IN (SELECT city->>'ru' FROM airports_data WHERE timezone ~ 'Krasnoyarsk')
+    AND arrival_city IN (SELECT city->>'ru' FROM airports_data WHERE timezone ~ 'Krasnoyarsk');
+
+-- Uncorrelated subquery in WHERE with IN/NOT IN predicate
+SELECT airport_name, city, coordinates
+FROM airports_data
+WHERE coordinates[0] IN (
+    (SELECT MAX(coordinates[0]) FROM airports_data),
+    (SELECT MIN(coordinates[0]) FROM airports_data)
+);
+
+-- Correlated (subquery per every row in outer query) subquery in WHERE
+-- with EXISTS/NOT EXISTS predicate
+SELECT DISTINCT a.city
+FROM airports_data a
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM routes r
+    -- Correlated subquery (subquery has a reference to the outer query)
+    WHERE r.departure_city = 'Москва' AND r.arrival_city = a.city->>'ru'
+) AND a.city->>'ru' <> 'Москва'
+ORDER BY a.city
+
+-- Correlated subquery in SELECT
+SELECT a.model, (
+    SELECT COUNT(*)
+    FROM seats s
+    WHERE s.aircraft_code = a.aircraft_code AND s.fare_conditions = 'Business'
+) business, (
+    SELECT COUNT(*)
+    FROM seats s
+    WHERE s.aircraft_code = a.aircraft_code AND s.fare_conditions = 'Comfort'
+) comfort, (
+    SELECT COUNT(*)
+    FROM seats s
+    WHERE s.aircraft_code = a.aircraft_code AND s.fare_conditions = 'Economy'
+) economy
+FROM aircrafts_data a
+ORDER BY economy DESC;
+
+-- Correlated subquery in FROM
+SELECT sc.model, STRING_AGG(sc.fare_conditions || ' ' || sc.seats_count, ', ') seats_count
+FROM (
+    SELECT a.model, s.fare_conditions, count(*) seats_count
+    FROM aircrafts_data a JOIN seats s ON s.aircraft_code = a.aircraft_code
+    GROUP BY a.model, s.fare_conditions
+) sc
+GROUP BY sc.model
+
+-- Uncorrelated subquery in FROM
+SELECT a.city, a.airport_code, a.airport_name, multiple_airport_city.airport_count
+FROM (
+    SELECT city, COUNT(*) airport_count
+    FROM airports_data
+    GROUP BY city
+    HAVING COUNT(*) > 1
+) multiple_airport_city
+     JOIN airports_data a ON a.city = multiple_airport_city.city
+
+-- Uncorrelated subquery in HAVING
+SELECT departure_city, departure_airport, COUNT(*) route_count
+FROM routes
+GROUP BY departure_airport, departure_city
+HAVING departure_airport IN (
+    SELECT airport_code
+    FROM airports_data
+    WHERE coordinates[0] > 150
+)
+
+-- Nested subqueries
+SELECT ts.flight_id, ts.flight_no, ac.model->>'ru' aircraft_model,
+    dep.airport_name->>'ru' departure_airport, ts.scheduled_departure,
+     arr.airport_name->>'ru' arrival_airport,
+    ts.ticket_count, ts.seat_count,
+    ROUND(ticket_count::numeric / seat_count::numeric, 2) aircraft_usage
+FROM (
+    SELECT f.flight_id, f.flight_no, f.aircraft_code,
+        f.departure_airport, f.scheduled_departure, f.arrival_airport,
+        COUNT(tf.ticket_no) ticket_count, (
+            SELECT COUNT(s.seat_no) FROM seats s WHERE s.aircraft_code = f.aircraft_code
+        ) seat_count
+    FROM flights f
+        JOIN ticket_flights tf ON tf.flight_id = f.flight_id
+    WHERE f.status = 'Arrived'
+    GROUP BY f.flight_id, f.flight_no, f.aircraft_code,
+        f.departure_airport, f.scheduled_departure, f.arrival_airport
+) ts
+    JOIN aircrafts_data ac ON ac.aircraft_code = ts.aircraft_code
+    JOIN airports_data dep ON dep.airport_code = ts.departure_airport
+    JOIN airports_data arr ON arr.airport_code = ts.arrival_airport
+ORDER BY ts.flight_no, ts.scheduled_departure
+LIMIT 20
