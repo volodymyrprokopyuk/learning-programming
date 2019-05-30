@@ -108,7 +108,7 @@ FROM flights f
 WHERE f.actual_departure IS NOT NULL AND b.boarding_no IS NULL;
 
 -- Amount ranges as VALUES virtual table
-SELECT amount_range.min_amount, amount_range.max_amount, COUNT(b.*)
+SELECT amount_range.min_amount, amount_range.max_amount, COUNT(b.*) booking_count
 FROM bookings b
     RIGHT JOIN (VALUES
     -- amount_range virtual table definition
@@ -296,3 +296,86 @@ FROM (
     JOIN airports_data arr ON arr.airport_code = ts.arrival_airport
 ORDER BY ts.flight_no, ts.scheduled_departure
 LIMIT 20
+
+-- Common Table Expression (CTE) builds temporary table
+WITH ticket_seat AS (
+    SELECT f.flight_id, f.flight_no, f.aircraft_code,
+        f.departure_airport, f.scheduled_departure, f.arrival_airport,
+        COUNT(tf.ticket_no) ticket_count, (
+            SELECT COUNT(s.seat_no) FROM seats s WHERE s.aircraft_code = f.aircraft_code
+        ) seat_count
+    FROM flights f
+        JOIN ticket_flights tf ON tf.flight_id = f.flight_id
+    WHERE f.status = 'Arrived'
+    GROUP BY f.flight_id, f.flight_no, f.aircraft_code,
+        f.departure_airport, f.scheduled_departure, f.arrival_airport
+)
+SELECT ts.flight_id, ts.flight_no, ac.model->>'ru' aircraft_model,
+    dep.airport_name->>'ru' departure_airport, ts.scheduled_departure,
+     arr.airport_name->>'ru' arrival_airport,
+    ts.ticket_count, ts.seat_count,
+    ROUND(ticket_count::numeric / seat_count::numeric, 2) aircraft_usage
+FROM ticket_seat ts
+    JOIN aircrafts_data ac ON ac.aircraft_code = ts.aircraft_code
+    JOIN airports_data dep ON dep.airport_code = ts.departure_airport
+    JOIN airports_data arr ON arr.airport_code = ts.arrival_airport
+ORDER BY ts.flight_no, ts.scheduled_departure
+LIMIT 20
+
+-- WITH RECURSIVE
+-- Virtual table declaration
+WITH RECURSIVE amount_range (min_amount, max_amount) AS (
+    -- Virtual table recursive definition
+    -- Initial values
+    VALUES (0, 100000)
+    UNION ALL
+    -- SELECT agains last selected row
+    SELECT min_amount + 100000, max_amount + 100000
+    FROM amount_range
+    -- Recursion stop condition
+    WHERE max_amount < (SELECT MAX(total_amount) FROM bookings)
+)
+SELECT *
+FROM amount_range;
+
+WITH RECURSIVE amount_range (min_amount, max_amount) AS (
+    VALUES (0, 100000)
+    UNION ALL
+    SELECT min_amount + 100000, max_amount + 100000
+    FROM amount_range
+    WHERE max_amount < (SELECT MAX(total_amount) FROM bookings)
+)
+SELECT r.min_amount, r.max_amount, COUNT(b.*) booking_count
+FROM bookings b
+    RIGHT JOIN amount_range r
+        ON b.total_amount >= r.min_amount AND b.total_amount < r.max_amount
+GROUP BY r.min_amount, r.max_amount
+ORDER BY r.min_amount
+
+-- routes from flight history query
+WITH all_flight AS (
+    SELECT f.flight_no, f.aircraft_code, f.departure_airport, f.arrival_airport,
+        (f.scheduled_arrival - scheduled_departure) duration,
+        TO_CHAR(f.scheduled_departure, 'ID'::text)::integer day_of_week
+    FROM flights f
+),
+single_flight_per_day_of_week AS (
+    SELECT af.flight_no, af.aircraft_code, af.departure_airport, af.arrival_airport,
+        af.duration, af.day_of_week
+    FROM all_flight af
+    GROUP BY 1, 2, 3, 4, 5, 6
+    ORDER BY 1, 2, 3, 4, 5, 6
+),
+single_flight_per_week AS (
+    SELECT fdw.flight_no, fdw.aircraft_code, fdw.departure_airport, fdw.arrival_airport,
+        fdw.duration, ARRAY_AGG(fdw.day_of_week) days_of_week
+    FROM single_flight_per_day_of_week fdw
+    GROUP BY 1, 2, 3, 4, 5
+)
+SELECT fw.flight_no, fw.aircraft_code,
+    dep.city->>'ru' dep_city, fw.departure_airport, dep.airport_name->>'ru' dep_airpot_name,
+    arr.city->>'ru' arr_city, fw.arrival_airport, arr.airport_name->>'ru' arr_airport_name,
+    fw.duration, fw.days_of_week
+FROM single_flight_per_week fw
+    JOIN airports_data dep ON dep.airport_code = fw.departure_airport
+    JOIN airports_data arr ON arr.airport_code = fw.arrival_airport
