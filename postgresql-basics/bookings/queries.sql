@@ -93,6 +93,17 @@ FROM airports_data a
 GROUP BY a.city
 HAVING COUNT(*) > 1;
 
+-- FROM t1, t2 (cartesian product) WHERE condition
+-- Equivalent
+-- FROM t1 JOIN t1 ON condition
+SELECT COUNT(*)
+FROM airports_data fa, airports_data ta
+WHERE fa.airport_code <> ta.airport_code;
+-- Equivalent
+SELECT COUNT(*)
+FROM airports_data fa
+    JOIN airports_data ta ON fa.airport_code <> ta.airport_code;
+
 -- LEFT JOIN and GROUPing by attribute alias
 SELECT a.aircraft_code, a.model, r.aircraft_code route_aircraft_code, COUNT(r.aircraft_code)
 FROM aircrafts_data a
