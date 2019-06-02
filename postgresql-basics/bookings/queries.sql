@@ -27,6 +27,14 @@ SELECT *
 FROM flights
 WHERE (departure_airport, arrival_airport) IN (('DME', 'BTK'), ('VKO', 'HMA'));
 
+SELECT *
+FROM airports_data
+WHERE timezone IN ('Asia/Novokuznetsk', 'Asia/Krasnoyarsk');
+-- Equivalent
+SELECT *
+FROM airports_data
+WHERE timezone = ANY (VALUES ('Asia/Novokuznetsk'), ('Asia/Krasnoyarsk'));
+
 -- Multiple conditions in WHERE
 SELECT *
 FROM aircrafts_data
@@ -80,6 +88,12 @@ SELECT model, range,
     END aircraft_type
 FROM aircrafts_data;
 
+-- regexp_match
+SELECT (regexp_match(passenger_name, '^(\w+)'))[1] first_name, count(*) first_name_count
+FROM tickets
+GROUP BY first_name
+ORDER BY first_name_count DESC
+
 -- JOIN two relations on FOREIGN KEY
 SELECT a.aircraft_code, a.model, s.seat_no, s.fare_conditions
 FROM seats s
@@ -90,6 +104,12 @@ SELECT r.*, a.model->>'ru'
 FROM routes r
     JOIN aircrafts_data a ON a.aircraft_code = r.aircraft_code
 WHERE r.aircraft_code = '733'
+
+SELECT f.departure_city, f.arrival_city, min(tf.amount), max(tf.amount)
+FROM flights_v f
+    LEFT JOIN ticket_flights tf ON tf.flight_id = f.flight_id
+GROUP BY f.departure_city, f.arrival_city
+ORDER BY f.departure_city, f.arrival_city
 
 -- Combinatorics of all cities interconnections
 -- by using cartesian product (CROSS JOIN) of airports against themselves
@@ -152,6 +172,19 @@ FROM bookings b
        ON b.total_amount >= amount_range.min_amount AND  b.total_amount < amount_range.max_amount
 GROUP BY amount_range.min_amount, amount_range.max_amount
 ORDER BY amount_range.min_amount
+
+-- FILTER in aggragete()
+SELECT (regexp_match(passenger_name, '^(\w+)'))[1] first_name,
+    count(*) FILTER (WHERE passenger_name ~ '^ALEKSANDRA') first_name_count
+FROM tickets
+WHERE passenger_name ~ '^ALEKS'
+GROUP BY first_name
+ORDER BY first_name_count DESC
+
+SELECT a.model, s.fare_conditions, count(s.*)
+FROM aircrafts_data a
+    JOIN seats s ON s.aircraft_code = a.aircraft_code
+GROUP BY a.model, s.fare_conditions;
 
 -- UNION, INTERSECT, EXCEPT
 SELECT DISTINCT arrival_city
@@ -246,6 +279,21 @@ WHERE r.aircraft_code = '773'
 GROUP BY
     least(r.departure_city, r.arrival_city),
     greatest(r.departure_city, r.arrival_city)
+
+SELECT a.model, count(r.*) route_count,
+    round(count(r.*)::numeric / (SELECT count(*) from routes)::numeric, 3)
+FROM routes r
+    RIGHT JOIN aircrafts_data a ON a.aircraft_code = r.aircraft_code
+GROUP BY a.model
+ORDER BY route_count DESC
+
+-- All combinations of all cities
+WITH cities AS (
+    SELECT DISTINCT city FROM airports_data
+)
+SELECT count(*)
+FROM cities dep, cities arr
+WHERE dep.city <> arr.city
 
 -- GROUP BY and HAVING
 SELECT arrival_city, count(*) number_of_routes
