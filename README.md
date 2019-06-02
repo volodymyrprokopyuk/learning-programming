@@ -119,4 +119,15 @@
       (таблицы, представления)
     - Схема образут пространство имен для объектов бази данных
 
+### Язык изменения данных
+
+- INSERT INTO <table> SELECT * FROM <table> [RETUNRNING <expression>]
+- INSERT INTO <table> VALUES <vlues> [ON CONFLICT {DO NOTHING | DO UPDATE SET <values>}]
+  [RETUNRNING <expression>]
+- COPY <table> FROM <file> - массовый ввод данных с файла
+- COPY <table> TO <file> - массовый вывод данных в файл
+- UPDATE <table> SET <values> [FROM <tables>] WHERE <conditions> [RETUNRNING <expression>]
+- DELETE FROM <table> [USING <tables>] WHERE <conditions> [RETUNRNING <expression>]
+- TRUNCATE <table>
+
 ## Idris basics
