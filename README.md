@@ -98,36 +98,37 @@
 - Ограничение FOREIGN KEY <атрибуты FK> REFERENCES <атрибуты PK> ON {UPDATE | DELETE}
   {CASCADE | RESTRICT (default) | SET NULL | SET DEFAULT} (ссылочная целостность)
   (внешний ключ)
-- Коммнтарии COMMENT ON {DATABASE | SHCEMA | TABLE | COLUMN} <table>.<column> IS <comment>;
-- CREATE VIEW <view> AS <select>; SELECT * FROM <view>
+- COMMENT ON {DATABASE | SHCEMA | TABLE | COLUMN} <таблица>.<столбец> IS <комментарий>;
+- CREATE VIEW <представление> AS <запрос>; SELECT * FROM <представление>
     - В отличии от таблиц, представления не содержат данных. При каждом обращению к
       представлению данные выбираються из таблиц
-    - Представления являються интерфейсом доступа к данным, но сам запрос <select> может
+    - Представления являються интерфейсом доступа к данным, но сам запрос <запрос> может
       изменяться. Использование представлений упрощает присладные программы и скривает
       сложноть запросов
     - Представления избавляют от необходимости создавать дополнительные таблицы,
       дублируя данные для разных нужд использования данных
     - Представления являються сохранненными запросами в базе данных
     - Представления являються средством разграничения полномочий доступа к данным
-- CREATE MATERIALIZED VIEW <view> AS <select>; REFRESH MATERIALIZED VIEW <view>;
-  SELECT * FROM <view>
+- CREATE MATERIALIZED VIEW <представление> AS <запрос>;
+  REFRESH MATERIALIZED VIEW <представление>; SELECT * FROM <представление>
     - Материализованное представление снижает время выполнения сложных запросов
     - Пример: для формарования отчета требуется длительное врея, а запросы к отчету
       будут неоднократными
-- CREATE SCHEMA <schema>; SET search_path = <schemas>
+- CREATE SCHEMA <схема>; SET search_path = <схемы>
     - Схема это логическая часть базы данных, в которой содержаться объекты бази данних
       (таблицы, представления)
     - Схема образут пространство имен для объектов бази данных
 
 ### Язык изменения данных
 
-- INSERT INTO <table> SELECT * FROM <table> [RETUNRNING <expression>]
-- INSERT INTO <table> VALUES <vlues> [ON CONFLICT {DO NOTHING | DO UPDATE SET <values>}]
-  [RETUNRNING <expression>]
-- COPY <table> FROM <file> - массовый ввод данных с файла
-- COPY <table> TO <file> - массовый вывод данных в файл
-- UPDATE <table> SET <values> [FROM <tables>] WHERE <conditions> [RETUNRNING <expression>]
-- DELETE FROM <table> [USING <tables>] WHERE <conditions> [RETUNRNING <expression>]
-- TRUNCATE <table>
+- INSERT INTO <таблица> SELECT * FROM <таблица> [RETUNRNING <выражение>]
+- INSERT INTO <таблица> VALUES <значения>
+  [ON CONFLICT {DO NOTHING | DO UPDATE SET <значения>}] [RETUNRNING <выражение>]
+- COPY <таблица> FROM <файл> - массовый ввод данных с файла
+- COPY <таблица> TO <файл> - массовый вывод данных в файл
+- UPDATE <таблица> SET <значения> [FROM <таблицы>] WHERE <условия>
+  [RETUNRNING <выражение>]
+- DELETE FROM <таблица> [USING <таблицы>] WHERE <условия> [RETUNRNING <выражение>]
+- TRUNCATE <таблица>
 
 ## Idris basics
