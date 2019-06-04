@@ -109,11 +109,16 @@
       дублируя данные для разных нужд использования данных
     - Представления являються сохранненными запросами в базе данных
     - Представления являються средством разграничения полномочий доступа к данным
+    - A VIEW is not phisically materialized
+    - The query is run every time the VIEW is referenced
+    - A TEMPORARY VIEW is automatically dropped at the end of the current session
 - CREATE MATERIALIZED VIEW <представление> AS <запрос>;
   REFRESH MATERIALIZED VIEW <представление>; SELECT * FROM <представление>
     - Материализованное представление снижает время выполнения сложных запросов
     - Пример: для формарования отчета требуется длительное врея, а запросы к отчету
       будут неоднократными
+    - A MATERIALIZED VIEW is populated immediately
+    - REFRESH MATERIALIZED VIEW refreshes the VIEW content later upon demand
 - CREATE SCHEMA <схема>; SET search_path = <схемы>
     - Схема это логическая часть базы данных, в которой содержаться объекты бази данних
       (таблицы, представления)

@@ -587,4 +587,12 @@ SELECT fw.flight_no, fw.aircraft_code,
     fw.duration, fw.days_of_week
 FROM single_flight_per_week fw
     JOIN airports_data dep ON dep.airport_code = fw.departure_airport
-    JOIN airports_data arr ON arr.airport_code = fw.arrival_airport
+    JOIN airports_data arr ON arr.airport_code = fw.arrival_airport;
+
+-- RECURSIVE VIEW
+CREATE OR REPLACE RECURSIVE VIEW numbers(n) AS
+VALUES (1)
+UNION ALL
+SELECT n + 1 FROM numbers WHERE n < 10;
+
+SELECT * FROM numbers;
