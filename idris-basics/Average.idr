@@ -17,7 +17,7 @@ module Main
     - Function type declaration (required): f : a -> b
     - Funciton body definition with equitions: f x = y
     - An expression is evaluated by rewriting/reducing the expression according to
-    the function equations until to further rewriting could be done
+      the function equations until to further rewriting could be done
 * Comments *
     - One-line comments
     - Multiline comments

@@ -11,7 +11,7 @@ module Main
     - Allow to express detailed properties of programs
     - Simple: Vect (Concrete type)
     - > Generic Vect m (m is type variable)
-    - > Dependent Vect 4 m (vector length)
+    - > Dependent Vect 4 m (vector length in the type itself)
 * Type-driven development *
     - 1. Type -> model
     - 2. Define -> functions
