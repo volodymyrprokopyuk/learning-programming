@@ -596,3 +596,12 @@ UNION ALL
 SELECT n + 1 FROM numbers WHERE n < 10;
 
 SELECT * FROM numbers;
+
+-- INDEX
+CREATE INDEX ix_tickets_passenger_name ON tickets (passenger_name);
+
+-- UNIQUE INDEX
+CREATE UNIQUE INDEX uix_aircrafts_data_model ON aircrafts_data (model);
+
+-- INDEX on expression
+CREATE UNIQUE INDEX uix_aircrafts_data_model ON aircrafts_data (lower(model->>'en'));
