@@ -1,0 +1,14 @@
+{
+    "name": "typescript-basics",
+    "version": "0.1.0",
+    "description": "TypesScript basics",
+    "main": "main.js",
+    "author": "Volodymyr Prokopyuk",
+    "license": "MIT",
+    "private": true,
+    "devDependencies": {
+        "typescript": "3.5.3",
+        "prettier": "1.18.2",
+        "tslint": "5.18.0"
+    }
+}
