@@ -134,4 +134,74 @@ const options3: NullableOptions = {material: null, backlight: null};
 const name2: string = "1";
 // const number2: number = <number>(<any>name2);
 const number2: number = (name2 as any) as number;
-console.log(number2);
+// console.log(number2);
+
+// Increment and decrement operators
+let loopCounter = 0;
+do {
+    // console.log("do while", loopCounter);
+} while (++loopCounter < 4);
+
+// while vs do while
+loopCounter = -1;
+while (++loopCounter < 4) {
+    // console.log("while", loopCounter);
+}
+
+// Convert any to number
+const number3 = +"1234";
+// console.log(number3);
+// Convert any to boolean
+const boolean2 = !!number3;
+// console.log(boolean2);
+
+// && check and do idiom
+const doIt = false;
+// tslint:disable-next-line:no-unused-expression
+doIt && console.log("do it");
+// || coalesce idiom
+let value: string;
+value = value || "default";
+// console.log(value);
+
+// Array destructuring: skip, rest, default
+const array2 = [1, 2, 3, 4, 5, 6];
+let [a, b, , ...rest] = array2;
+// console.log(a, b, rest);
+// console.log(a, b, ...rest);
+// Swap variables without a temporary variable
+[a, b] = [b, a];
+// console.log(a, b);
+const array3 = [1, 2];
+let [a2, b2, c2 = 0] = array3;
+// console.log(a2, b2, c2);
+
+// Object desctructuring: rest
+const object2 = {anId: 1, aName: "Vlad", aPosition: "architect"};
+// unpack in new variables
+const {anId: myId, aName: myName} = object2;
+// console.log(myId, myName);
+// auto-unpack
+const {anId, aName} = object2;
+// console.log(anId, aName);
+const {aPosition: position, ...aRest} = object2;
+// console.log(position, aRest);
+
+// Tuple desctructuring
+function returnTuple() {
+    return ["Vlad", "Lana"];
+}
+const [result1, result2] = returnTuple();
+// console.log(result1, result2);
+
+// Array spread opertor
+const array4 = [1, 2, 3];
+const array5 = [10, 20, 30];
+const spreadArray = [...array4, ...array5];
+// console.log(spreadArray);
+
+// Object spread operator
+const object3 = {firstName: "Vlad"};
+const object4 = {lastName: "Prokopyuk"};
+const spreadObject = {...object3, ...object4};
+// console.log(spreadObject);
