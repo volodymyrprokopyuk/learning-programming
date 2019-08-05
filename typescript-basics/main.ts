@@ -19,7 +19,7 @@ const firstName = "Vlad";
 
 // const has lexical (block) scope and only forbids assignment
 // The variable is still mutable
-// Allways start with const and use let only if reqiured
+// Allways start with const and use let only if reassignment reqiured
 // Avoid using function scope and variable hoisting with var
 const digits = [1, 2, 3];
 digits.push(4, 5, 6);
@@ -148,10 +148,10 @@ while (++loopCounter < 4) {
     // console.log("while", loopCounter);
 }
 
-// Convert any to number
+// Convert any type to number
 const number3 = +"1234";
 // console.log(number3);
-// Convert any to boolean
+// Convert any type to boolean
 const boolean2 = !!number3;
 // console.log(boolean2);
 
@@ -178,7 +178,7 @@ let [a2, b2, c2 = 0] = array3;
 
 // Object desctructuring: rest
 const object2 = {anId: 1, aName: "Vlad", aPosition: "architect"};
-// unpack in new variables
+// unpack into new variables
 const {anId: myId, aName: myName} = object2;
 // console.log(myId, myName);
 // auto-unpack
@@ -205,3 +205,21 @@ const object3 = {firstName: "Vlad"};
 const object4 = {lastName: "Prokopyuk"};
 const spreadObject = {...object3, ...object4};
 // console.log(spreadObject);
+
+// Function optional parameters
+function fun(x: number, y?: number) {
+    return x + (y || 0);
+}
+let res = fun(1, 2);
+// console.log(res);
+res = fun(10);
+// console.log(res);
+
+// Function default parameters
+function fun2(x: number, y: number = 0) {
+    return x + y;
+}
+res = fun(1, 2);
+console.log(res);
+res = fun(10);
+console.log(res);
