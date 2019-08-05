@@ -12,7 +12,7 @@ let globalScope = 1;
 }
 const firstName = "Vlad";
 {
-    const firstName = "Lana";
+    const firstName = "Lana"; // tslint:disable-line:no-shadowed-variable
     // console.log(firstName); // Lana
 }
 // console.log(firstName); // Vlad
@@ -37,7 +37,7 @@ const names: string[] = ["Vlad", "Lana"];
 
 // Function type annotation
 let greet: (name: string) => string;
-greet = name => `Hello ${name}`;
+greet = (name) => `Hello ${name}`;
 const greeting = greet("Lana");
 // console.log(greeting);
 
@@ -47,17 +47,18 @@ person = {id: 1, name: "Vlad"};
 // console.log(person);
 
 // Object type alias
+// tslint:disable-next-line:interface-over-type-literal
 type PersonType = {id: number; name: string};
 const person2: PersonType = {id: 1, name: "Lana"};
 // console.log(person2);
 
 // Object interface can be used in implements and extends
 // Interface can accept type parameters (generics)
-interface PersonInterface {
+interface IPerson {
     id: number;
     name: string;
 }
-const person3: PersonInterface = {id: 1, name: "Vlad"};
+const person3: IPerson = {id: 1, name: "Vlad"};
 // console.log(person3);
 
 // Enumeration (open ended)
@@ -65,7 +66,7 @@ enum VehicleType {
     Car,
     Van,
     Bus,
-    Lorry
+    Lorry,
 }
 const enumIndex = VehicleType.Lorry;
 const enumName = VehicleType[enumIndex];
@@ -86,13 +87,13 @@ programmingLanguage = "TypeScript";
 // console.log(programmingLanguage);
 
 // Intersection type
-interface Skier {
+interface ISkier {
     slide(): void;
 }
-interface Shooter {
+interface IShooter {
     shoot(): void;
 }
-type Biathelete = Skier & Shooter;
+type Biathelete = ISkier & IShooter;
 
 // Tuple type
 let tuple: [number, string];
@@ -100,26 +101,28 @@ tuple = [1, "Lana"];
 // console.log(tuple)
 
 // Dictionary type
-interface PersonDictionary {
-    [index: string]: PersonInterface;
+interface IPersonDictionary {
+    [index: string]: IPerson;
 }
-const personDictionary: PersonDictionary = {};
+const personDictionary: IPersonDictionary = {};
+/* tslint:disable:no-string-literal */
 personDictionary["Vlad"] = {id: 1, name: "Vlad"};
 personDictionary["Lana"] = {id: 2, name: "Lana"};
 // console.log(personDictionary);
 // console.log(personDictionary["Vlad"].id);
+/* tslint:enable:no-string-literal */
 
 // Mapped type (keyof)
-interface Options {
+interface IOptions {
     material: string;
     backlight: boolean;
 }
 type ReadOnly<T> = {readonly [k in keyof T]: T[k]};
 type Optional<T> = {[k in keyof T]?: T[k]};
 type Nullable<T> = {[k in keyof T]: T[k] | null};
-type ReadOnlyOptions = ReadOnly<Options>;
-type OptionalOptions = Optional<Options>;
-type NullableOptions = Nullable<Options>;
+type ReadOnlyOptions = ReadOnly<IOptions>;
+type OptionalOptions = Optional<IOptions>;
+type NullableOptions = Nullable<IOptions>;
 const options: ReadOnlyOptions = {material: "wood", backlight: false};
 // console.log(options);
 const options2: OptionalOptions = {};
@@ -129,5 +132,6 @@ const options3: NullableOptions = {material: null, backlight: null};
 
 // Type assertion
 const name2: string = "1";
-const number2: number = <number>(<any>name2);
+// const number2: number = <number>(<any>name2);
+const number2: number = (name2 as any) as number;
 console.log(number2);
