@@ -284,3 +284,62 @@ interface IFunction {
 }
 const fun3: IFunction = (message: string) => console.log(message);
 fun3("Function interface");
+
+// Class access modifies are not controlled at runtime, but enforced at compile time
+interface IPlayable {
+    play(): void;
+}
+class Song implements IPlayable {
+    constructor(private title: string, private artist: string) {}
+
+    play() {
+        console.log(`${this.title} by ${this.artist}`);
+    }
+}
+
+class Jukebox {
+    // tslint:disable-next-line:no-shadowed-variable
+    constructor(private songs: IPlayable[]) {}
+
+    play() {
+        const song = this.getRandomSong();
+        song.play();
+    }
+
+    private getRandomSong() {
+        const index = Math.floor(this.songs.length * Math.random());
+        return this.songs[index];
+    }
+}
+
+const songs = [
+    new Song("Title 1", "Artist 1"),
+    new Song("Title 2", "Artist 2"),
+    new Song("Title 3", "Artist 3"),
+];
+const jukebox = new Jukebox(songs);
+jukebox.play();
+
+// Class property getter and setter
+class FullName {
+    // tslint:disable-next-line:no-shadowed-variable
+    constructor(private firstName: string, private lastName: string) {}
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
+    set fullName(fullName: string) {
+        const match = fullName.match(/^(\w+) (\w+)$/);
+        if (match) {
+            this.firstName = match[1];
+            this.lastName = match[2];
+        } else {
+            throw new Error(`Invalid full name ${fullName}`);
+        }
+    }
+}
+const person4 = new FullName("Volodymyr", "Prokopyuk");
+// console.log(person4.fullName);
+person4.fullName = "Vlad Prokopyuk";
+// console.log(person4.fullName);
