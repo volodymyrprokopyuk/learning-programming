@@ -61,7 +61,7 @@ interface IPerson {
 const person3: IPerson = {id: 1, name: "Vlad"};
 // console.log(person3);
 
-// Enumeration (open ended)
+// Enumeration is open ended (all declaration under commot root are merged togather)
 enum VehicleType {
     Car,
     Van,
@@ -220,6 +220,67 @@ function fun2(x: number, y: number = 0) {
     return x + y;
 }
 res = fun(1, 2);
-console.log(res);
+// console.log(res);
 res = fun(10);
-console.log(res);
+// console.log(res);
+
+// Function rest parameters
+function sum(...elements: number[]): number {
+    let total = 0;
+    for (const element of elements) {
+        total += element;
+    }
+    return total;
+}
+res = sum(1, 2, 3, 4, 5, 6, 7);
+// console.log(res);
+
+// Arrow function
+const addNumbers = (...numbers: number[]): number => {
+    const aSum = numbers.reduce((x, y) => x + y, 0);
+    return aSum;
+};
+res = addNumbers(1, 2, 3, 4, 5, 6, 7);
+// console.log(res);
+
+// Arrow function preserves the lexical scope of the this keyword
+const lostScope = {
+    message: "Property from lexical scope",
+    // Short syntax for method definitions on object initializer
+    notify() {
+        // Lexical scope is lost
+        setTimeout(function() {
+            console.log(this.message);
+        }, 1);
+    },
+};
+// lostScope.notify();
+const preservedScope = {
+    message: "Property from lexical scope",
+    // Short syntax for method definitions on object initializer
+    notify() {
+        // Lexical scope is preserved in arrow function
+        setTimeout(() => console.log(this.message), 1);
+    },
+};
+// preservedScope.notify();
+
+// Use arrow function for funciton currying
+const multiply = (a3: number) => (b3: number) => a3 * b3;
+res = multiply(4)(5);
+// console.log(res);
+const multiply10 = multiply(10);
+res = multiply10(4);
+// console.log(res);
+
+// Interface can be used as a) an abstract type to beimplemented by a concrete class
+// b) define a data structure c) define a software contracts for third-party libraries
+// Interface defines properties, methods, constructors, indexers
+// Interface does not generate any JavaScript code (type erasure)
+// Interface is open ended (all declaration under commot root are merged togather)
+// Interfade can define function/object hybrid type
+interface IFunction {
+    (message: string): void; // tslint:disable-line:callable-types
+}
+const fun3: IFunction = (message: string) => console.log(message);
+fun3("Function interface");
