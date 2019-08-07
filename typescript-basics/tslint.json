@@ -10,7 +10,8 @@
         },
         "no-console": false,
         "member-access": false,
-        "max-classes-per-file": false
+        "max-classes-per-file": false,
+        "no-shadowed-variable": false
     },
     "rulesDirectory": []
 }

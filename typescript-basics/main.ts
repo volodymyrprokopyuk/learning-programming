@@ -12,7 +12,7 @@ let globalScope = 1;
 }
 const firstName = "Vlad";
 {
-    const firstName = "Lana"; // tslint:disable-line:no-shadowed-variable
+    const firstName = "Lana";
     // console.log(firstName); // Lana
 }
 // console.log(firstName); // Vlad
@@ -283,7 +283,7 @@ interface IFunction {
     (message: string): void; // tslint:disable-line:callable-types
 }
 const fun3: IFunction = (message: string) => console.log(message);
-fun3("Function interface");
+// fun3("Function interface");
 
 // Class access modifies are not controlled at runtime, but enforced at compile time
 interface IPlayable {
@@ -298,7 +298,6 @@ class Song implements IPlayable {
 }
 
 class Jukebox {
-    // tslint:disable-next-line:no-shadowed-variable
     constructor(private songs: IPlayable[]) {}
 
     play() {
@@ -318,11 +317,10 @@ const songs = [
     new Song("Title 3", "Artist 3"),
 ];
 const jukebox = new Jukebox(songs);
-jukebox.play();
+// jukebox.play();
 
 // Class property getter and setter
 class FullName {
-    // tslint:disable-next-line:no-shadowed-variable
     constructor(private firstName: string, private lastName: string) {}
 
     get fullName() {
@@ -343,3 +341,113 @@ const person4 = new FullName("Volodymyr", "Prokopyuk");
 // console.log(person4.fullName);
 person4.fullName = "Vlad Prokopyuk";
 // console.log(person4.fullName);
+
+// Promise represents the eventual completion or failure of an async operation
+// async operation returns a Promise to supply the result at some point in the feature
+// Promise states: pending > settled (resolved or rejected)
+// new Promise((resolve, reject) => {
+//     executor is called immediately by new Promise()
+//     resolve and reject callbacks are provided by the JavaScript engine
+//     only one of resolve or reject must be called only once, further calls are ignored
+//     async operation
+// })
+// Promise.prototype.then(onResolve, onReject) > returns a Promise (Promise chain)
+// Promise.prototype.catch(onReject) = .then(null, onReject)
+// When a Promise rejects the control jumps to the closes rejection handler
+// Promise.prototype.finally(onSettle) = .then(onSettle, onSettle)
+// .finally() is not meant to process a Promise result
+// .finally() handler passes through results and errors to the next hendler
+// Promise.resolve(), Promise.reject()
+// Promise.all(iterable) > all resolved or first rejected
+// Promise.race(iterable) > first resolved or rejected
+// Promise.allSettled(iterable) > all settled (resolved or rejected)
+// Promise handling is always async and all Promise handles pass through microtask queue
+
+// new Promise((resolve, reject) => {
+//     resolve("OK");
+// })
+//     .finally(() => console.log("clean up"))
+//     .then((result) => console.log(result));
+
+// new Promise((resolve, reject) => {
+//     reject("OH");
+// })
+//     .finally(() => console.log("clean up"))
+//     .catch((error) => console.error(error));
+
+// const resolved = new Promise((resolve, reject) => {
+//     setTimeout(() => resolve("OK"), 1000);
+// });
+// const rejected = new Promise((resolve, reject) => {
+//     setTimeout(() => reject("OH"), 500);
+// });
+// Promise.race([resolved, rejected])
+//     .then(console.log)
+//     .catch(console.error);
+
+// async/await: replaces .then() with await and .catch() with try { await } catch()
+// write completely sync-looking code while performing async operations
+// The functionality of async/await can be achieved with Promises + generators (yield)
+function async1Secs() {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve("RESOLVED: 1 sec"), 1000);
+    });
+}
+function async2Secs() {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve("RESOLVED: 2 sec"), 2000);
+    });
+}
+// async function always returns a Promise
+// non-Promise result is automatically wrapped in a Promise
+// await Promise waits for a Promise to be settled
+// await Promsie can be used only inside async function
+// await does not work in top-level code > wrap the code in IIFE: (async() => {await})
+// if the Promise resolves, then await Promise returns the resutl
+// if the Promise rejects, then await Promise throws an error
+// await Promise.reject(new Error("oh")) === throw new Error("oh")
+// Use try { await } catch
+// asyncSequential finishes after 2 + 1 = 3 secs
+async function asyncSequential() {
+    // Sequential calls to async functions
+    const result2 = await async2Secs();
+    console.log(result2);
+    const result1 = await async1Secs();
+    console.log(result1);
+}
+// asyncSequential();
+// asyncConcurrent finishes after 2 secs
+async function asyncConcurrent() {
+    // Concurrent calls to async functions
+    const result2 = async2Secs();
+    const result1 = async1Secs();
+    console.log(await result2);
+    console.log(await result1);
+}
+// asyncConcurrent();
+// await for multiple Promises with Promise.all()
+async function concurrentPromises() {
+    const [result1, result2] = await Promise.all([async1Secs(), async2Secs()]);
+    console.log(result1);
+    console.log(result2);
+}
+// concurrentPromises();
+
+// async/await error handling
+function resolveOrReject() {
+    const success = Math.round(Math.random());
+    return new Promise((resolve, reject) => {
+        success ? resolve("OK") : reject("OH");
+    });
+}
+async function showAsyncResult() {
+    try {
+        const result = await resolveOrReject();
+        console.log(result);
+    } catch (error) {
+        console.log(error);
+    }
+}
+// for (let i = 0; i < 5; ++i) {
+//     showAsyncResult();
+// }
