@@ -342,8 +342,179 @@ const person4 = new FullName("Volodymyr", "Prokopyuk");
 person4.fullName = "Vlad Prokopyuk";
 // console.log(person4.fullName);
 
+// Iterator must maintain its internal state (via closure)
+// Iterator can be consumed only once. Create new Iterator to iterate again
+function makeRangeIterator(start = 0, end = Infinity, step = 1) {
+    // Iterator internal state initialization via closure
+    let nextValue = start - step;
+    // Iterable is an object with [Symbol.iterator]() function that returns an Iterator
+    const iterable = {
+        [Symbol.iterator]() {
+            // Iterator protocol: Iterator.next() -> {value, done}
+            const iterator = {
+                next() {
+                    nextValue += step;
+                    return nextValue < end
+                        ? {value: nextValue, done: false}
+                        : {value: undefined, done: true};
+                },
+            };
+            return iterator;
+        },
+    };
+    return iterable;
+}
+for (const item of makeRangeIterator(-2, 1)) {
+    // console.log(item);
+}
+// Spread operator with iterators
+// console.log(...makeRangeIterator(0, 3));
+
+// Async iterator
+function makeAsyncRangeIterator(start = 0, end = Infinity, step = 1) {
+    // Iterator internal state initialization via closure
+    let nextValue = start - step;
+    // Async iterable is an object with [Symbol.asyncIterator]() function that returns
+    // an async iterator
+    const asyncIterable = {
+        [Symbol.asyncIterator]() {
+            // Async iterator
+            const asyncIterator = {
+                async next() {
+                    await new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve("OK");
+                        }, 1000);
+                    });
+                    nextValue += step;
+                    return nextValue < end
+                        ? {value: nextValue, done: false}
+                        : {value: undefined, done: true};
+                },
+                // next() {
+                //     nextValue += step;
+                //     const iteratorValue =
+                //         nextValue < end
+                //             ? {value: nextValue, done: false}
+                //             : {value: undefined, done: true};
+                //     return new Promise((resolve) => {
+                //         setTimeout(() => {
+                //             resolve(iteratorValue);
+                //         }, 1000);
+                //     });
+                // },
+            };
+            return asyncIterator;
+        },
+    };
+    return asyncIterable;
+}
+// (async () => {
+//     for await (const item of makeAsyncRangeIterator(4, 8)) {
+//         console.log(item);
+//     }
+// })();
+
+// Generator funciton* defines an iterative algorithm in a single funciton* whose
+// execution is not continuous and can be re-entered later
+// When called initially a generator function* returns a Generator (type of Iterator)
+// Generator function* should be better called generator constructor
+// On Generator.next() the generator function* executes untill next yield keyword
+// Generators are iterable
+function* makeRangeGenerator(start = 0, end = Infinity, step = 1) {
+    for (let nextValue = start; nextValue < end; nextValue += step) {
+        // yeild can be used only inside function*
+        yield nextValue;
+    }
+}
+for (const item of makeRangeGenerator(-2, 1)) {
+    // console.log(item);
+}
+// Spread operator with generators
+// console.log(...makeRangeGenerator(0, 3));
+
+// Async generator
+async function* makeAsyncRangeGenerator(start = 0, end = Infinity, step = 1) {
+    for (let nextValue = start; nextValue < end; nextValue += step) {
+        await new Promise((resolve) => setTimeout(() => resolve("OK"), 1000));
+        yield nextValue;
+    }
+}
+// (async () => {
+//     for await (const item of makeAsyncRangeGenerator(4, 8)) {
+//         console.log(item);
+//     }
+// })();
+
+// Iterable object defines its iteration behaviour in for/of loop and a speard operator
+// In order to be iterable an object must implement [Symbol.iterator]() mehtods that
+// returns and Iterator
+// Iterable generator
+const iterableGenerator = {
+    *[Symbol.iterator]() {
+        yield 1;
+        yield 2;
+        yield 3;
+    },
+};
+for (const item of iterableGenerator) {
+    // console.log(item);
+}
+function* nestedIterableGenerator() {
+    // yield* delegates to another generator function*
+    // yield* implements generator composition
+    yield* iterableGenerator;
+    yield* iterableGenerator;
+}
+for (const item of nestedIterableGenerator()) {
+    // console.log(item);
+}
+
+// Async iterable generator
+const asyncIterableGenerator = {
+    async *[Symbol.asyncIterator]() {
+        await new Promise((resolve) => setTimeout(() => resolve("OK"), 1000));
+        yield 10;
+        await new Promise((resolve) => setTimeout(() => resolve("OK"), 1000));
+        yield 20;
+        await new Promise((resolve) => setTimeout(() => resolve("OK"), 1000));
+        yield 30;
+    },
+};
+(async () => {
+    for await (const item of asyncIterableGenerator) {
+        console.log(item);
+    }
+})();
+
+// Generator.next(inValue) -> const inValue = yeild outValue
+// External code can exchange data with a generator via .next()/yeild
+function* fibonacci() {
+    let [prev, curr] = [-1, 1];
+    while (true) {
+        const next = prev + curr;
+        [prev, curr] = [curr, next];
+        const reset = yield next;
+        if (reset) {
+            [prev, curr] = [-1, 1];
+        }
+    }
+}
+const fibonacciGenerator = fibonacci();
+for (let i = 0; i < 10; ++i) {
+    // console.log(fibonacciGenerator.next());
+}
+// console.log(fibonacciGenerator.next(true));
+for (let i = 0; i < 10; ++i) {
+    // console.log(fibonacciGenerator.next());
+}
+
 // Promise represents the eventual completion or failure of an async operation
 // async operation returns a Promise to supply the result at some point in the feature
+// Callbacks are atteched to a Promise via .then() instead of passing callbacks into a
+// function
+// Callbacks added with .then() even after Promise settlement will be called
+// Multiple callbacks maybe added by calling .then() several times
 // Promise states: pending > settled (resolved or rejected)
 // new Promise((resolve, reject) => {
 //     executor is called immediately by new Promise()
@@ -353,6 +524,7 @@ person4.fullName = "Vlad Prokopyuk";
 // })
 // Promise.prototype.then(onResolve, onReject) > returns a Promise (Promise chain)
 // Promise.prototype.catch(onReject) = .then(null, onReject)
+// Always return Promise from .then(). Always terminate Promise chain with .catch()
 // When a Promise rejects the control jumps to the closes rejection handler
 // Promise.prototype.finally(onSettle) = .then(onSettle, onSettle)
 // .finally() is not meant to process a Promise result
@@ -451,3 +623,57 @@ async function showAsyncResult() {
 // for (let i = 0; i < 5; ++i) {
 //     showAsyncResult();
 // }
+
+// Scope management
+class Name {
+    constructor(private name: string) {}
+
+    // Instance method is be shared from the prototype between all class instances
+    printName() {
+        console.log(this.name);
+    }
+
+    // 1. Use arrow funciton to preserve the scope
+    // Arrow function will be duplicated on every class instance
+    printName2 = () => console.log(this.name);
+}
+const aName2 = new Name("Vlad");
+// aName2.printName();
+function callback(cb) {
+    cb();
+}
+// 0. The scope of this = aName2 IS LOST for the printName() method
+// callback(aName2.printName);
+// callback(aName2.printName2);
+// 2. Use function wrapping at a point of call to preserve the scope
+// callback(() => aName2.printName());
+// 3. Use bind function to preserve the scope
+// callback(aName2.printName.bind(aName2));
+
+// Generic function
+function reverse<T>(array: T[]): T[] {
+    const reversedArray: T[] = [];
+    for (let i = array.length - 1; i > -1; --i) {
+        reversedArray.push(array[i]);
+    }
+    return reversedArray;
+}
+const reversedArray = reverse([1, 2, 3, 4, 5, 6, 7]);
+// console.log(reversedArray);
+
+// Generic interface/class
+interface IUser<N> {
+    name: N;
+}
+class User implements IUser<string> {
+    constructor(public name: string) {}
+}
+const user = new User("Lana");
+// console.log(user.name);
+
+// Generic type constraint
+function greetName<T extends IUser<string>>(user: T): void {
+    console.log(`Hello, ${user.name}`);
+}
+const user2 = new User("Lana");
+// greetName(user2);
