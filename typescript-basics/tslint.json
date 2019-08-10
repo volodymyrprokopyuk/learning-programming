@@ -11,7 +11,8 @@
         "no-console": false,
         "member-access": false,
         "max-classes-per-file": false,
-        "no-shadowed-variable": false
+        "no-shadowed-variable": false,
+        "object-literal-sort-keys": false
     },
     "rulesDirectory": []
 }

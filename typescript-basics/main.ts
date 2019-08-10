@@ -166,6 +166,7 @@ value = value || "default";
 
 // Array destructuring: skip, rest, default
 const array2 = [1, 2, 3, 4, 5, 6];
+// tslint:disable-next-line:prefer-const
 let [a, b, , ...rest] = array2;
 // console.log(a, b, rest);
 // console.log(a, b, ...rest);
@@ -173,7 +174,7 @@ let [a, b, , ...rest] = array2;
 [a, b] = [b, a];
 // console.log(a, b);
 const array3 = [1, 2];
-let [a2, b2, c2 = 0] = array3;
+const [a2, b2, c2 = 0] = array3;
 // console.log(a2, b2, c2);
 
 // Object desctructuring: rest
@@ -481,11 +482,11 @@ const asyncIterableGenerator = {
         yield 30;
     },
 };
-(async () => {
-    for await (const item of asyncIterableGenerator) {
-        console.log(item);
-    }
-})();
+// (async () => {
+//     for await (const item of asyncIterableGenerator) {
+//         console.log(item);
+//     }
+// })();
 
 // Generator.next(inValue) -> const inValue = yeild outValue
 // External code can exchange data with a generator via .next()/yeild
@@ -677,3 +678,95 @@ function greetName<T extends IUser<string>>(user: T): void {
 }
 const user2 = new User("Lana");
 // greetName(user2);
+
+// Code organization
+// Namespace
+// - Is a logical schema (avoids name collistions) for identifiers with a namespace root
+//   added to the global namespace (namespace dds only one name to the global scope)
+// - Namespaces are open ended and a single namespace can be defined in many files
+// - Namespaces can be organized into dot-separated or nested hierarchies
+// - By defult namespace members are private. Use export to make them public
+// - Naemspaces work well on client-side with bundling all source code to a single file
+// Module
+// - Modules are the standard mechanism of code organization on server-side
+// - Module is a single file. Use folder hierarchy to organize modules
+// - Imports other modules, exports members
+// - By defult module members are private. Use export to make them public
+// - Do not add any names to the global scope
+// - Module can be loaded asynchronously on demand
+// - Prefer modules over namespaces
+// Package
+// - Delivers source code files in an archive with metadata available from a repository
+// - Package compiled JavaScript code (*.js) along with automatically generated type
+//   definitions (*.d.ts) + package.json + README.md
+// - npm package && npm publish
+
+// import * as firstModule from "./firstModule";
+// const sumOfNumbers = firstModule.sum(1, 2, 3, 4, 5, 6, 7);
+// console.log(sumOfNumbers);
+
+import {sum as sumNumbers} from "./firstModule";
+const sumOfNumbers = sumNumbers(1, 2, 3, 4, 5, 6, 7);
+// console.log(sumOfNumbers);
+
+// Use module re-export to combine several modules into a single wrapper module
+// export * as firstModule from "./firstModule";
+// export {sum as sumNumbers} from "./firstModule";
+
+// Property accessors (getter and setter) decorators
+function logProperty(target: any, key: any) {
+    let value = target[key];
+    function getter() {
+        console.log(`Getting ${key} = ${value}`);
+        return value;
+    }
+    function setter(newValue) {
+        console.log(`Setting ${key} = ${newValue}`);
+        value = newValue;
+    }
+    if (delete target[key]) {
+        Object.defineProperty(target, key, {
+            get: getter,
+            set: setter,
+            enumerable: true,
+            configurable: true,
+        });
+    }
+}
+// Method decorator
+function logMethod(title: string) {
+    function decorator(target: any, key: string, descriptor: any) {
+        const original = descriptor.value;
+        function decorated(...args) {
+            const result = original.apply(this, args);
+            console.log(`${title}: ${key}(${args}) = ${result}`);
+            return result;
+        }
+        descriptor.value = decorated;
+        return descriptor;
+    }
+    return decorator;
+}
+// Class decorator
+function logClass(target: any) {
+    console.log(`Calling constructor ${target.name}`);
+}
+// Parameter decorator
+function logParameter(target: any, key: string, index: number) {
+    console.log(`Parameter of ${key} with index ${index}`);
+}
+@logClass
+class Calculator {
+    @logProperty
+    name: string = "Default";
+
+    @logMethod("Calculator")
+    square(@logParameter x: number) {
+        return x ** 2;
+    }
+}
+const calculator = new Calculator();
+calculator.name = "Specific";
+console.log(calculator.name);
+calculator.square(5);
+calculator.square(6);

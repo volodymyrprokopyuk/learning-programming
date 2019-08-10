@@ -8,7 +8,7 @@ readonly TAB_WIDTH=4
 readonly TARGET=main
 
 prettier --print-width $LINE_LENGTH --tab-width $TAB_WIDTH --no-bracket-spacing \
-    --arrow-parens always --trailing-comma es5 --write $TARGET.ts
-tslint --format verbose $TARGET.ts
-tsc --target es2018 $TARGET.ts
+    --arrow-parens always --trailing-comma es5 --write ./*.ts
+tslint --format verbose ./*.ts
+tsc --target es2019 --module commonjs --experimentalDecorators $TARGET.ts
 node $TARGET.js
