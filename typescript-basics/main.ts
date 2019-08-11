@@ -640,7 +640,7 @@ class Name {
 }
 const aName2 = new Name("Vlad");
 // aName2.printName();
-function callback(cb) {
+function callback(cb: () => any) {
     cb();
 }
 // 0. The scope of this = aName2 IS LOST for the printName() method
@@ -720,7 +720,7 @@ function logProperty(target: any, key: any) {
         console.log(`Getting ${key} = ${value}`);
         return value;
     }
-    function setter(newValue) {
+    function setter(newValue: any) {
         console.log(`Setting ${key} = ${newValue}`);
         value = newValue;
     }
@@ -737,7 +737,7 @@ function logProperty(target: any, key: any) {
 function logMethod(title: string) {
     function decorator(target: any, key: string, descriptor: any) {
         const original = descriptor.value;
-        function decorated(...args) {
+        function decorated(...args: any[]) {
             const result = original.apply(this, args);
             console.log(`${title}: ${key}(${args}) = ${result}`);
             return result;
@@ -755,18 +755,96 @@ function logClass(target: any) {
 function logParameter(target: any, key: string, index: number) {
     console.log(`Parameter of ${key} with index ${index}`);
 }
-@logClass
-class Calculator {
-    @logProperty
-    name: string = "Default";
+// @logClass
+// class Calculator {
+//     @logProperty
+//     name: string = "Default";
 
-    @logMethod("Calculator")
-    square(@logParameter x: number) {
-        return x ** 2;
+//     @logMethod("Calculator")
+//     square(@logParameter x: number) {
+//         return x ** 2;
+//     }
+// }
+// const calculator = new Calculator();
+// calculator.name = "Specific";
+// console.log(calculator.name);
+// calculator.square(5);
+// calculator.square(6);
+
+// - [TypeScript] has type inference
+// - Use as few type annotations as possible
+// - If the type can be inferred, allow it to be inferred
+// - [TypeScript] has structural type system (type structure should be unique)
+// - Structural type system does not require explicit type annotations
+// - The value is accespted as long as its structure matches the type definition
+// - Accidental type equivalence is possible
+// - [C] has nominal type system requires explicit type annotations (only type name
+//   shoudl be unique)
+// - Just because something has the same properties does not mean it is valid
+
+// - Ambient declarations add only type information and not implementation to existing
+//   JavaScript code
+// - Ambient declarations can be gradually constructed starting with simple, impresice
+//   declarations and tuning up the details over time
+// - declare let $: any;
+// - Ambient declarations will be erased during compilation
+// - Iterfaces are analogous to ambient declarations (describe type, but no
+//   implementation)
+// - Ambient declarations can be written using interfaces without declare
+// - *.d.ts files contains only ambient declarations
+// - Ambient declarations file should have the same name and be in the same directory
+// - npm install --save @types/<library>
+
+// - Inheritance: is a
+// - Composition + delegation: has a
+// - Mixin = ready to use implementation: can do
+function applyMixins(target: any, mixings: any[]) {
+    mixings.forEach((mixin) => {
+        Object.getOwnPropertyNames(mixin.prototype).forEach((mixinMethodName) => {
+            target.prototype[mixinMethodName] = mixin.prototype[mixinMethodName];
+        });
+    });
+}
+// Mixin is ready to use implementation
+class SignMixin {
+    sign() {
+        console.log("Singing...");
     }
 }
-const calculator = new Calculator();
-calculator.name = "Specific";
-console.log(calculator.name);
-calculator.square(5);
-calculator.square(6);
+class DanceMixin {
+    dance() {
+        console.log("Dancing...");
+    }
+}
+// Augemented class mixes in mixins
+class Actor implements SignMixin, DanceMixin {
+    // Mixin interface-like declarations
+    sign: () => void;
+    dance: () => void;
+}
+// Do not forget to applyMixins as it is not checked by the compiler
+// applyMixins(Actor, [SignMixin, DanceMixin]);
+// const actor = new Actor();
+// actor.sign();
+// actor.dance();
+
+// Real mixin
+type Constructor<T = {}> = new (...args: any[]) => T;
+function signMixin<T extends Constructor>(target: T) {
+    return class extends target {
+        sign() {
+            console.log("Singing...");
+        }
+    };
+}
+function danceMixin<T extends Constructor>(target: T) {
+    return class extends target {
+        dance() {
+            console.log("Dancing...");
+        }
+    };
+}
+const MixedinActor = danceMixin(signMixin(Actor));
+const actor = new MixedinActor();
+actor.sign();
+actor.dance();

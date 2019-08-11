@@ -1,5 +1,7 @@
 # Learning programming examples
 
+## TypeScript basics
+
 ## Python basics
 
 ## Bash basics
