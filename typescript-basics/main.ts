@@ -200,6 +200,9 @@ const array4 = [1, 2, 3];
 const array5 = [10, 20, 30];
 const spreadArray = [...array4, ...array5];
 // console.log(spreadArray);
+// const maxElement = Math.max(...array4);
+const maxElement = Math.max.apply(null, array4);
+// console.log(maxElement);
 
 // Object spread operator
 const object3 = {firstName: "Vlad"};
@@ -558,6 +561,72 @@ for (let i = 0; i < 10; ++i) {
 //     .then(console.log)
 //     .catch(console.error);
 
+// Callback -> Promise -> async/await example
+// * Callback
+// function getData(callback: (error: any, data: string) => void) {
+//     setTimeout(() => {
+//         // 0. throw new Error("OH");
+//         // return callback(new Error("OH"), null);
+//         return callback(null, "Data");
+//     }, 1000);
+// }
+// try {
+//     // Callback requires to pass result/error handling BEFORE calling getData()
+//     getData((error, data) => {
+//         if (error) {
+//             console.error(error);
+//         } else {
+//             console.log(data);
+//         }
+//     });
+//     // 0. Error handling does not work
+// } catch (error) {
+//     console.error(error);
+// }
+// * Promise
+// function getData() {
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             try {
+//                 // throw new Error("OH");
+//                 // reject(new Error("OH"));
+//                 resolve("Data");
+//                 // Explicit try catch is required to handle throwed Errors
+//             } catch (error) {
+//                 reject(error);
+//             }
+//         }, 1000);
+//     });
+// }
+// getData()
+//     // Promise requires to provide result/error handling AFTER calling getData()
+//     .then(console.log)
+//     .catch(console.error);
+// * async/await
+function getData() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            try {
+                throw new Error("OH");
+                reject(new Error("OH"));
+                resolve("Data");
+                // Explicit try catch is required to handle throwed Errors
+            } catch (error) {
+                reject(error);
+            }
+        }, 1000);
+    });
+}
+(async () => {
+    try {
+        const data = await getData();
+        console.log(data);
+        // try catch is used for both throwing errors and Promise rejections
+    } catch (error) {
+        console.error(error);
+    }
+})();
+
 // async/await: replaces .then() with await and .catch() with try { await } catch()
 // write completely sync-looking code while performing async operations
 // The functionality of async/await can be achieved with Promises + generators (yield)
@@ -846,5 +915,40 @@ function danceMixin<T extends Constructor>(target: T) {
 }
 const MixedinActor = danceMixin(signMixin(Actor));
 const actor = new MixedinActor();
-actor.sign();
-actor.dance();
+// actor.sign();
+// actor.dance();
+
+// - Statements in a JavaScript program will be QUEUED FIFO to execute on a SINGLE
+//   THREAD
+// - A long-running event handler can block other events from firing timely
+// - Callbacks avoid blocking main thread event loop
+// - When a long-running process has finished the callback is queued to the event loop
+// - Prefer lexical/block scope with const/let over function scope/variable hoisting
+//   with var
+
+// Observer pattern
+interface ISubscriber {
+    (message: string): void; // tslint:disable-line:callable-types
+}
+interface IPublisher {
+    addSubscribers(...newSubscribers: ISubscriber[]): void;
+    notify(message: string): void;
+}
+class Publisher implements IPublisher {
+    private subscribers: ISubscriber[] = [];
+
+    addSubscribers(...newSubscribers: ISubscriber[]): void {
+        this.subscribers.push(...newSubscribers);
+    }
+
+    notify(message: string): void {
+        this.subscribers.forEach((subscriber) => subscriber(message));
+    }
+}
+const subscriberA: ISubscriber = (message: string) =>
+    console.log(`SubscriberA: ${message}`);
+const subscriberB: ISubscriber = (message: string) =>
+    console.log(`SubscriberB: ${message}`);
+const publisher = new Publisher();
+publisher.addSubscribers(subscriberA, subscriberB);
+// publisher.notify("Hi");
