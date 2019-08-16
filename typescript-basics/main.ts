@@ -617,15 +617,15 @@ function getData() {
         }, 1000);
     });
 }
-(async () => {
-    try {
-        const data = await getData();
-        console.log(data);
-        // try catch is used for both throwing errors and Promise rejections
-    } catch (error) {
-        console.error(error);
-    }
-})();
+// (async () => {
+//     try {
+//         const data = await getData();
+//         console.log(data);
+//         // try catch is used for both throwing errors and Promise rejections
+//     } catch (error) {
+//         console.error(error);
+//     }
+// })();
 
 // async/await: replaces .then() with await and .catch() with try { await } catch()
 // write completely sync-looking code while performing async operations
@@ -952,3 +952,13 @@ const subscriberB: ISubscriber = (message: string) =>
 const publisher = new Publisher();
 publisher.addSubscribers(subscriberA, subscriberB);
 // publisher.notify("Hi");
+
+// - Objects in JavaScript are open
+// - In TypeScript you catch all or none. There is no standard mechanism to catch
+//   specific error type
+// - Use try/finally for reliable resource management
+// - Garbage collection strategies
+//     - Reference counting free everything with count = 0. Problem: circular references
+//     - Mark and sweep - free everything that is no reachable from the root
+//     - Generational GC - check more frequently short-lived objects, check less
+//       frequently long lived objects
