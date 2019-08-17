@@ -1,3 +1,35 @@
+// * TypeScript data types
+// - boolean: true, false
+// - number: floating point number: 1, 0x1, 0o1, 0b1
+// - stinrg: "string", `template multiline stinrg ${expression}`
+// - array: homogeneous elements: number[], Array<number>
+// - tuple: fixed length array with known, potentially different types (heterogeneous)
+//   [string, number]
+// - enum Color {Reg, Green, Blue}: named set of numberical values
+// - undefined: declared by not assigned variable
+// - null: variable with explicitly assigned unknown value
+//   string | null (union types) --strictNullChecks
+// - object: any non-primitive type: {}
+// - any: explicitly disables type checking
+// - void: function that returns nothing
+// - never: function that never returns: a) infinite loop, b) throw error
+
+// * Variable declaration
+// tslint:disable-next-line:no-var-keyword
+// for (var counter = 0; counter < 5; ++counter) {
+// let creates a new scope per iteration, no need for IIFE
+// for (let counter = 0; counter < 5; ++counter) {
+//     // tslint:disable-next-line:only-arrow-functions
+//     setTimeout(function() {
+//         console.log(counter);
+//     }, 100);
+// }
+// const variable
+// readonly iterface/object property
+
+// - Interfaces describe a) objects with properties b) functions() c) idexable types[]
+//   d) class types with properties and methods (implements) e) iterfaces (extends)
+
 // Type inference
 const radius = 4;
 const area = Math.PI * radius ** 2;
@@ -845,6 +877,7 @@ function logParameter(target: any, key: string, index: number) {
 // - If the type can be inferred, allow it to be inferred
 // - [TypeScript] has structural type system (type structure should be unique)
 // - Structural type system does not require explicit type annotations
+// - Structural typing focuses on the shape that values have
 // - The value is accespted as long as its structure matches the type definition
 // - Accidental type equivalence is possible
 // - [C] has nominal type system requires explicit type annotations (only type name
