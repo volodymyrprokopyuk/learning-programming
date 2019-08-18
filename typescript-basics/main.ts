@@ -29,6 +29,8 @@
 
 // - Interfaces describe a) objects with properties b) functions() c) idexable types[]
 //   d) class types with properties and methods (implements) e) iterfaces (extends)
+// - Class declaration creates a) a type b) a constructor function
+// - Arrow functions capture this where they are created, not where they are invoked
 
 // Type inference
 const radius = 4;
