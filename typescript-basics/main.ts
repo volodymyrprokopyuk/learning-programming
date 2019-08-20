@@ -32,6 +32,16 @@
 // - Class declaration creates a) a type b) a constructor function
 // - Arrow functions capture this where they are created, not where they are invoked
 
+// Generics
+// const identity: <T>(value: T) => T = <T>(value: T): T => {
+// Callable object
+// tslint:disable-next-line:callable-types
+const identity: {<T>(value: T): T} = <T>(value: T): T => {
+    return value;
+};
+const idValue = identity("identity");
+// console.log(idValue);
+
 // Type inference
 const radius = 4;
 const area = Math.PI * radius ** 2;
