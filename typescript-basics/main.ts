@@ -39,8 +39,66 @@
 const identity: {<T>(value: T): T} = <T>(value: T): T => {
     return value;
 };
-const idValue = identity("identity");
+let idValue = identity("identity");
 // console.log(idValue);
+// Interface with generic callable
+interface IIdentity {
+    // tslint:disable-next-line:callable-types
+    <T>(value: T): T;
+}
+const identity2: IIdentity = <T>(value: T): T => {
+    return value;
+};
+idValue = identity2("identity2");
+// console.log(idValue);
+// Generic interface (requires specific type parameter) with callable
+interface IIdentity2<T> {
+    // tslint:disable-next-line:callable-types
+    (value: T): T;
+}
+const identity3: IIdentity2<string> = <T>(value: T): T => {
+    return value;
+};
+idValue = identity3("identity3");
+// console.log(idValue);
+
+// Generic classes
+class Adder<T> {
+    identity: T;
+    add: (x: T, y: T) => T;
+}
+const numberAdder = new Adder<number>();
+numberAdder.identity = 0;
+numberAdder.add = (x, y) => x + y;
+const numberAdderResult = numberAdder.add(numberAdder.identity, 1);
+// console.log(numberAdderResult);
+const stringAdder = new Adder<string>();
+stringAdder.identity = "";
+stringAdder.add = (x, y) => x + y;
+const stringAdderResult = stringAdder.add(stringAdder.identity, "a");
+// console.log(stringAdderResult);
+
+// Generic constraints
+interface IHasLength {
+    length: number;
+}
+const logIdentity: <T extends IHasLength>(value: T) => T = (value) => {
+    console.log(value.length);
+    return value;
+};
+// logIdentity("Vlad");
+
+// Symbol is immutable and unique primitive data type
+const [sym, sym2] = [Symbol("sym"), Symbol("sym")];
+// console.log(sym === sym2); // false
+// Symbol can be used as key for object properties
+const sym3 = Symbol("key");
+const symObject = {
+    [sym3]: "symValue",
+};
+// console.log(symObject[sym3]);
+// Built-in well-known symbols represent internal language behaviours
+// - Symbol.itertor returns default iterator for an object used in for/of
 
 // Type inference
 const radius = 4;
@@ -90,11 +148,26 @@ let person: {id: number; name: string};
 person = {id: 1, name: "Vlad"};
 // console.log(person);
 
+// Prefer interface over type alias if you do not need union or intersection of types
+// Type alias can name primitive types, unions, intersections, and tuples
+// Type alias does not create a new type, it only creates a new name to refer to a type
+// or a combination of types
 // Object type alias
 // tslint:disable-next-line:interface-over-type-literal
 type PersonType = {id: number; name: string};
 const person2: PersonType = {id: 1, name: "Lana"};
 // console.log(person2);
+// String literal type alias
+type Response = "Yes" | "No";
+const response: Response = "Yes";
+// console.log(response);
+// Type alias can be generic and recursive
+// tslint:disable-next-line:interface-over-type-literal
+type Tree<T> = {
+    value: T;
+    left: Tree<T>;
+    right: Tree<T>;
+};
 
 // Object interface can be used in implements and extends
 // Interface can accept type parameters (generics)
@@ -106,6 +179,7 @@ const person3: IPerson = {id: 1, name: "Vlad"};
 // console.log(person3);
 
 // Enumeration is open ended (all declaration under commot root are merged togather)
+// Enum type is a union of each enum member
 enum VehicleType {
     Car,
     Van,
@@ -156,6 +230,40 @@ personDictionary["Lana"] = {id: 2, name: "Lana"};
 // console.log(personDictionary["Vlad"].id);
 /* tslint:enable:no-string-literal */
 
+// Algebraic data types | Discriminated unions | Tagget unions = composite type
+// - Product types: tuple, record
+// - Sum types: enumeraiton, union type (variant type)
+// - Algebraic data tapes are analyzed with pattern matching
+// - All types must have a discriminant - common singleton property
+// - Type alias defines a union of all those types
+// - Type guards are used on the discriminant property
+// tslint:disable:interface-name
+interface Square {
+    kind: "square"; // discriminant
+    size: number;
+}
+interface Rectangle {
+    kind: "rectangle";
+    width: number;
+    height: number;
+}
+interface Circle {
+    kind: "circle";
+    radius: number;
+}
+// tslint:enable:interface-name
+type Shape = Square | Rectangle | Circle;
+function computeArea(shape: Shape): number {
+    switch (shape.kind) {
+        case "square":
+            return shape.size ** 2;
+        case "rectangle":
+            return shape.width * shape.height;
+        case "circle":
+            return Math.PI * shape.radius ** 2;
+    }
+}
+
 // Mapped type (keyof)
 interface IOptions {
     material: string;
@@ -204,7 +312,7 @@ const doIt = false;
 // tslint:disable-next-line:no-unused-expression
 doIt && console.log("do it");
 // || coalesce idiom
-let value: string;
+let value: string = "";
 value = value || "default";
 // console.log(value);
 
@@ -892,8 +1000,8 @@ function logParameter(target: any, key: string, index: number) {
 // - Structural typing focuses on the shape that values have
 // - The value is accespted as long as its structure matches the type definition
 // - Accidental type equivalence is possible
-// - [C] has nominal type system requires explicit type annotations (only type name
-//   shoudl be unique)
+// - [C/C++, Java] has nominal type system requires explicit type annotations (only type
+//   name shoudl be unique)
 // - Just because something has the same properties does not mean it is valid
 
 // - Ambient declarations add only type information and not implementation to existing
@@ -912,8 +1020,8 @@ function logParameter(target: any, key: string, index: number) {
 // - Inheritance: is a
 // - Composition + delegation: has a
 // - Mixin = ready to use implementation: can do
-function applyMixins(target: any, mixings: any[]) {
-    mixings.forEach((mixin) => {
+function applyMixins(target: any, mixins: any[]) {
+    mixins.forEach((mixin) => {
         Object.getOwnPropertyNames(mixin.prototype).forEach((mixinMethodName) => {
             target.prototype[mixinMethodName] = mixin.prototype[mixinMethodName];
         });

@@ -9,8 +9,8 @@
     "devDependencies": {
         "typescript": "3.5.3",
         "prettier": "1.18.2",
-        "tslint": "5.18.0",
+        "tslint": "5.19.0",
         "jest": "24.9.0",
-        "@types/jest": "24.0.17"
+        "@types/jest": "24.0.18"
     }
 }

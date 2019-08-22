@@ -12,6 +12,7 @@ prettier --print-width $LINE_LENGTH --tab-width $TAB_WIDTH --no-bracket-spacing 
 tslint --format verbose ./*.ts
 tsc --target es2019 --module commonjs \
     --noImplicitAny \
+    --strictNullChecks \
     --experimentalDecorators \
     $TARGET.ts
 node $TARGET.js
