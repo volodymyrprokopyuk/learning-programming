@@ -1,4 +1,1 @@
-node_modules/
 *.js
-yarn-error.log
-yarn.lock

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "incremental": true,
+        "tsBuildInfoFile": ".tsbuildinfo",
+        "target": "es2019",
+        "module": "commonjs",
+        "strictNullChecks": true,
+        "noImplicitAny": false
+    },
+    "include": [
+        "*.ts"
+    ]
+}

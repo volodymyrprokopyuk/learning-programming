@@ -158,8 +158,8 @@ type PersonType = {id: number; name: string};
 const person2: PersonType = {id: 1, name: "Lana"};
 // console.log(person2);
 // String literal type alias
-type Response = "Yes" | "No";
-const response: Response = "Yes";
+type MyResponse = "Yes" | "No";
+const response: MyResponse = "Yes";
 // console.log(response);
 // Type alias can be generic and recursive
 // tslint:disable-next-line:interface-over-type-literal
@@ -924,10 +924,6 @@ const user2 = new User("Lana");
 
 // import * as firstModule from "./firstModule";
 // const sumOfNumbers = firstModule.sum(1, 2, 3, 4, 5, 6, 7);
-// console.log(sumOfNumbers);
-
-import {sum as sumNumbers} from "./firstModule";
-const sumOfNumbers = sumNumbers(1, 2, 3, 4, 5, 6, 7);
 // console.log(sumOfNumbers);
 
 // Use module re-export to combine several modules into a single wrapper module
