@@ -62,7 +62,7 @@ const quacker = (duck: Duck) => {
 // Subtyping: inheritance, composition, misins (object-oriented programming)
 // Generics: type variables (generic programming)
 
-// never (empty set, no value): throw, while(true): funciton does not return at all
+// never (empty type, no value): throw, while(true): funciton does not return at all
 
 const throwError = (message: string): never => {
     throw new Error(message);
@@ -80,3 +80,5 @@ const infinitLoop = (): never => {
 const logMessage = (message: string): void => {
     console.log(message);
 };
+
+// boolean (two valuesa): conditional branching and looping, short-circuiting
