@@ -82,3 +82,59 @@ const logMessage = (message: string): void => {
 };
 
 // boolean (two valuesa): conditional branching and looping, short-circuiting
+// number: unsigned integer, signed integer, float-point, overflow, underflow
+// string: encoding
+// Fixed-size array, linked list, binary tree, hash table
+
+// Tuple: fixed array of different types with positioned access defined inline to group
+// data in an ad hoc way
+
+type Point = [number, number];
+
+const distance = (point1: Point, point2: Point) => {
+    return Math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2);
+};
+
+// Record (data class): set of different types with access by name defined separately
+// Use private members + access methods (get, set) to ensure data invariants
+// Use immutable memebers + init logic in constructor to ensure data invariants
+
+class Point2 {
+    x: number;
+    y: number;
+
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+const distance2 = (point1: Point2, point2: Point2) => {
+    return Math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2);
+};
+
+// Enumeration: one of explicitly declared values
+
+enum DayOfWeek {
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saterday,
+    Sunday,
+}
+
+const isWeekend = (day: DayOfWeek) => {
+    return [DayOfWeek.Saterday, DayOfWeek.Sunday].some((dow) => dow === day);
+};
+
+// DayOfWeek | undefined, DayOfWeek | Error: either valure or error
+// Union types
+// Visitor pattern implements double dispatch
+//     accept(visitor) operation
+//     visit(instance) instance
+
+// Algebraic data types
+//     Product types: compound types: tuple, record
+//     Sum types: either-or types: enum, DayOfWeek | Error
