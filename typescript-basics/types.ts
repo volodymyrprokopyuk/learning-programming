@@ -138,3 +138,21 @@ const isWeekend = (day: DayOfWeek) => {
 // Algebraic data types
 //     Product types: compound types: tuple, record
 //     Sum types: either-or types: enum, DayOfWeek | Error
+
+// Primitive obsession antipattern: define dedicated types for values
+// Enforce acceptable value range in a constructor
+
+// First-class function + function type () => void
+// Lambda function = anonymous function
+// Closure
+
+const makeClounter = (start: number = 0) => {
+    let counter = start;
+    return () => counter++;
+};
+
+const counter1 = makeClounter();
+const counter2 = makeClounter();
+// console.log(counter1(), counter2(), counter2(), counter1());
+
+// Callback, promise, async/await
