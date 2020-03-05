@@ -1,0 +1,3 @@
+load "plot/config.gplot"
+
+plot input_data using 1:2 with boxes

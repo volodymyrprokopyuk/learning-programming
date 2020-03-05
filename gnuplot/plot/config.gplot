@@ -1,0 +1,2 @@
+set terminal pngcairo size 2048, 1536 font "Sans, 18"
+set output output_plot
