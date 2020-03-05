@@ -1,0 +1,10 @@
+load "plot/config.gplot"
+
+unset border
+unset xtics
+unset ytics
+unset key
+
+set size square
+
+plot input_data using 2:3 with dots

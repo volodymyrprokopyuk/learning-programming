@@ -14,4 +14,6 @@ function plot {
         $PLOT_DIR/$plot_name.gplot
 }
 
-plot "ch01_marathon.txt" "marathon"
+# plot "ch01_marathon.txt" "marathon"
+# plot "ch01_dlacluster.txt" "cluster"
+plot "" "function"

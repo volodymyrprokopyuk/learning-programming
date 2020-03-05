@@ -1,3 +1,6 @@
 load "plot/config.gplot"
 
-plot input_data using 1:2 with boxes
+set xlabel "Finish time"
+set ylabel "Number of finishers"
+
+plot input_data using 1:2 with boxes title "Distribution of finishers over time"
