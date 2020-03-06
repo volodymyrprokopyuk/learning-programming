@@ -16,4 +16,7 @@ function plot {
 
 # plot "ch01_marathon.txt" "marathon"
 # plot "ch01_dlacluster.txt" "cluster"
-plot "" "function"
+# plot "" "function"
+# plot "ch02_prices.txt" "stock_price"
+# plot "ch03_records.txt" "world_records"
+plot "ch03_splines.txt" "smooth"

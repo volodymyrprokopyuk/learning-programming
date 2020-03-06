@@ -1,0 +1,12 @@
+load "plot/config.gplot"
+
+# plot [1974:1996][20:180] input_data using 1:2 with points pointtype 6 pointsize 3 title "data", \
+#                          input_data using 1:2 smooth csplines title "csplines", \
+#                          input_data using 1:2 smooth mcsplines title "mcsplines", \
+#                          input_data using 1:2 smooth bezier title "bezier"
+
+plot [1974:1996][20:180] input_data using 1:2 with points pointtype 6 pointsize 3 title "data", \
+                         input_data using 1:2:(10e6) smooth acsplines title "acsplines 10e6", \
+                         input_data using 1:2:(10e1) smooth acsplines title "acsplines 10e1", \
+                         input_data using 1:2:(10e-1) smooth acsplines title "acsplines 10e-1", \
+                         input_data using 1:2:(10e-6) smooth acsplines title "acsplines 10e-6", \

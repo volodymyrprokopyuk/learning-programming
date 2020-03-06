@@ -1,0 +1,11 @@
+load "plot/config.gplot"
+
+# plot [0:12000] input_data using 1:2 with points pointtype 7 pointsize 2 title "Men", \
+#      input_data using 1:3 with points pointtype 7 pointsize 2 title "Women"
+
+set logscale x
+set xlabel "Time, sec"
+set ylabel "Speed, m/sec"
+
+plot [10:10000] input_data using 2:($1 / $2) with linespoints pointsize 2 title "Men", \
+     input_data using 3:($1 / $3) with linespoints pointsize 2 title "Women"
