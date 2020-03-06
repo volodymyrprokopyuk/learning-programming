@@ -1,0 +1,26 @@
+load "plot/config.gplot"
+
+unset key
+set multiplot layout 2, 2
+
+set xtics 2
+set mxtics 2
+set label 1 "Orders per day" at 11, 3
+plot [0:15] input_data using (tm_mday(strptime("%Y-%m-%d", strcol(2)))):(1) \
+    with linespoints pointtype 7 smooth frequency
+unset mxtics
+
+set xtics 1
+set label 1 "Items per order" at 5, 55
+plot [0:7] input_data using 4:(1) with boxes smooth frequency
+
+set label 1 "Value vs wieght" at 6, 6
+plot input_data using 5:6 with points pointtype 6 pointsize 2
+
+set style parallel linewidth 1
+set xtics ("Date" 1, "Items" 2, "Weight" 3, "Value" 4, "Ship" 5)
+unset ytics
+
+plot [1:5] input_data \
+    using (tm_mday(strptime("%Y-%m-%d", strcol(2)))):4:5:6:(strcol(7)[1:1]+0) \
+        with parallel

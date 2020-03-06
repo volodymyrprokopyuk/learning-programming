@@ -20,3 +20,4 @@ function plot {
 # plot "prices" "stock_price"
 # plot "records" "world_records"
 # plot "splines" "smooth"
+plot "orders" "orders"
