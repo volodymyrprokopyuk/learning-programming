@@ -14,9 +14,9 @@ function plot {
         $PLOT_DIR/$plot_name.gplot
 }
 
-# plot "ch01_marathon.txt" "marathon"
-# plot "ch01_dlacluster.txt" "cluster"
+# plot "marathon" "marathon"
+# plot "cluster" "cluster"
 # plot "" "function"
-# plot "ch02_prices.txt" "stock_price"
-# plot "ch03_records.txt" "world_records"
-plot "ch03_splines.txt" "smooth"
+# plot "prices" "stock_price"
+# plot "records" "world_records"
+# plot "splines" "smooth"
