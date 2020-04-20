@@ -308,3 +308,5 @@
 ## Idris basics
 
 ## Gnuplot basics
+
+## Racket basics
