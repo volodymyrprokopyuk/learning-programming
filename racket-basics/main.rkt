@@ -21,3 +21,11 @@
 (define (bigger)
   (set! lower (min upper (add1 (guess))))
   (guess))
+
+;; Line comment (beginning of the line)
+#|
+Block comment (multiple lines)
+|#
+(define (square n)
+  #;(print n) ; s-expression comment
+  (* n n)) ; square n (inline comment)
