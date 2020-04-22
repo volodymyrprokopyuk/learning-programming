@@ -1,4 +1,6 @@
 ;; #lang racket/base
+;; 1. racket -f main.rkt -i
+;; 2. (load "main.rkt")
 
 (define lower 0)
 
