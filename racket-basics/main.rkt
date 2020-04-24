@@ -1,4 +1,4 @@
-;; #lang racket/base
+#lang racket/base
 ;; 1. racket -f main.rkt -i
 ;; 2. (load "main.rkt")
 
@@ -23,9 +23,18 @@
   (guess))
 
 ;; Line comment (beginning of the line)
-#|
-Block comment (multiple lines)
-|#
 (define (square n)
   #;(print n) ; s-expression comment
   (* n n)) ; square n (inline comment)
+
+(struct student (name id# dorm))
+
+(define vlad (student 'Vlad 1 'dorm1))
+(define lana (student 'Lana 2 'dorm2))
+
+(student-name vlad)
+(student-id# vlad)
+(student-dorm vlad)
+
+;; (define students (list vlad lana))
+;; (student-name (second students))
