@@ -27,7 +27,8 @@
   #;(print n) ; s-expression comment
   (* n n)) ; square n (inline comment)
 
-(struct student (name id# dorm))
+;; opaque structure (by default)
+(struct student (name id# dorm) #:transparent) ; transparent structure
 
 (define vlad (student 'Vlad 1 'dorm1))
 (define lana (student 'Lana 2 'dorm2))
@@ -35,6 +36,8 @@
 (student-name vlad)
 (student-id# vlad)
 (student-dorm vlad)
+
+vlad
 
 ;; (define students (list vlad lana))
 ;; (student-name (second students))
