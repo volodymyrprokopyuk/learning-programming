@@ -1,4 +1,4 @@
-#lang racket/base
+;; #lang racket/base
 ;; 1. racket -f main.rkt -i
 ;; 2. (load "main.rkt")
 
@@ -36,8 +36,7 @@
 (student-name vlad)
 (student-id# vlad)
 (student-dorm vlad)
+(student? vlad)
 
-vlad
-
-;; (define students (list vlad lana))
-;; (student-name (second students))
+(define students (list vlad lana))
+(student-name (second students))
