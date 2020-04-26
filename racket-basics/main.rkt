@@ -50,3 +50,39 @@
   (cond [(> x 100) 'big-number]
         [(even? x) 'even]
         [else 'odd]))
+
+(define (my-length a-list)
+  (if (empty? a-list)
+      0
+      (add1 (my-length (rest a-list)))))
+
+;; and, or are conditional forms + shortcut boolean evaluation
+(define is-odd #f)
+(and (odd? 1) (set! is-odd #t))
+(or (odd? 1) (set! is-odd #t))
+
+(define (contains? value a-list)
+  (if (member value a-list)
+      'contains
+      'does-not-contain))
+
+(struct point (x y))
+
+(define (distance-to-origin p)
+  (sqrt (+ (sqr (point-x p)) (sqr (point-y p)))))
+
+(define p1 (point 3 4))
+(distance-to-origin p1)
+
+;; Recursive definition of equal? for every data type (dynamically added)
+(define (my-equal? a b)
+  (cond [(and (point? a) (point? b)) ; type check
+         (and (my-equal? (point-x a) (point-x b)) ; recursive value check
+              (my-equal? (point-y a) (point-y b)))]
+        [(and (number? a) (number? b))
+         (= a b)]
+        [else #f]))
+
+(define p2 (point 1 2))
+(define p3 (point 3 4))
+(my-equal? p1 p3)
