@@ -40,3 +40,13 @@
 
 (define students (list vlad lana))
 (student-name (second students))
+
+(define (is-number-equal x y)
+  (if (= x y)
+      'equal
+      'not-equal))
+
+(define (is-even-odd x)
+  (cond [(> x 100) 'big-number]
+        [(even? x) 'even]
+        [else 'odd]))
