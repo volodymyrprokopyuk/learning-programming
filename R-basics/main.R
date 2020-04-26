@@ -50,3 +50,16 @@ add <- function(x, y) { x + y }
 # sapply(1:10, `+`, 10)
 
 # mean(1:10, na.rm = T) is equivalent to do.call(mean, list(1:10, na.rm = T))
+
+# Default agruments
+f5 <- function(a = 1, b = a * 10) {
+    c(a, b)
+}
+# f5()
+
+# Lazy arguments
+f6 <- function(x) {
+    # force(x) # force agrument evaluation
+    1
+}
+f6(stop("Lazy agrument evaluation"))
