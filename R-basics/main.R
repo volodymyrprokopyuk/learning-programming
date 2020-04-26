@@ -5,10 +5,7 @@ f1 <- function(x) {
         x + 20
     }
 }
-
 # f1(1)()
-
-# 1 + (2 * 3) equivalent `+`(1, `*`(2, 3))
 
 # Name masking
 f2 <- function() {
@@ -16,7 +13,6 @@ f2 <- function() {
     y <- 2
     c(x, y)
 }
-
 # f2()
 rm(f2)
 
@@ -35,4 +31,22 @@ f4 <- function(x) {
         c(x, y)
     }
 }
-f4(1)()
+# f4(1)()
+
+# 1 + (2 * 3) is equivalent to `+`(1, `*`(2, 3))
+
+# if (i == 1) { print("ok") } else { print("oh") }
+# is equvalent to
+# `if`(i == 1, print("ok"), print("oh"))
+
+# for (i in 1:4) { print(i) } is equivalent to `for`(i, 1:4, print(i))
+
+# x[3] is equivalent to `[`(x, 3)
+
+# { print("a"); print("b") } is equivalent to `{`(print("a"), print("b"))
+
+add <- function(x, y) { x + y }
+# sapply(1:10, add, 10)
+# sapply(1:10, `+`, 10)
+
+# mean(1:10, na.rm = T) is equivalent to do.call(mean, list(1:10, na.rm = T))
