@@ -62,4 +62,16 @@ f6 <- function(x) {
     # force(x) # force agrument evaluation
     1
 }
-f6(stop("Lazy agrument evaluation"))
+# f6(stop("Lazy agrument evaluation"))
+
+# Match otherwise not matched ... special argument
+f7 <- function(...) {
+    list(...)
+}
+# f7(a = 10, b = 20, 1, 1.2, T, "Vlad")
+
+# Infix functions
+`%+%` <- function(a, b) {
+    paste(a, b, sep = " ")
+}
+"Vlad" %+% "Lana"
