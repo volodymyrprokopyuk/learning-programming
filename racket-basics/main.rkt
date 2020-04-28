@@ -1,4 +1,5 @@
-;; #lang racket/base
+#lang racket
+(require racket)
 ;; 1. racket -f main.rkt -i
 ;; 2. (load "main.rkt")
 
@@ -74,6 +75,7 @@
 (define p1 (point 3 4))
 (distance-to-origin p1)
 
+;; equal? -> value equality
 ;; Recursive definition of equal? for every data type (dynamically added)
 (define (my-equal? a b)
   (cond [(and (point? a) (point? b)) ; type check
@@ -86,3 +88,22 @@
 (define p2 (point 1 2))
 (define p3 (point 3 4))
 (my-equal? p1 p3)
+
+;; Alias for a variable
+(define p4 p1)
+;; eq? instance equality
+(eq? p1 p3) ; #f
+(eq? p1 p4) ; #t
+
+;; (error 'main "Oh")
+
+;; Local definitions
+(define (my-max lst dft)
+  (cond [(empty? lst) (list dft)]
+        [else
+         (define fst (first lst))
+         (define rst (rest lst))
+         (if (> fst dft) (my-max rst fst) (my-max rst dft))]))
+
+(my-max '() 0)
+(my-max '(10 20 30 40) 10)
