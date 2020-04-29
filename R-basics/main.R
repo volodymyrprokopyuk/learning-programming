@@ -74,4 +74,36 @@ f7 <- function(...) {
 `%+%` <- function(a, b) {
     paste(a, b, sep = " ")
 }
-"Vlad" %+% "Lana"
+# "Vlad" %+% "Lana"
+
+# Replacement functions
+`modify_second<-` <- function(x, value) {
+    x[2] <- value
+    x
+}
+mx <- c(1, 2, 3, 4)
+modify_second(mx) <- 20
+# mx
+
+`modify_position<-` <- function(x, position, value) {
+    x[position] <- value
+    x
+}
+modify_position(mx, 1) <- 10
+# mx
+
+# Copy-on-modify
+comx <- c(1, 2, 3)
+f8 <- function(x) {
+    x[1] <- 10
+    x
+}
+# f8(comx)
+# comx
+
+# Invisible return
+f9 <- function() {
+    invisible(1)
+}
+f9()
+(f9()) # force output
