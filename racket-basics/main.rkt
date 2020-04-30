@@ -4,7 +4,6 @@
 ;; 2. (load "main.rkt")
 
 (define lower 0)
-
 (define upper 100)
 
 (define (start m n)
@@ -33,14 +32,13 @@
 
 (define vlad (student 'Vlad 1 'dorm1))
 (define lana (student 'Lana 2 'dorm2))
-
-(student-name vlad)
-(student-id# vlad)
-(student-dorm vlad)
-(student? vlad)
+;; (student-name vlad)
+;; (student-id# vlad)
+;; (student-dorm vlad)
+;; (student? vlad)
 
 (define students (list vlad lana))
-(student-name (second students))
+;; (student-name (second students))
 
 (define (is-number-equal x y)
   (if (= x y)
@@ -59,8 +57,8 @@
 
 ;; and, or are conditional forms + shortcut boolean evaluation
 (define is-odd #f)
-(and (odd? 1) (set! is-odd #t))
-(or (odd? 1) (set! is-odd #t))
+;; (and (odd? 1) (set! is-odd #t))
+;; (or (odd? 1) (set! is-odd #t))
 
 (define (contains? value a-list)
   (if (member value a-list)
@@ -73,7 +71,7 @@
   (sqrt (+ (sqr (point-x p)) (sqr (point-y p)))))
 
 (define p1 (point 3 4))
-(distance-to-origin p1)
+;; (distance-to-origin p1)
 
 ;; equal? -> value equality
 ;; Recursive definition of equal? for every data type (dynamically added)
@@ -87,13 +85,13 @@
 
 (define p2 (point 1 2))
 (define p3 (point 3 4))
-(my-equal? p1 p3)
+;; (my-equal? p1 p3)
 
 ;; Alias for a variable
 (define p4 p1)
 ;; eq? instance equality
-(eq? p1 p3) ; #f
-(eq? p1 p4) ; #t
+;; (eq? p1 p3) ; #f
+;; (eq? p1 p4) ; #t
 
 ;; (error 'main "Oh")
 
@@ -105,6 +103,15 @@
          (define rst (rest lst))
          (if (> fst dft) (my-max rst fst) (my-max rst dft))]))
 
-(my-max '() 0)
-(my-max '(10 20 30 40) 10)
-(my-max '(1 3 5 4 7 2 0) 0)
+;; (my-max '() 0)
+;; (my-max '(10 20 30 40) 10)
+;; (my-max '(1 3 5 4 7 2 0) 0)
+
+;; Works only on non-empty list
+(define (all-but-last lst)
+  (cond [(empty? (rest lst)) empty]
+        [else (cons (first lst) (all-but-last (rest lst)))]))
+
+;; (all-but-last '()) ; error
+(all-but-last '(1))
+(all-but-last '(1 2))
