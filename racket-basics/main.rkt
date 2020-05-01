@@ -113,5 +113,82 @@
         [else (cons (first lst) (all-but-last (rest lst)))]))
 
 ;; (all-but-last '()) ; error
-(all-but-last '(1))
-(all-but-last '(1 2))
+;; (all-but-last '(1))
+;; (all-but-last '(1 2))
+
+;; Recursive map
+(define (my-map fun lst)
+  (cond [(empty? lst) empty]
+        [else (cons (fun (first lst)) (my-map fun (rest lst)))]))
+
+;; (my-map add1 '(1 2 3 4))
+;; Lambda function
+;; (my-map (lambda (num) (+ num 10)) '(1 2 3 4))
+;; Immediagely invoked function expression
+;; ((lambda (num) (* num 10)) 1)
+
+;; Recursive filter
+(define (my-filter prd? lst)
+  (cond [(empty? lst) empty]
+        [(prd? (first lst))
+         (cons (first lst) (my-filter prd? (rest lst)))]
+        [else (my-filter prd? (rest lst))]))
+
+;; (my-filter even? '(1 2 3 4 5 6 7))
+
+(define (my-any prd? lst)
+  (cond [(empty? lst) #f]
+        [else (or (prd? (first lst)) (my-any prd? (rest lst)))]))
+
+;; (my-any odd? '(2 4 6))
+;; (my-any odd? '(2 4 5 6))
+
+(define (my-all prd? lst)
+  (cond [(empty? lst) #t]
+        [else (and (prd? (first lst)) (my-all prd? (rest lst)))]))
+
+;; (my-all odd? '(1 2 3 4 5))
+;; (my-all odd? '(1 3 5))
+
+(define (my-foldr fun int lst)
+  (cond [(empty? lst) int]
+        [else (fun (first lst) (my-foldr fun int (rest lst)))]))
+
+;; (my-foldr + 0 '(1 2 3 4 5))
+;; (my-foldr cons empty '(a b c))
+
+(define (my-foldl fun int lst)
+  (cond [(empty? lst) int]
+        ;; new init value
+        [else (my-foldl fun (fun (first lst) int) (rest lst))]))
+
+;; (my-foldl + 0 '(1 2 3 4 5))
+;; (my-foldl cons empty '(a b c))
+
+(define (my-build-list fun len)
+  (define (builder cur)
+    (cond [(= cur len) empty]
+          [else (cons (fun cur) (builder (add1 cur)))]))
+  (builder 0))
+
+;; (my-build-list add1 10)
+;; (my-build-list (lambda (num) (* num 10)) 10)
+
+(define (d/dx fun)
+  (define d (/ 1 100000))
+  (lambda (x) (/ (- (fun (+ x d)) (fun (- x d))) 2 d)))
+
+(define 2x/dx (d/dx (lambda (x) (* 2 x))))
+
+;; (map 2x/dx '(-10 -5 0 3 7 14))
+
+;; Apply function
+(define (sum lst)
+  (apply + lst))
+
+;; (sum '(1 2 3 4 5))
+
+(define (highest lst)
+  (apply max lst))
+
+(highest '(1 4 -2 6 7 10))
