@@ -191,4 +191,38 @@
 (define (highest lst)
   (apply max lst))
 
-(highest '(1 4 -2 6 7 10))
+;; (highest '(1 4 -2 6 7 10))
+
+;; Structure inheritance
+(struct parent ([knowledge #:mutable]) #:transparent) ; per field mutability
+(struct child parent (health) #:mutable #:transparent) ; whole structure mutable
+
+(define a-child (child 'a-knowledge 'a-health))
+;; a-child
+;; (parent-knowledge a-child)
+;; (child-health a-child)
+;; Mutate structures
+;; (set-parent-knowledge! a-child 'new-knowldege)
+;; (set-child-health! a-child 'new-health)
+;; a-child
+
+(define (update-struct! mutator)
+  (lambda (str val)
+    (mutator str val)))
+
+(define parent-knowledge!
+  (update-struct! set-parent-knowledge!))
+
+(define child-health!
+  (update-struct! set-child-health!))
+
+;; (parent-knowledge! a-child 'updated-knowledge)
+;; (child-health! a-child 'updated-health)
+;; a-child
+
+;; (let sets up local definitions)
+;; (equal?
+;;  (let ((ch (child 'knowledge 'health)))
+;;    (set-child-health! ch 'mutated-health)
+;;    (child-health ch))
+;;  'mutated-health)
