@@ -226,3 +226,14 @@
 ;;    (set-child-health! ch 'mutated-health)
 ;;    (child-health ch))
 ;;  'mutated-health)
+
+;; case statement
+(define (classify num)
+  (case num
+      [(1 2 3) 'small]
+      [(4 5 6) 'big]
+      [else 'very-big]))
+
+;; (classify 2)
+;; (classify 5)
+;; (classify 15)
