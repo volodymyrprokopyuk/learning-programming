@@ -237,3 +237,57 @@
 ;; (classify 2)
 ;; (classify 5)
 ;; (classify 15)
+
+;; For side effects only
+(for ([i '(1 2 3 4)])
+  (display i))
+
+(for-each display '(1 2 3 4))
+
+;; Like map
+(for/list ([i '(1 2 3 4)])
+  (/ 1 i))
+
+(map (lambda (i) (/ 1 i)) '(1 2 3 4))
+
+;; Like foldr
+(for/fold ([int 0])
+          ([i '(1 2 3 4)])
+  (+ int i))
+
+(foldr (lambda (i int) (+ int i)) 0 '(1 2 3 4))
+
+;; Keep state and return multiple values
+(for/fold ([int 0]
+           [cnt 0])
+          ([i '(1 2 3 4)])
+  ;; return multiple values at once
+  (values (+ int i)
+          (add1 cnt)))
+
+(define-values (one two three) (values 'one 'two 'three))
+(list one two three)
+
+(for ([i '(1 2 3 4 5 6 7)] #:when (odd? i))
+     (display i))
+
+(for/fold ([sum 0])
+          ([i '(1 2 3 4 5 6 7)] #:when (even? i))
+  (+ sum i))
+
+(for/list ([i '(1 2 3 4 5 6)]
+           [j '(10, 20, 30, 40, 50)]
+           [k '(100, 200, 300, 400)])
+  (list i j k))
+
+(for* ([i '(1 2 3)]
+       [j '(one two three)]
+       [k '(a b c)])
+  (display (list i j k)))
+
+(for*/list ([i '((1 2) (3 4) (5 6))]
+            [j i])
+  j)
+
+(for/list ([i (in-range 10 20 2)])
+  i)
