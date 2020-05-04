@@ -105,5 +105,5 @@ f8 <- function(x) {
 f9 <- function() {
     invisible(1)
 }
-f9()
-(f9()) # force output
+# f9()
+# (f9()) # force output
