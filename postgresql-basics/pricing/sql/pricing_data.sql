@@ -6,4 +6,4 @@ SELECT pricing.put_pricing_rule(
     -- a_parent_rule_id := '5d3fae7d-fa22-43bd-a35c-55b2d0b1f8bd'
 ) pricing_rule_id;
 
-SELECT * FROM pricing.pricing_rule;
+SELECT * FROM pricing.get_variable_fee();

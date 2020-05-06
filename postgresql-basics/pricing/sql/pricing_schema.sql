@@ -39,8 +39,7 @@ CREATE OR REPLACE FUNCTION pricing.put_pricing_rule(
     a_variable_fee numeric(7, 5),
     a_pricing_rule_id uuid DEFAULT NULL,
     a_parent_rule_id uuid DEFAULT NULL
-)
-RETURNS uuid
+) RETURNS uuid
 LANGUAGE sql AS $$
     INSERT INTO pricing.pricing_rule (
         pricing_rule_id,
@@ -61,4 +60,24 @@ LANGUAGE sql AS $$
         update_ts = date_trunc('milliseconds', current_timestamp),
         parent_rule_id = excluded.parent_rule_id
     RETURNING pricing_rule_id;
+$$;
+
+-- TODO usage
+
+CREATE OR REPLACE FUNCTION pricing.get_variable_fee(
+    residence_country varchar(50) DEFAULT NULL,
+    base_term_currencies varchar(50) DEFAULT NULL,
+    amount numeric(10, 2) DEFAULT NULL,
+    funding_method varchar(50) DEFAULT NULL
+) RETURNS TABLE (
+    pricing_rule_id uuid,
+    rule_name varchar(100),
+    rule_key varchar(50),
+    variable_fee numeric(7, 5),
+    creation_ts timestamptz,
+    update_ts timestamptz,
+    parent_rule_id uuid
+) LANGUAGE sql AS $$
+    SELECT pr.*
+    FROM pricing.pricing_rule pr;
 $$;
