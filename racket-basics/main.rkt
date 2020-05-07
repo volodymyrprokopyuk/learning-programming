@@ -320,5 +320,24 @@
   (lambda () (cache)))
 
 (define m2big-computation (memoize big-computation))
-(m2big-computation)
-(m2big-computation)
+;; (m2big-computation)
+;; (m2big-computation)
+
+;; Optional rest parameters
+;; ((lambda (a b . rst)
+;;    (list a b rst)) 'a 'b 'c 'd 'e)
+
+;; ((lambda (a b #!rest c)
+;;    (list a b c)) 'a 'b 'c 'd)
+
+;; Optional unnamed parameters
+;; ((lambda (a b #!optional c (d 1) f)
+;;    (list a b c d f)) 'a 'b 'c 'd 'f)
+
+;; Optional named parameters
+;; ((lambda (a b #!key c (d 1))
+;;    (list a b c d)) 'a 'b d: 'd c: 'c)
+
+;; First-class functions
+((lambda (a b)
+   (for-each (lambda (op) (println (op a b))) (list + - * /))) 2 3)
