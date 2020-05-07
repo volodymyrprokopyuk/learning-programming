@@ -2,6 +2,8 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE SCHEMA pricing;
 
+-- Data
+
 CREATE TABLE pricing.pricing_rule (
     pricing_rule_id uuid NOT NULL
         DEFAULT gen_random_uuid(),
@@ -18,12 +20,10 @@ CREATE TABLE pricing.pricing_rule (
         PRIMARY KEY (pricing_rule_id),
     CONSTRAINT fk_pricing_rule_may_have_parent_pricing_rule
         FOREIGN KEY (parent_rule_id) REFERENCES pricing.pricing_rule (pricing_rule_id)
-        ON UPDATE RESTRICT ON DELETE RESTRICT,
-    CONSTRAINT uq_no_pricing_rule_multiple_inheritance_and_no_cycles
-        UNIQUE (pricing_rule_id),
-    CONSTRAINT ch_no_pricing_rule_self_referencing
-        CHECK (pricing_rule_id <> parent_rule_id)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+
+-- Function
 
 -- SELECT pricing.put_pricing_rule(
 --     a_rule_name := 'UK country variable fee percentage',
@@ -65,19 +65,66 @@ $$;
 -- TODO usage
 
 CREATE OR REPLACE FUNCTION pricing.get_variable_fee(
-    residence_country varchar(50) DEFAULT NULL,
-    base_term_currencies varchar(50) DEFAULT NULL,
-    amount numeric(10, 2) DEFAULT NULL,
-    funding_method varchar(50) DEFAULT NULL
+    a_residence_country varchar(50),
+    a_currency_corridor varchar(50),
+    a_base_amount numeric(10, 2),
+    a_funding_method varchar(50)
 ) RETURNS TABLE (
     pricing_rule_id uuid,
     rule_name varchar(100),
     rule_key varchar(50),
     variable_fee numeric(7, 5),
-    creation_ts timestamptz,
-    update_ts timestamptz,
+    -- creation_ts timestamptz,
+    -- update_ts timestamptz,
     parent_rule_id uuid
 ) LANGUAGE sql AS $$
-    SELECT pr.*
-    FROM pricing.pricing_rule pr;
+    WITH RECURSIVE pricing_rule_chain(
+        pricing_rule_id,
+        rule_name,
+        rule_key,
+        variable_fee,
+        parent_rule_id
+    ) AS (
+        -- Pricing rule root
+        SELECT pr.pricing_rule_id,
+            pr.rule_name,
+            pr.rule_key,
+            pr.variable_fee,
+            pr.parent_rule_id
+        FROM pricing.pricing_rule pr
+        WHERE pr.rule_key = a_residence_country
+        UNION
+        -- Next pricing rule child
+        SELECT npr.pricing_rule_id,
+            npr.rule_name,
+            npr.rule_key,
+            npr.variable_fee,
+            npr.parent_rule_id
+        FROM pricing.pricing_rule npr
+            JOIN pricing_rule_chain prc ON prc.pricing_rule_id = npr.parent_rule_id
+        WHERE npr.rule_key IN (a_currency_corridor, a_funding_method)
+            OR (npr.rule_key ~ '[\(\[]\d*,\d*[\)\]]'
+                AND a_base_amount <@ npr.rule_key::numrange)
+    ), default_pricing_rule (
+        pricing_rule_id,
+        rule_name,
+        rule_key,
+        variable_fee,
+        parent_rule_id
+    ) AS (
+        -- Default pricing rule
+        SELECT pr.pricing_rule_id,
+            pr.rule_name,
+            pr.rule_key,
+            pr.variable_fee,
+            pr.parent_rule_id
+        FROM pricing.pricing_rule pr
+        WHERE pr.rule_key = 'DEFAULT'
+    )
+    SELECT prc.*
+    FROM pricing_rule_chain prc
+    UNION ALL
+    SELECT dpr.*
+    FROM default_pricing_rule dpr
+    WHERE NOT EXISTS (SELECT 1 FROM pricing_rule_chain)
 $$;
