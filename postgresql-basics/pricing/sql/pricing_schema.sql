@@ -62,9 +62,15 @@ INSERT INTO pricing.pricing_rule (
 RETURNING pricing_rule_id;
 $$;
 
--- TODO usage
+-- SELECT vfb.*
+-- FROM pricing.get_variable_fee_breakdown(
+--     a_residence_country := 'UK',
+--     a_currency_corridor := 'GBPEUR',
+--     a_base_amount := 100,
+--     a_funding_method := 'CREDIT_CARD'
+-- ) vfb;
 
-CREATE OR REPLACE FUNCTION pricing.get_variable_fee(
+CREATE OR REPLACE FUNCTION pricing.get_variable_fee_breakdown(
     a_residence_country varchar(50),
     a_currency_corridor varchar(50),
     a_base_amount numeric(10, 2),
@@ -74,6 +80,7 @@ CREATE OR REPLACE FUNCTION pricing.get_variable_fee(
     rule_name varchar(100),
     rule_key varchar(50),
     variable_fee numeric(7, 5),
+    variable_fee_total numeric(7, 5),
     creation_ts timestamptz,
     update_ts timestamptz,
     parent_rule_id uuid
@@ -113,6 +120,13 @@ WITH RECURSIVE pricing_rule_chain(
         OR (npr.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
             AND a_base_amount <@ npr.rule_key::numrange)
 )
-SELECT prc.*
+SELECT prc.pricing_rule_id,
+    prc.rule_name,
+    prc.rule_key,
+    prc.variable_fee,
+    sum(prc.variable_fee) OVER (ORDER BY prc.rule_name) variable_fee_total,
+    prc.creation_ts,
+    prc.update_ts,
+    prc.parent_rule_id
 FROM pricing_rule_chain prc;
 $$;
