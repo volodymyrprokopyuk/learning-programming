@@ -23,7 +23,7 @@ CREATE TABLE pricing.pricing_rule (
         ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
--- Function
+-- Logic
 
 -- SELECT pricing.put_pricing_rule(
 --     a_rule_name := 'UK country variable fee percentage',
@@ -41,25 +41,25 @@ CREATE OR REPLACE FUNCTION pricing.put_pricing_rule(
     a_parent_rule_id uuid DEFAULT NULL
 ) RETURNS uuid
 LANGUAGE sql AS $$
-    INSERT INTO pricing.pricing_rule (
-        pricing_rule_id,
-        rule_name,
-        rule_key,
-        variable_fee,
-        parent_rule_id
-    ) VALUES (
-        coalesce(a_pricing_rule_id, gen_random_uuid()),
-        a_rule_name,
-        a_rule_key,
-        a_variable_fee,
-        a_parent_rule_id
-    ) ON CONFLICT ON CONSTRAINT pk_pricing_rule DO UPDATE SET
-        rule_name = excluded.rule_name,
-        rule_key = excluded.rule_key,
-        variable_fee = excluded.variable_fee,
-        update_ts = date_trunc('milliseconds', current_timestamp),
-        parent_rule_id = excluded.parent_rule_id
-    RETURNING pricing_rule_id;
+INSERT INTO pricing.pricing_rule (
+    pricing_rule_id,
+    rule_name,
+    rule_key,
+    variable_fee,
+    parent_rule_id
+) VALUES (
+    coalesce(a_pricing_rule_id, gen_random_uuid()),
+    a_rule_name,
+    a_rule_key,
+    a_variable_fee,
+    a_parent_rule_id
+) ON CONFLICT ON CONSTRAINT pk_pricing_rule DO UPDATE SET
+    rule_name = excluded.rule_name,
+    rule_key = excluded.rule_key,
+    variable_fee = excluded.variable_fee,
+    update_ts = date_trunc('milliseconds', current_timestamp),
+    parent_rule_id = excluded.parent_rule_id
+RETURNING pricing_rule_id;
 $$;
 
 -- TODO usage
@@ -74,57 +74,45 @@ CREATE OR REPLACE FUNCTION pricing.get_variable_fee(
     rule_name varchar(100),
     rule_key varchar(50),
     variable_fee numeric(7, 5),
-    -- creation_ts timestamptz,
-    -- update_ts timestamptz,
+    creation_ts timestamptz,
+    update_ts timestamptz,
     parent_rule_id uuid
 ) LANGUAGE sql AS $$
-    WITH RECURSIVE pricing_rule_chain(
-        pricing_rule_id,
-        rule_name,
-        rule_key,
-        variable_fee,
-        parent_rule_id
-    ) AS (
-        -- Pricing rule root
-        SELECT pr.pricing_rule_id,
-            pr.rule_name,
-            pr.rule_key,
-            pr.variable_fee,
-            pr.parent_rule_id
-        FROM pricing.pricing_rule pr
-        WHERE pr.rule_key = a_residence_country
-        UNION
-        -- Next pricing rule child
-        SELECT npr.pricing_rule_id,
-            npr.rule_name,
-            npr.rule_key,
-            npr.variable_fee,
-            npr.parent_rule_id
-        FROM pricing.pricing_rule npr
-            JOIN pricing_rule_chain prc ON prc.pricing_rule_id = npr.parent_rule_id
-        WHERE npr.rule_key IN (a_currency_corridor, a_funding_method)
-            OR (npr.rule_key ~ '[\(\[]\d*,\d*[\)\]]'
-                AND a_base_amount <@ npr.rule_key::numrange)
-    ), default_pricing_rule (
-        pricing_rule_id,
-        rule_name,
-        rule_key,
-        variable_fee,
-        parent_rule_id
-    ) AS (
-        -- Default pricing rule
-        SELECT pr.pricing_rule_id,
-            pr.rule_name,
-            pr.rule_key,
-            pr.variable_fee,
-            pr.parent_rule_id
-        FROM pricing.pricing_rule pr
-        WHERE pr.rule_key = 'DEFAULT'
-    )
-    SELECT prc.*
-    FROM pricing_rule_chain prc
-    UNION ALL
-    SELECT dpr.*
-    FROM default_pricing_rule dpr
-    WHERE NOT EXISTS (SELECT 1 FROM pricing_rule_chain)
+WITH RECURSIVE pricing_rule_chain(
+    pricing_rule_id,
+    rule_name,
+    rule_key,
+    variable_fee,
+    creation_ts,
+    update_ts,
+    parent_rule_id
+) AS (
+    -- Pricing rule root
+    SELECT pr.pricing_rule_id,
+        pr.rule_name,
+        pr.rule_key,
+        pr.variable_fee,
+        pr.creation_ts,
+        pr.update_ts,
+        pr.parent_rule_id
+    FROM pricing.pricing_rule pr
+    -- WHERE pr.rule_key = a_residence_country
+    WHERE pr.rule_key = 'BASE'
+    UNION
+    -- Next pricing rule child
+    SELECT npr.pricing_rule_id,
+        npr.rule_name,
+        npr.rule_key,
+        npr.variable_fee,
+        npr.creation_ts,
+        npr.update_ts,
+        npr.parent_rule_id
+    FROM pricing.pricing_rule npr
+        JOIN pricing_rule_chain prc ON prc.pricing_rule_id = npr.parent_rule_id
+    WHERE npr.rule_key IN (a_residence_country, a_currency_corridor, a_funding_method)
+        OR (npr.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
+            AND a_base_amount <@ npr.rule_key::numrange)
+)
+SELECT prc.*
+FROM pricing_rule_chain prc;
 $$;
