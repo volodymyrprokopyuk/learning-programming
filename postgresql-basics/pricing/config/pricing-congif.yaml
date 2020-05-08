@@ -1,0 +1,54 @@
+---
+meta:
+    description: Value-based pricing configuration
+    author: Volodymyr Prokopyuk <volodymyr.prokopyuk@pagofx.com>
+    update_ts: 2020-05-08
+pricing:
+    BASE:
+        name: BASE
+        variable_fee: 0.10000
+        UK:
+            name: BASE > UK
+            variable_fee: 0.01000
+            GPBEUR:
+                name: BASE > UK > GBPEUR
+                variable_fee: 0.01100
+                '(,1000)':
+                    name: BASE > UK > GBPEUR > (,1000)
+                    variable_fee: 0.01300
+                    CREDIT_CARD:
+                        name: BASE > UK > GBPEUR > (,1000) > CREDIT_CARD
+                        variable_fee: 0.01600
+                    BANK_ACCOUNT:
+                        name: BASE > UK > GBPEUR > (,1000) > BANK_ACCOUNT
+                        variable_fee: 0.01700,
+                '[1000,5000)':
+                    name: BASE > UK > GBPEUR > [1000,5000)
+                    variable_fee: 0.01400
+                '[5000,)':
+                    name: BASE > UK > GBPEUR > [5000,)
+                    variable_fee: 0.01500
+            EURGBP:
+                name: BASE > UK > EURGBP
+                variable_fee: 0.01200
+        BE:
+            name: BASE > BE
+            variable_fee: 0.02000
+            EURUSD:
+                name: BASE > BE > EURUSD
+                variable_fee: 0.02100,
+                '(,2000)':
+                    name: BASE > BE > EURUSD > (,2000)
+                    variable_fee: 0.02300
+                '[2000,)':
+                    name: BASE > BE > EURUSD > [2000,)
+                    variable_fee: 0.02400
+            USDEUR:
+                name: BASE > BE > USDEUR
+                variable_fee: 0.02200
+                CREDIT_CARD:
+                    name: BASE > BE > USDEUR > CREDIT_CARD
+                    variable_fee: 0.02500
+                BANK_ACCOUNT:
+                    name: BASE > BE > USDEUR > BANK_ACCOUNT
+                    variable_fee: 0.02600
