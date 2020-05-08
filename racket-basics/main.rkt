@@ -339,5 +339,14 @@
 ;;    (list a b c d)) 'a 'b d: 'd c: 'c)
 
 ;; First-class functions
-((lambda (a b)
-   (for-each (lambda (op) (println (op a b))) (list + - * /))) 2 3)
+;; ((lambda (a b)
+;;    (for-each (lambda (op) (println (op a b))) (list + - * /))) 2 3)
+
+;; Recursion
+(let loop ((i 5))
+  (println i)
+  (if (> i 0) (loop (- i 1))))
+
+(let loop ((i 0))
+  (println i)
+  (if (< i 5) (loop (+ i 1))))
