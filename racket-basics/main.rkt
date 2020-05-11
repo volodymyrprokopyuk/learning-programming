@@ -369,3 +369,11 @@
 ;; (counter1)
 ;; (counter1)
 ;; (counter2)
+
+#|
+Block comment
+|#
+
+(define square (lambda (x) (* x x)))
+
+(define reciprocal (lambda (x) (if (= x 0) "oh" (/ 1 x))))
