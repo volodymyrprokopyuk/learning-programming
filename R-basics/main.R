@@ -14,7 +14,6 @@ f2 <- function() {
     c(x, y)
 }
 # f2()
-rm(f2)
 
 x <- 10
 f3 <- function() {
@@ -22,7 +21,6 @@ f3 <- function() {
     c(x, y)
 }
 # f3()
-rm(x, f3)
 
 # Closures
 f4 <- function(x) {
