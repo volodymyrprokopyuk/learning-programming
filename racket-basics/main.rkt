@@ -377,3 +377,13 @@ Block comment
 (define square (lambda (x) (* x x)))
 
 (define reciprocal (lambda (x) (if (= x 0) "oh" (/ 1 x))))
+
+;; Nested let expressions
+;; (let ([a 3] [b 4])
+;;   (let ([aa (* a a)] [bb (* b b)])
+;;     (+ aa bb a b)))
+
+;; Local variable binding shadowing
+;; (let ([x 1])
+;;   (let ([x 2])
+;;     x))
