@@ -374,7 +374,7 @@
 Block comment
 |#
 
-(define square (lambda (x) (* x x)))
+(define square2 (lambda (x) (* x x)))
 
 (define reciprocal (lambda (x) (if (= x 0) "oh" (/ 1 x))))
 
@@ -387,3 +387,24 @@ Block comment
 ;; (let ([x 1])
 ;;   (let ([x 2])
 ;;     x))
+
+;; Lambda exmpression yield procedure
+;; (let ([double (lambda (x) (+ x x))])
+;;   (list (double 1) (double 2)))
+
+;; (let ([double-any (lambda (fun x) (fun x x))])
+;;   (list (double-any + 1) (double-any cons 'a)))
+
+;; let is implemented in terms of lambda
+;; (let ([x 'a]) (cons x x))
+;; ((lambda (x) (cons x x)) 'a)
+
+;; lambda > proper list > exact number of parameters (all mandatory)
+;; ((lambda (a b) (cons a b)) 'a 'b)
+;; lambda > single variable > all parameters as a rest list (all optional)
+;; ((lambda rst rst) 'a 'b 'c)
+;; lambda > improper list > exact number + rest parameters (mandatory + optional)
+;; ((lambda (a b . rst) (list a b rst)) 'a 'b 'c 'd)
+
+;; (define my-list (lambda x x))
+;; (my-list 1 2 3 4)
