@@ -309,4 +309,4 @@
 
 ## Gnuplot basics
 
-## Racket basics
+## Scheme basics
