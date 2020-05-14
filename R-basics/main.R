@@ -105,3 +105,36 @@ f9 <- function() {
 }
 # f9()
 # (f9()) # force output
+
+# S3 class definition and object creation (option 1)
+# cls <- structure(list(), class = "cls")
+# S3 class definition and object creation (option 2)
+# cls2 <- list()
+# class(cls2) <- "cls"
+
+# S3 constructor function
+cls <- function(obj) {
+    if (!is.numeric(obj)) {
+        stop("Object must be numeric")
+    }
+    structure(list(obj), class = "cls")
+}
+
+c1 <- cls(c(1, 2, 3))
+
+# Create generic function
+genfun <- function(obj) {
+    UseMethod("genfun")
+}
+
+# Create generic function method for class
+genfun.default <- function(obj) {
+    "genfun default"
+}
+
+genfun.cls <- function(obj) {
+    "genfun for class cls"
+}
+
+# genfun("a")
+# genfun(c1)
