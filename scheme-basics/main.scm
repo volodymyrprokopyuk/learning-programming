@@ -371,7 +371,7 @@
 ;; (counter2)
 
 #|
-Block comment
+** Scheme langauge block comment **
 |#
 
 (define square2 (lambda (x) (* x x)))
@@ -437,14 +437,19 @@ Block comment
 ;; Procedure composition (less efficient)
 (define (my-compose p1 p2)
   (lambda (x) (p1 (p2 x))))
+
 (define my-cadr2 (my-compose car cdr))
+
 ;; (pp (my-cadr2 '(1 2 3 4)))
+
 (define my-cddr2 (my-compose cdr cdr))
+
 ;; (pp (my-cddr2 '(1 2 3 4)))
 
 ;; Conditionals: if
 (define (my-abs x)
   (if [< x 0] (- x) x))
+
 ;; (pp (my-abs 1))
 ;; (pp (my-abs 0))
 ;; (pp (my-abs -1))
@@ -452,6 +457,7 @@ Block comment
 ;; Conditionals: and
 (define (reciprocal2 x)
   (and (not (= x 0)) (/ 1 x)))
+
 ;; (pp (reciprocal2 2))
 ;; (pp (reciprocal2 0))
 ;; (pp (reciprocal2 -2))
@@ -461,6 +467,7 @@ Block comment
   (if [and (number? x) (not (= x 0))]
       (/ 1 x)
       (error "reciprocal3: improper argument:" x)))
+
 ;; (pp (reciprocal3 2))
 ;; (pp (reciprocal3 0))
 ;; (pp (reciprocal3 -2))
@@ -470,17 +477,20 @@ Block comment
   (cond [(> x 0) 1]
         [(< x 0) -1]
         [else 0]))
+
 ;; (pp (my-sign 2))
 ;; (pp (my-sign 0))
 ;; (pp (my-sign -2))
 
 (define (atom? x)
   (not (pair? x)))
+
 ;; (pp (atom? '(a . a)))
 ;; (pp (atom? '()))
 
 (define (shorter x y)
   (if [<= (length x) (length y)] x y))
+
 ;; (pp (shorter '(a) '(b)))
 ;; (pp (shorter '(a) '(b c)))
 ;; (pp (shorter '(a b) '(c)))
@@ -488,6 +498,7 @@ Block comment
 ;; Simple recutsion
 (define (my-length lst)
   (if [null? lst] 0 (+ (my-length (cdr lst)) 1)))
+
 ;; (pp (my-length '()))
 ;; (pp (my-length '(a)))
 ;; (pp (my-length '(a b)))
@@ -495,3 +506,59 @@ Block comment
 ;; Trace procedure
 ;; (trace my-length)
 ;; (my-length '(a b c d))
+
+;; Treat the structure of pairs as a list
+;; Singly recursive step for cdr only!
+(define (list-copy lst)
+  (if [null? lst]
+      '()
+      (let ([fst (car lst)]
+            [rst (cdr lst)])
+        (cons fst (list-copy rst)))))
+
+;; (pp (list-copy '()))
+;; (pp (list-copy '(a b c)))
+
+(define (membr x lst)
+  (cond [(null? lst) #f]
+        [(eqv? (car lst) x) lst]
+        [else (membr x (cdr lst))]))
+
+;; (pp (membr 'a '()))
+;; (pp (membr 'a '(a b)))
+;; (pp (membr 'a '(b a)))
+;; (pp (membr 'a '(b c)))
+
+(define (remv x lst)
+  (cond [(null? lst) '()]
+        [(eqv? (car lst) x) (remv x (cdr lst))]
+        [else (cons (car lst) (remv x (cdr lst)))]))
+
+;; (pp (remv 'a '()))
+;; (pp (remv 'a '(b c)))
+;; (pp (remv 'a '(a b c)))
+;; (pp (remv 'a '(a b a c a a)))
+
+;; Treat the structure of pairs as a tree
+;; Doubly recursive step for both car and cdr!
+(define (tree-copy tr)
+  (if (not [pair? tr])
+      tr
+      (cons (tree-copy (car tr)) (tree-copy (cdr tr)))))
+
+;; (pp (tree-copy '()))
+;; (pp (tree-copy '(a)))
+;; (pp (tree-copy '(a b)))
+;; (pp (tree-copy '(a b c)))
+;; (pp (tree-copy '((a . b) . c)))
+
+(define (my-map2 fun lst)
+  (if [null? lst]
+      '()
+      (let ([fst (car lst)]
+            [rst (cdr lst)])
+        (cons (fun fst) (my-map2 fun rst)))))
+
+;; (pp (my-map2 (lambda (x) (* x 10)) '()))
+;; (pp (my-map2 (lambda (x) (* x 10)) '(1 2 3 4)))
+;; (pp (map cons '(a b c) '(1 2 3)))
