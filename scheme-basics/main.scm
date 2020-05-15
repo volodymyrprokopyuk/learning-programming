@@ -417,12 +417,14 @@ Block comment
 ;; (my-cddr '(1 2 3 4))
 
 ;; Top-level lambda definition (abbrieviated)
-(define (my-list2 . rst) rst)
+(define (my-list2 . rst)
+  rst)
 ;; (my-list2)
 ;; (my-list2 1)
 ;; (my-list2 1 2)
 
-(define (doubler fun) (lambda (x) (fun x x)))
+(define (doubler fun)
+  (lambda (x) (fun x x)))
 (define double+ (doubler +))
 ;; (double+ 1/2)
 
@@ -433,14 +435,63 @@ Block comment
 ;; (proc1)
 
 ;; Procedure composition (less efficient)
-(define (my-compose p1 p2) (lambda (x) (p1 (p2 x))))
+(define (my-compose p1 p2)
+  (lambda (x) (p1 (p2 x))))
 (define my-cadr2 (my-compose car cdr))
 ;; (pp (my-cadr2 '(1 2 3 4)))
 (define my-cddr2 (my-compose cdr cdr))
 ;; (pp (my-cddr2 '(1 2 3 4)))
 
-;; Conditionals
-(define (my-abs x) (if (< x 0) (- x) x))
-(pp (my-abs 1))
-(pp (my-abs 0))
-(pp (my-abs -1))
+;; Conditionals: if
+(define (my-abs x)
+  (if [< x 0] (- x) x))
+;; (pp (my-abs 1))
+;; (pp (my-abs 0))
+;; (pp (my-abs -1))
+
+;; Conditionals: and
+(define (reciprocal2 x)
+  (and (not (= x 0)) (/ 1 x)))
+;; (pp (reciprocal2 2))
+;; (pp (reciprocal2 0))
+;; (pp (reciprocal2 -2))
+
+;; Assertion violation
+(define (reciprocal3 x)
+  (if [and (number? x) (not (= x 0))]
+      (/ 1 x)
+      (error "reciprocal3: improper argument:" x)))
+;; (pp (reciprocal3 2))
+;; (pp (reciprocal3 0))
+;; (pp (reciprocal3 -2))
+
+;; Conditionals: cond
+(define (my-sign x)
+  (cond [(> x 0) 1]
+        [(< x 0) -1]
+        [else 0]))
+;; (pp (my-sign 2))
+;; (pp (my-sign 0))
+;; (pp (my-sign -2))
+
+(define (atom? x)
+  (not (pair? x)))
+;; (pp (atom? '(a . a)))
+;; (pp (atom? '()))
+
+(define (shorter x y)
+  (if [<= (length x) (length y)] x y))
+;; (pp (shorter '(a) '(b)))
+;; (pp (shorter '(a) '(b c)))
+;; (pp (shorter '(a b) '(c)))
+
+;; Simple recutsion
+(define (my-length lst)
+  (if [null? lst] 0 (+ (my-length (cdr lst)) 1)))
+;; (pp (my-length '()))
+;; (pp (my-length '(a)))
+;; (pp (my-length '(a b)))
+
+;; Trace procedure
+;; (trace my-length)
+;; (my-length '(a b c d))
