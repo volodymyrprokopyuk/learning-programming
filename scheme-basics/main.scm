@@ -562,3 +562,84 @@
 ;; (pp (my-map2 (lambda (x) (* x 10)) '()))
 ;; (pp (my-map2 (lambda (x) (* x 10)) '(1 2 3 4)))
 ;; (pp (map cons '(a b c) '(1 2 3)))
+
+(define (my-append x y)
+  (if [null? x] y (cons (car x) (my-append (cdr x) y))))
+
+;; (pp (my-append '() '()))
+;; (pp (my-append '(a) '()))
+;; (pp (my-append '() '(A)))
+;; (pp (my-append '(a) '(A)))
+;; (trace my-append)
+;; (pp (my-append '(a b) '(A B)))
+
+(define (my-make-list n x)
+  ;; (or [>= n 0] (error "my-make-list: negative argument" n))
+  (and [< n 0] (error "my-make-list: negative argument" n))
+  (if [= n 0] '() (cons x (my-make-list (- n 1) x))))
+
+;; (pp (my-make-list 0 'a))
+;; (pp (my-make-list 1 'a))
+;; (pp (my-make-list 2 'a))
+;; (pp (my-make-list 3 '()))
+;; (pp (my-make-list -1 'a))
+
+(define (my-list-ref lst i)
+  (and [or (< i 0) (> i (- (length lst) 1))]
+       (error "my-list-ref: index out of bounds" i))
+  (if [= i 0] (car lst) (my-list-ref (cdr lst) (- i 1))))
+
+;; (pp (my-list-ref '(a b c) 0))
+;; (pp (my-list-ref '(a b c) 1))
+;; (pp (my-list-ref '(a b c) 2))
+;; (pp (my-list-ref '(a b c) 3))
+;; (pp (my-list-ref '() 0))
+
+(define (my-list-tail lst i)
+  (and [or (< i 0) (> i (- (length lst) 1))]
+       (error "my-list-tail: index out of bounds" i))
+  (if [= i 0] lst (my-list-tail (cdr lst) (- i 1))))
+
+;; (pp (my-list-tail '(a b c) 0))
+;; (pp (my-list-tail '(a b c) 1))
+;; (pp (my-list-tail '(a b c) 2))
+;; (pp (my-list-tail '(a b c) 3))
+;; (pp (my-list-tail '() 0))
+
+(define (shorter? x y)
+  (cond [(null? x) #t]
+        [(null? y) #f]
+        [else (shorter? (cdr x) (cdr y))]))
+
+;; (pp (shorter? '() '()))
+;; (pp (shorter? '(a) '()))
+;; (pp (shorter? '() '(A)))
+;; (pp (shorter? '(a b) '(A)))
+;; (pp (shorter? '(a) '(A B)))
+
+(define (shorter2 x y)
+  (if (shorter? x y) x y))
+
+;; (pp (shorter2 '() '()))
+;; (pp (shorter2 '(a) '()))
+;; (pp (shorter2 '() '(A)))
+;; (pp (shorter2 '(a b) '(A)))
+;; (pp (shorter2 '(a) '(A B)))
+
+;; Mutual recursion: same base case, opposite outcomes
+(define (my-even? x)
+  (if [= x 0] #t (my-odd? (- x 1))))
+
+(define (my-odd? x)
+  (if [= x 0] #f (my-even? (- x 1))))
+
+;; (trace my-even? my-odd?)
+;; (pp (my-even? 7))
+;; (pp (my-odd? 7))
+
+(define (my-transpose lst)
+  (let ([a (map car lst)]
+        [b (map cdr lst)])
+    (cons a b)))
+
+(pp (my-transpose '((a . A) (b . B) (c . C))))
