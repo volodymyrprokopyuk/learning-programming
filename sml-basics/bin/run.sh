@@ -2,6 +2,4 @@
 
 set -eu
 
-TARGET=main
-
-mlton $TARGET.sml && ./$TARGET
+sml main.sml
