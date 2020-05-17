@@ -112,11 +112,17 @@
 (define (memoize fun)
   (let ([run? #f]
         [memoized #f])
+    ;; (lambda ()
+    ;;   (cond [run? memoized]
+    ;;         [else (set! run? #t) (set! memoized (fun)) memoized]))))
     (lambda ()
-      (cond [run? memoized]
-            [else (set! run? #t) (set! memoized (fun)) memoized]))))
+      (if (not run?)
+          (begin (set! run? #t) (set! memoized (fun))))
+      memoized)))
 
 (define (big-computation)
+  ;; (display 'compute)
+  ;; (newline)
   (println 'compute)
   'result)
 
@@ -154,14 +160,14 @@
 ;;    (list a b c d f)) 'a 'b d: 'd c: 'c))
 
 ;; Closures
-(define (counter)
+(define (make-counter)
   (let ([cnt 0])
     (lambda ()
       (set! cnt (+ cnt 1))
       cnt)))
 
-;; (define counter1 (counter))
-;; (define counter2 (counter))
+;; (define counter1 (make-counter))
+;; (define counter2 (make-counter))
 ;; (pp (counter1))
 ;; (pp (counter2))
 ;; (pp (counter1))
@@ -450,3 +456,50 @@
     (cons a b)))
 
 ;; (pp (my-transpose '((a . A) (b . B) (c . C))))
+
+;; Top-level variable assignment
+;; (define x 'a)
+;; (set! x 'b)
+;; (pp x)
+
+;; let- and lambda-bound variable assignment
+;; (pp (let ([x 'a])
+;;   (set! x 'b)
+;;   x))
+
+;; Quadratic equition solver: ax^2 + bx + c = 0
+(define (solve-quadratic a b c)
+  (let* ([d (sqrt (- (expt b 2) (* 4 a c)))]
+         [r1 (/ (+ (- b) d) (* 2 a))]
+         [r2 (/ (- (- b) d) (* 2 a))])
+    (cons r1 r2)))
+
+;; (pp (solve-quadratic 1 0 0))
+;; (pp (solve-quadratic 1 -2 -3))
+
+;; Stack implementation using internal state and set! assignment
+;; Abstract object design pattern
+(define (make-stack)
+  ;; State is maintained in each stack object closure
+  (let ([stack '()])
+    ;; Expose only set of function for object construction and manipulation
+    ;; (public interface) and change internal implementaiton wihout impacting clients
+    (lambda (message . args)
+      (cond [(eqv? message 'empty?) (null? stack)]
+            [(eqv? message 'push!) (set! stack (cons (car args) stack))]
+            [(eqv? message 'top) (car stack)]
+            [(eqv? message 'pop!) (set! stack (cdr stack))]
+            [else (error "stack: unsupported operation" message)]))))
+
+;; Each state reference or state change are made explicitly by the object (s1)
+;; (define s1 (make-stack))
+;; (pp (s1 'empty?))
+;; (s1 'push! 'a)
+;; (s1 'push! 'b)
+;; (pp (s1 'empty?))
+;; (pp (s1 'top))
+;; (s1 'pop!)
+;; (pp (s1 'top))
+;; (s1 'pop!)
+;; (pp (s1 'empty?))
+;; (s1 'destroy)
