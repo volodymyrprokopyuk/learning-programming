@@ -503,3 +503,52 @@
 ;; (s1 'pop!)
 ;; (pp (s1 'empty?))
 ;; (s1 'destroy)
+
+;; Change list values via assignment
+(define lst '(a b c d))
+;; Change first
+;; (set-car! lst 'A)
+;; (pp lst)
+;; Change second
+;; (set-car! (cdr lst) 'B)
+;; (pp lst)
+;; (set-cdr! (cdr lst) '(C D))
+;; (pp lst)
+
+;; Queue implementation using list assignment operations
+(define (make-queue)
+  ;; Non-empty list (storage for the queue)
+  (let ([end (cons 'ignored '())])
+    ;; Header pair points to the start and the end of the list
+    ;; Queue is accesed through the header
+    (cons end end)))
+
+(define (putq! queue value)
+  (let ([end (cons 'ignored '())])
+    (set-car! (cdr queue) value)
+    (set-cdr! (cdr queue) end)
+    (set-cdr! queue end)))
+
+(define (getq queue)
+  (car (car queue)))
+
+(define (delq! queue)
+  (set-car! queue (cdr (car queue))))
+
+;; (trace make-queue)
+;; (trace putq!)
+;; (trace delq!)
+;; (define q1 (make-queue))
+;; (putq! q1 'a)
+;; (pp (getq q1))
+;; (putq! q1 'b)
+;; (putq! q1 'c)
+;; (putq! q1 'd)
+;; (pp (getq q1))
+;; (delq! q1)
+;; (pp (getq q1))
+;; (delq! q1)
+;; (pp (getq q1))
+;; (delq! q1)
+;; (delq! q1)
+;; (delq! q1)
