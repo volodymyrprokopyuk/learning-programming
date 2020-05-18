@@ -57,7 +57,32 @@ fun shadow (x : int) : int =
 (* x; *)
 
 (* Tuples: product type *)
-val nullPair : unit = ();
-val pair : int * string = (1, "Vlad");
-val triple : bool * real * char = (true, 1.0, #"A");
-val pairOfPairs : (int * int) * (real * real) = ((1, 2), (3.0, 4.0));
+(* val nullPair : unit = (); *)
+(* val pair : int * string = (1, "Vlad"); *)
+(* val triple : bool * real * char = (true, 1.0, #"A"); *)
+(* val pairOfPairs : (int * int) * (real * real) = ((1, 2), (3.0, 4.0)); *)
+
+(* Tuple pattern matching *)
+(* val (_, pairSecond : string) = pair; *)
+(* val ((one : int, _), (_, four : real)) = pairOfPairs; *)
+(* val (a : int * int, b : real * real) = pairOfPairs; *)
+
+(* Records: labeled tuples *)
+type hyperlink = {
+    protocol : string,
+    address : string,
+    display : string
+};
+
+val mailRecord : hyperlink = {
+    protocol = "mailto",
+    address = "vlad@gmail.com",
+    display = "Vlad"
+};
+val {protocol = mProt, address = mAddr, display = mDisp} = mailRecord;
+(* Wildcard pattern *)
+val {protocol = mPort2, address = _, display = _} = mailRecord;
+(* Ellipsis pattern *)
+val {protocol = mPort3, ...} = mailRecord;
+(* Abbreviated form of record pattern *)
+val {protocol, address, display} = mailRecord;
