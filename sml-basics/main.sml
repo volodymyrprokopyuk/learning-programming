@@ -74,15 +74,39 @@ type hyperlink = {
     display : string
 };
 
-val mailRecord : hyperlink = {
-    protocol = "mailto",
-    address = "vlad@gmail.com",
-    display = "Vlad"
-};
-val {protocol = mProt, address = mAddr, display = mDisp} = mailRecord;
+(* val mailRecord : hyperlink = { *)
+(*     protocol = "mailto", *)
+(*     address = "vlad@gmail.com", *)
+(*     display = "Vlad" *)
+(* }; *)
+(* val {protocol = mProt, address = mAddr, display = mDisp} = mailRecord; *)
 (* Wildcard pattern *)
-val {protocol = mPort2, address = _, display = _} = mailRecord;
+(* val {protocol = mPort2, address = _, display = _} = mailRecord; *)
 (* Ellipsis pattern *)
-val {protocol = mPort3, ...} = mailRecord;
+(* val {protocol = mPort3, ...} = mailRecord; *)
 (* Abbreviated form of record pattern *)
-val {protocol, address, display} = mailRecord;
+(* val {protocol, address, display} = mailRecord; *)
+
+val euclideanDistance : real * real -> real =
+    fn (x : real, y : real) => Math.sqrt (x * x + y * y);
+
+(* euclideanDistance (3.0, 4.0); *)
+
+(* Multiple positional parameters -> tuple pattern *)
+fun euclideanDistance2 (x : real, y : real) : real =
+    Math.sqrt (x * x + y * y);
+
+(* euclideanDistance2 (3.0, 4.0); *)
+
+(* Multiple keyword parameters -> record pattern *)
+fun euclideanDistance3 {x = xParam : real, y = yParam : real} =
+    Math.sqrt (xParam * xParam + yParam * yParam);
+
+(* euclideanDistance3 {y = 4.0, x = 3.0}; *)
+
+(* Function may return multiple results by yielding tuple or record*)
+
+fun distances (x : real, y : real) : real * real =
+    (Math.sqrt (x * x + y * y), y - x);
+
+(* val (eucDist : real, linDist : real) = distances (3.0, 4.0); *)
