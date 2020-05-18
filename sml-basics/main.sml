@@ -45,3 +45,19 @@ fun isEven (x : int) : bool =
 
 (* isEven 3; *)
 (* isEven 4; *)
+
+(* Global, parameter, and local value shadowing *)
+(* Global value binding *)
+(* val x : int = 1; *)
+(* Parameter value binding *)
+fun shadow (x : int) : int =
+    (* Local value binding *)
+    let val x : int = 3 in x end + x;
+(* shadow 2; *)
+(* x; *)
+
+(* Tuples: product type *)
+val nullPair : unit = ();
+val pair : int * string = (1, "Vlad");
+val triple : bool * real * char = (true, 1.0, #"A");
+val pairOfPairs : (int * int) * (real * real) = ((1, 2), (3.0, 4.0));
