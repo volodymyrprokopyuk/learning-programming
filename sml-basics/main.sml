@@ -21,11 +21,11 @@
 (*     end; *)
 
 (* Immediately applied anonymous function lambda expression *)
-(* (fn x : real => Math.sqrt (Math.sqrt x)) 16.0 *);
+(* (fn x : real => Math.sqrt (Math.sqrt x)) 16.0; *)
 
 (* Bind lambda expression to a variable *)
 val forthRoot : real -> real =
-    fn x : real => Math.sqrt (Math.sqrt x);
+ fn x : real => Math.sqrt (Math.sqrt x);
 
 (* forthRoot 81.0; *)
 
@@ -88,7 +88,7 @@ type hyperlink = {
 (* val {protocol, address, display} = mailRecord; *)
 
 val euclideanDistance : real * real -> real =
-    fn (x : real, y : real) => Math.sqrt (x * x + y * y);
+ fn (x : real, y : real) => Math.sqrt (x * x + y * y);
 
 (* euclideanDistance (3.0, 4.0); *)
 
@@ -110,3 +110,55 @@ fun distances (x : real, y : real) : real * real =
     (Math.sqrt (x * x + y * y), y - x);
 
 (* val (eucDist : real, linDist : real) = distances (3.0, 4.0); *)
+
+(* Clausal function expression *)
+val classifyInt : int -> string =
+ fn 0 => "zero"
+  | n : int => "non-zero";
+
+(* (classifyInt 0); *)
+(* (classifyInt 1); *)
+
+(* Clausal function declaration *)
+fun classifyInt2 0 = "zero"
+  | classifyInt2 (n : int) = "non-zero";
+
+(* (classifyInt2 0); *)
+(* (classifyInt2 1); *)
+
+fun classifyInt3 0 = "zero"
+  (* Catch-all clause *)
+  | classifyInt3 _ = "non-zero";
+
+(* classifyInt3 0; *)
+(* classifyInt3 1; *)
+
+(* case analysis is implemetned in term of fn function expression*)
+fun classifyInt4 (n : int) : string =
+    case n of
+        0 => "zero"
+      | n : int => "non-zero";
+
+(* (classifyInt4 0); *)
+(* (classifyInt4 1); *)
+
+fun classifyInt5 (n : int) : string =
+    case n of
+        0 => "zero"
+      (* Catch-all clause *)
+      | _ => "non-zero";
+
+(classifyInt5 0);
+(classifyInt5 1);
+
+(* Negation function *)
+fun myNot true = false
+  | myNot false = true;
+
+(* myNot true; *)
+(* myNot false; *)
+
+fun myNot2 (x : bool) : bool = if x then false else true;
+
+(* myNot2 true; *)
+(* myNot2 false; *)
