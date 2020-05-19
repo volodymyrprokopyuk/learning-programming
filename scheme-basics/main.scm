@@ -143,7 +143,15 @@
 ;; (pp (m2big-computation))
 ;; (pp (m2big-computation))
 
-;; Optional rest parameters
+;; Optional positional/unnamed parameters + default parameters
+;; (pp ((lambda (a b #!optional c d (f 1))
+;;    (list a b c d f)) 'a 'b 'c 'd))
+
+;; Optional keyword/named parameters + default paramters
+;; (pp ((lambda (a b #!key c d (f 1))
+;;    (list a b c d f)) 'a 'b d: 'd c: 'c))
+
+;; Optional rest parameters with cons dot
 ;; (pp ((lambda (a b . rst)
 ;;    (list a b rst)) 'a 'b 'c 'd))
 
@@ -151,28 +159,33 @@
 ;; (pp ((lambda (a b #!rest c)
 ;;    (list a b c)) 'a 'b 'c 'd))
 
-;; Optional unnamed parameters + default parameters
-;; (pp ((lambda (a b #!optional c d (f 1))
-;;    (list a b c d f)) 'a 'b 'c 'd))
+;; Optional/positional, keword/named, and default parameters: all-in-one
+(define (my-params a #!optional (b 'b) #!key (c 'c) #!rest rst)
+  (list a b c rst))
 
-;; Optional named parameters + default paramters
-;; (pp ((lambda (a b #!key c d (f 1))
-;;    (list a b c d f)) 'a 'b d: 'd c: 'c))
+;; Mandatory parameter
+;; (pp (my-params 'A))
+;; Optional/positional parameter
+;; (pp (my-params 'A 'B))
+;; Keyword/named parameter
+;; (pp (my-params 'A 'B c: 'C))
+;; Rest of parameters
+;; (pp (my-params 'A 'B c: 'C 'R 'Q))
 
 ;; Closures
-(define (make-counter)
-  (let ([cnt 0])
+(define (make-counter #!key (start 0) (step 1))
+  (let ([cnt start])
     (lambda ()
-      (set! cnt (+ cnt 1))
+      (set! cnt (+ cnt step))
       cnt)))
 
-;; (define counter1 (make-counter))
-;; (define counter2 (make-counter))
-;; (pp (counter1))
-;; (pp (counter2))
-;; (pp (counter1))
-;; (pp (counter1))
-;; (pp (counter2))
+(define counter1 (make-counter))
+(define counter2 (make-counter step: 10 start: 100))
+(pp (counter1))
+(pp (counter2))
+(pp (counter1))
+(pp (counter1))
+(pp (counter2))
 
 #|
 ** Scheme langauge block comment **
@@ -468,13 +481,13 @@
 ;;   x))
 
 ;; Quadratic equition solver: ax^2 + bx + c = 0
-(define (solve-quadratic a b c)
+(define (solve-quadratic a #!optional (b 0) (c 0))
   (let* ([d (sqrt (- (expt b 2) (* 4 a c)))]
          [r1 (/ (+ (- b) d) (* 2 a))]
          [r2 (/ (- (- b) d) (* 2 a))])
     (cons r1 r2)))
 
-;; (pp (solve-quadratic 1 0 0))
+;; (pp (solve-quadratic 1))
 ;; (pp (solve-quadratic 1 -2 -3))
 
 ;; Stack implementation using internal state and set! assignment
