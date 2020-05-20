@@ -162,3 +162,64 @@ fun myNot2 (x : bool) : bool = if x then false else true;
 
 (* myNot2 true; *)
 (* myNot2 false; *)
+
+(* Recursive functions *)
+val rec factorial : int -> int =
+ fn 0 => 1 | n : int => n * factorial (n - 1);
+
+(* factorial 5; *)
+
+fun factorial2 0 = 1
+  | factorial2 (n : int) = n * factorial2 (n - 1);
+
+(* factorial2 5; *)
+
+(* Tail-recursive factorial with a helper function *)
+(* n - for recursion control, res - for result tracking *)
+fun factorialResult (0, res : int) = res
+  (* recursion decrement and result computation happens before recursive call *)
+  | factorialResult (n : int, res : int) = factorialResult (n - 1, n * res);
+
+fun factorial3 (n : int) = factorialResult (n, 1);
+
+(* factorial3 5; *)
+
+(* Tail-recursive factorial with local declaration of helper function *)
+local
+    fun fResult (0, res : int) = res
+      (* Tail-recursive call is the LAST STEP in evaluation of *)
+      (* the recursive function application -> is substituted by simple interation *)
+      | fResult (n : int, res : int) = fResult (n - 1, n * res)
+in
+fun factorial4 (n : int) = fResult (n, 1)
+end;
+
+(* factorial4 5; *)
+
+fun fibonacci 0 = 1
+  | fibonacci 1 = 1
+  | fibonacci (n : int) = fibonacci (n - 1) + fibonacci (n - 2);
+
+fibonacci 10;
+
+fun fibonacci2 0 = (1, 0)
+  | fibonacci2 1 = (1, 1)
+  | fibonacci2 (n : int) =
+    let
+        val (current : int, previous : int) = fibonacci2 (n - 1)
+    in
+        (current + previous, current)
+    end;
+
+(* fibonacci2 10; *)
+
+(* Mutually recursive functions *)
+fun even 0 = true
+  | even n = odd (n - 1)
+and odd 0 = false
+  | odd n = even (n - 1);
+
+(* even 10; *)
+(* odd 10; *)
+(* even 11; *)
+(* odd 11; *)
