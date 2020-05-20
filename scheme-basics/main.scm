@@ -179,13 +179,13 @@
       (set! cnt (+ cnt step))
       cnt)))
 
-(define counter1 (make-counter))
-(define counter2 (make-counter step: 10 start: 100))
-(pp (counter1))
-(pp (counter2))
-(pp (counter1))
-(pp (counter1))
-(pp (counter2))
+;; (define counter1 (make-counter))
+;; (define counter2 (make-counter step: 10 start: 100))
+;; (pp (counter1))
+;; (pp (counter2))
+;; (pp (counter1))
+;; (pp (counter1))
+;; (pp (counter2))
 
 #|
 ** Scheme langauge block comment **
@@ -498,11 +498,18 @@
     ;; Expose only set of function for object construction and manipulation
     ;; (public interface) and change internal implementaiton wihout impacting clients
     (lambda (message . args)
-      (cond [(eqv? message 'empty?) (null? stack)]
-            [(eqv? message 'push!) (set! stack (cons (car args) stack))]
-            [(eqv? message 'top) (car stack)]
-            [(eqv? message 'pop!) (set! stack (cdr stack))]
-            [else (error "stack: unsupported operation" message)]))))
+      (case message
+        ['empty? (null? stack)]
+        ['push! (set! stack (cons (car args) stack))]
+        ['top (car stack)]
+        ['pop! (set! stack (cdr stack))]
+        ['ref (car (drop stack (car args)))]
+        ['set! (let* ([pos (car args)]
+                      [val (cadr args)]
+                      [head (take stack pos)]
+                      [tail (set-car! (drop stack pos) val)])
+                 (append head tail))]
+        [else (error "stack: unsupported operation" message)]))))
 
 ;; Each state reference or state change are made explicitly by the object (s1)
 ;; (define s1 (make-stack))
@@ -511,6 +518,12 @@
 ;; (s1 'push! 'b)
 ;; (pp (s1 'empty?))
 ;; (pp (s1 'top))
+;; (pp (s1 'ref 0))
+;; (pp (s1 'ref 1))
+;; (s1 'set! 0 'B)
+;; (pp (s1 'ref 0))
+;; (s1 'set! 1 'A)
+;; (pp (s1 'ref 1))
 ;; (s1 'pop!)
 ;; (pp (s1 'top))
 ;; (s1 'pop!)
