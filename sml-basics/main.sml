@@ -223,3 +223,21 @@ and odd 0 = false
 (* odd 10; *)
 (* even 11; *)
 (* odd 11; *)
+
+(* Type inference *)
+(* (fn s => s ^ "\n") "Vlad" *)
+
+val identity : 'a -> 'a = fn x => x;
+
+(* identity 0; *)
+
+fun identity2 (x : 'a) : 'a = x;
+
+(* identity2 identity; *)
+
+(* let *)
+(*     (* val double = fn x => x + x *) *)
+(*     fun double x = x + x *)
+(* in *)
+(*     double 1 *)
+(* end; *)
