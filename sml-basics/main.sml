@@ -241,3 +241,7 @@ fun identity2 (x : 'a) : 'a = x;
 (* in *)
 (*     double 1 *)
 (* end; *)
+
+(* Lists: recutsive type with inductive definition*)
+(* Type constructors are parameterized types *)
+(* Value cunstructors for type list: nil, :: (cons) *)
