@@ -1,3 +1,9 @@
+(use-modules (system vm trace))
+(use-modules (ice-9 pretty-print))
+(use-modules (srfi srfi-1))
+
+(define pp pretty-print)
+
 ;; Line comment
 (define (my-square n)
   #;(pp n) ; s-expression comment
@@ -13,7 +19,7 @@
       dft
       (let ([fst (car lst)]
             [rst (cdr lst)])
-        (if (> fst dft) (my-max rst fst) (my-max rst dft)))))
+        (if [> fst dft] (my-max rst fst) (my-max rst dft)))))
 
 ;; (pp (my-max '() 0))
 ;; (pp (my-max '(1 2 3 4) 1))
@@ -92,16 +98,16 @@
 ;; case form
 (define (classify num)
   (case num
-    [(1 2 3 4 5) 'small]
-    [(6 7 8 9) 'mediuml]
-    [else 'big]))
+    ((1 2 3 4 5) 'small)
+    ((6 7 8 9) 'mediuml)
+    (else 'big)))
 
 ;; (pp (classify 2))
 ;; (pp (classify 7))
 ;; (pp (classify 15))
 
 ;; For side effects only
-;; (for-each display '(a b c d))
+;; (for-each pp '(a b c d))
 
 ;; Lazy evaluation with lambda
 (define lazy+ (lambda () (apply + '(1 2 3 4 5))))
@@ -116,14 +122,14 @@
     ;;   (cond [run? memoized]
     ;;         [else (set! run? #t) (set! memoized (fun)) memoized]))))
     (lambda ()
-      (if (not run?)
+      (if [not run?]
           (begin (set! run? #t) (set! memoized (fun))))
       memoized)))
 
 (define (big-computation)
-  ;; (display 'compute)
+  ;; (pp 'compute)
   ;; (newline)
-  (println 'compute)
+  (pp 'compute)
   'result)
 
 (define mbig-computation (memoize big-computation))
@@ -144,23 +150,23 @@
 ;; (pp (m2big-computation))
 
 ;; Optional positional/unnamed parameters + default parameters
-;; (pp ((lambda (a b #!optional c d (f 1))
+;; (pp ((lambda* (a b #:optional c d (f 'f))
 ;;    (list a b c d f)) 'a 'b 'c 'd))
 
 ;; Optional keyword/named parameters + default paramters
-;; (pp ((lambda (a b #!key c d (f 1))
-;;    (list a b c d f)) 'a 'b d: 'd c: 'c))
+;; (pp ((lambda* (a b #:key c d (f 'f))
+;;    (list a b c d f)) 'a 'b #:d 'd #:c 'c))
 
 ;; Optional rest parameters with cons dot
 ;; (pp ((lambda (a b . rst)
 ;;    (list a b rst)) 'a 'b 'c 'd))
 
 ;; Optional rest parameters
-;; (pp ((lambda (a b #!rest c)
+;; (pp ((lambda* (a b #:rest c)
 ;;    (list a b c)) 'a 'b 'c 'd))
 
-;; Optional/positional, keword/named, and default parameters: all-in-one
-(define (my-params a #!optional (b 'b) #!key (c 'c) #!rest rst)
+;; Optional/positional, keword/named, rest, and default parameters: all-in-one
+(define* (my-params a #:optional (b 'b) #:key (c 'c) #:rest rst)
   (list a b c rst))
 
 ;; Mandatory parameter
@@ -168,19 +174,19 @@
 ;; Optional/positional parameter
 ;; (pp (my-params 'A 'B))
 ;; Keyword/named parameter
-;; (pp (my-params 'A 'B c: 'C))
+;; (pp (my-params 'A 'B #:c 'C))
 ;; Rest of parameters
-;; (pp (my-params 'A 'B c: 'C 'R 'Q))
+;; (pp (my-params 'A 'B #:c 'C 'R 'Q))
 
 ;; Closures
-(define (make-counter #!key (start 0) (step 1))
+(define* (make-counter #:key (start 0) (step 1))
   (let ([cnt start])
     (lambda ()
       (set! cnt (+ cnt step))
       cnt)))
 
 ;; (define counter1 (make-counter))
-;; (define counter2 (make-counter step: 10 start: 100))
+;; (define counter2 (make-counter #:step 10 #:start 100))
 ;; (pp (counter1))
 ;; (pp (counter2))
 ;; (pp (counter1))
@@ -195,7 +201,7 @@
 
 ;; (pp (square 4))
 
-(define reciprocal (lambda (x) (if (= x 0) "oh" (/ 1 x))))
+(define reciprocal (lambda (x) (if [= x 0] "oh" (/ 1 x))))
 
 ;; (pp (reciprocal 0))
 ;; (pp (reciprocal 2))
@@ -368,7 +374,7 @@
 ;; Treat the structure of pairs as a tree
 ;; Doubly recursive step for both car and cdr!
 (define (tree-copy tr)
-  (if (not [pair? tr])
+  (if [not (pair? tr)]
       tr
       (cons (tree-copy (car tr)) (tree-copy (cdr tr)))))
 
@@ -400,8 +406,8 @@
 ;; (pp (my-append '(a b) '(A B)))
 
 (define (my-make-list n x)
-  ;; (or [>= n 0] (error "my-make-list: negative argument" n))
-  (and [< n 0] (error "my-make-list: negative argument" n))
+  ;; (or (>= n 0) (error "my-make-list: negative argument" n))
+  (and (< n 0) (error "my-make-list: negative argument" n))
   (if [= n 0] '() (cons x (my-make-list (- n 1) x))))
 
 ;; (pp (my-make-list 0 'a))
@@ -411,7 +417,7 @@
 ;; (pp (my-make-list -1 'a))
 
 (define (my-list-ref lst i)
-  (and [or (< i 0) (> i (- (length lst) 1))]
+  (and (or (< i 0) (> i (- (length lst) 1)))
        (error "my-list-ref: index out of bounds" i))
   (if [= i 0] (car lst) (my-list-ref (cdr lst) (- i 1))))
 
@@ -422,7 +428,7 @@
 ;; (pp (my-list-ref '() 0))
 
 (define (my-list-tail lst i)
-  (and [or (< i 0) (> i (- (length lst) 1))]
+  (and (or (< i 0) (> i (- (length lst) 1)))
        (error "my-list-tail: index out of bounds" i))
   (if [= i 0] lst (my-list-tail (cdr lst) (- i 1))))
 
@@ -444,7 +450,7 @@
 ;; (pp (shorter? '(a) '(A B)))
 
 (define (shorter2 x y)
-  (if (shorter? x y) x y))
+  (if [shorter? x y] x y))
 
 ;; (pp (shorter2 '() '()))
 ;; (pp (shorter2 '(a) '()))
@@ -481,7 +487,7 @@
 ;;   x))
 
 ;; Quadratic equition solver: ax^2 + bx + c = 0
-(define (solve-quadratic a #!optional (b 0) (c 0))
+(define* (solve-quadratic a #:optional (b 0) (c 0))
   (let* ([d (sqrt (- (expt b 2) (* 4 a c)))]
          [r1 (/ (+ (- b) d) (* 2 a))]
          [r2 (/ (- (- b) d) (* 2 a))])
@@ -499,20 +505,20 @@
     ;; (public interface) and change internal implementaiton wihout impacting clients
     (lambda (message . args)
       (case message
-        ['empty? (null? stack)]
-        ['push! (set! stack (cons (car args) stack))]
-        ['top (car stack)]
-        ['pop! (set! stack (cdr stack))]
-        ['ref (car (drop stack (car args)))]
-        ['set! (let* ([pos (car args)]
+        ('empty? (null? stack))
+        ('push! (set! stack (cons (car args) stack)))
+        ('top (car stack))
+        ('pop! (set! stack (cdr stack)))
+        ('ref (car (drop stack (car args))))
+        ('set! (let* ([pos (car args)]
                       [val (cadr args)]
                       [head (take stack pos)]
                       [tail (set-car! (drop stack pos) val)])
-                 (append head tail))]
-        [else (error "stack: unsupported operation" message)]))))
+                 (append head tail)))
+        (else (error "stack: unsupported operation" message))))))
 
 ;; Each state reference or state change are made explicitly by the object (s1)
-;; (define s1 (make-stack))
+(define s1 (make-stack))
 ;; (pp (s1 'empty?))
 ;; (s1 'push! 'a)
 ;; (s1 'push! 'b)
@@ -556,17 +562,24 @@
     (set-cdr! queue end)))
 
 (define (getq queue)
+  (if [emptyq? queue] (error "getq: empty queue"))
   (car (car queue)))
 
 (define (delq! queue)
+  (if [emptyq? queue] (error "delq!: empty queue"))
   (set-car! queue (cdr (car queue))))
+
+(define (emptyq? queue)
+  (equal? (car queue) (cdr queue)))
 
 ;; (trace make-queue)
 ;; (trace putq!)
 ;; (trace delq!)
 ;; (define q1 (make-queue))
+;; (pp (emptyq? q1))
 ;; (putq! q1 'a)
-;; (pp (getq q1))
+;; (pp (emptyq? q1))
+;; ;; (pp (getq q1))
 ;; (putq! q1 'b)
 ;; (putq! q1 'c)
 ;; (putq! q1 'd)
@@ -577,4 +590,5 @@
 ;; (pp (getq q1))
 ;; (delq! q1)
 ;; (delq! q1)
-;; (delq! q1)
+;; (pp (emptyq? q1))
+;; (pp (delq! q1))
