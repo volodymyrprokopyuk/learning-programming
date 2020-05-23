@@ -245,3 +245,38 @@ fun identity2 (x : 'a) : 'a = x;
 (* Lists: recutsive type with inductive definition*)
 (* Type constructors are parameterized types *)
 (* Value cunstructors for type list: nil, :: (cons) *)
+val myList : int list = 1 :: 2 :: 3 :: 4 :: nil;
+val myList2 : int list = [1, 2, 3, 4];
+
+(* Indictive, recursive function definition *)
+(* Function type : 'a list -> int *)
+fun myLength nil = 0
+  | myLength (_ :: t) = 1 + myLength t;
+
+(* myLength myList2; *)
+
+(* Function type : 'a list * 'a list -> 'a list *)
+fun myAppend (nil, l) = l
+  | myAppend (h :: t, l) = h :: myAppend (t, l);
+
+(* myAppend (myList, myList2); *)
+
+fun myReverse nil = nil
+  | myReverse (h :: t) = myReverse (t) @ [h];
+
+(* myReverse myList2; *)
+
+(* Tail-recursive reverse *)
+local
+    (* r accumulates result before recursive calls that consume input list *)
+    fun reverseResult (nil, r) = r
+      | reverseResult (h :: t, r) = reverseResult (t, h :: r)
+in
+fun myReverse2 l = reverseResult (l, nil)
+end;
+
+(* myReverse2 myList2; *)
+
+fun cons (x, l) = x :: l;
+
+cons (1, nil);
