@@ -279,4 +279,21 @@ end;
 
 fun cons (x, l) = x :: l;
 
-cons (1, nil);
+(* cons (1, nil); *)
+
+(* datatype: new type constructos and value constructors *)
+datatype suit = Spades | Hearts | Diamonds | Clubs;
+
+(* parametrized datatype *)
+datatype 'a myoption = None | Some of 'a;
+
+(* Recursive function with myoption *)
+fun myexpt (None, n) = myexpt (Some 2, n)
+  | myexpt (Some b, 0) = 1
+  | myexpt (Some b, n) =
+    if n mod 2 = 0
+    then myexpt (Some (b * b), n div 2)
+    else b * myexpt (Some b, n - 1);
+
+myexpt (None, 3);
+myexpt (Some 3, 4);
