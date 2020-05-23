@@ -592,3 +592,27 @@
 ;; (delq! q1)
 ;; (pp (emptyq? q1))
 ;; (pp (delq! q1))
+
+;; letrec for definition of recursive procedures
+;; (pp (letrec ([sum (lambda (lst)
+;;                     (if (null? lst) 0 (+ (car lst) (sum (cdr lst)))))])
+;;       (sum '(1 2 3 4 5))))
+
+;; letrec for definition of mutually recursive procedures
+;; (pp (letrec ([even? (lambda (x)
+;;                       (if (= x 0) #t (odd? (- x 1))))]
+;;              [odd? (lambda (x)
+;;                      (if (= x 0) #f (even? (- x 1))))])
+;;       (list (even? 14) (odd? 14))))
+
+;; Variables depend on each other
+;; (pp (let* ([x 1]
+;;              [y (+ x 1)])
+;;       (+ x y)))
+
+;; Factorial with named (let
+(define (factorial n)
+  (let fact ([i n] [res 1])
+    (if [= i 0] res (fact (- i 1) (* i res)))))
+
+;; (pp (factorial 5))
