@@ -196,6 +196,15 @@ end;
 
 (* factorial4 5; *)
 
+fun factorial5 n =
+    let fun fact (0, res) = res
+          | fact (n, res) = fact (n - 1, n * res)
+    in
+        fact (n, 1)
+    end;
+
+(* factorial5 5; *)
+
 fun fibonacci 0 = 1
   | fibonacci 1 = 1
   | fibonacci (n : int) = fibonacci (n - 1) + fibonacci (n - 2);
@@ -295,5 +304,5 @@ fun myexpt (None, n) = myexpt (Some 2, n)
     then myexpt (Some (b * b), n div 2)
     else b * myexpt (Some b, n - 1);
 
-myexpt (None, 3);
-myexpt (Some 3, 4);
+(* myexpt (None, 3); *)
+(* myexpt (Some 3, 4); *)
