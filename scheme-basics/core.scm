@@ -638,16 +638,46 @@
           ;; Recursive case: check next factor
           [else (ftor n (+ i 1) fs)])))
 
-(pp (factor 0))
-(pp (factor 1))
-(pp (factor 2))
-(pp (factor 3))
-(pp (factor 4))
-(pp (factor 5))
-(pp (factor 6))
-(pp (factor 7))
-(pp (factor 8))
-(pp (factor 9))
-(pp (factor 10))
-(pp (factor 12))
-(pp (factor 18))
+;; (pp (factor 0))
+;; (pp (factor 1))
+;; (pp (factor 2))
+;; (pp (factor 3))
+;; (pp (factor 4))
+;; (pp (factor 5))
+;; (pp (factor 6))
+;; (pp (factor 7))
+;; (pp (factor 8))
+;; (pp (factor 9))
+;; (pp (factor 10))
+;; (pp (factor 12))
+;; (pp (factor 18))
+
+;; Continuations
+
+;; Continuation k is never used
+;; Value is the product: 20
+;; (pp (call/cc (lambda (k) (* 5 4))))
+
+;; Continuation k is invoked before the multiplication
+;; Value is the value passed to the continuation: 4
+;; (pp (call/cc (lambda (k) (* 5 (k 4)))))
+
+;; Confituation k includes the addition by 2
+;; Value is the value passed to the confituaiton plus 2: 6
+;; (pp (+ 2 (call/cc (lambda (k) (* 5 (k 4))))))
+
+;; Continuation may provide a non-local exit from a recustions
+(define (product . lst)
+  (call/cc
+   (lambda (break)
+     (let prod ([lst lst] [prd 1])
+       (cond [(null? lst) prd]
+             ;; Return immediately by invoking the break continuation
+             [(= (car lst) 0) (break 0)]
+             [else (prod (cdr lst) (* (car lst) prd))])))))
+
+;; (pp (product))
+;; (pp (product 0))
+;; (pp (product 1))
+;; (pp (product 1 2))
+;; (pp (product 1 2 0 3))
