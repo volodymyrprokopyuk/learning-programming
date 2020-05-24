@@ -610,9 +610,44 @@
 ;;              [y (+ x 1)])
 ;;       (+ x y)))
 
-;; Factorial with named (let
+;; Factorial with named (let: single recursive
 (define (factorial n)
   (let fact ([i n] [res 1])
     (if [= i 0] res (fact (- i 1) (* i res)))))
 
 ;; (pp (factorial 5))
+
+;; Fibonacci numbers with named (let: double recursive
+(define (fibonacci n)
+  (let fib ([i 0] [curr 1] [prev 0])
+    (if [= i n] curr (fib (+ i 1) (+ curr prev) curr))))
+
+;; (pp (fibonacci 0))
+;; (pp (fibonacci 1))
+;; (pp (fibonacci 10))
+
+(define (factor n)
+  ;; Initialization: n - argument, i - current factor, fs - factors accumulator
+  (let ftor ([n n] [i 2] [fs '()])
+    ;; Edge case for 0 and 1
+    (cond [(and (<= 0 n 1) (null? fs)) (cons n fs)]
+          ;; Base case: ran out of factors
+          [(> i n) fs]
+          ;; Recursive case: factor found
+          [(integer? (/ n i)) (ftor (/ n i) i (cons i fs))]
+          ;; Recursive case: check next factor
+          [else (ftor n (+ i 1) fs)])))
+
+(pp (factor 0))
+(pp (factor 1))
+(pp (factor 2))
+(pp (factor 3))
+(pp (factor 4))
+(pp (factor 5))
+(pp (factor 6))
+(pp (factor 7))
+(pp (factor 8))
+(pp (factor 9))
+(pp (factor 10))
+(pp (factor 12))
+(pp (factor 18))
