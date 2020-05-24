@@ -306,3 +306,35 @@ fun myexpt (None, n) = myexpt (Some 2, n)
 
 (* myexpt (None, 3); *)
 (* myexpt (Some 3, 4); *)
+
+fun myReciprocal 0 = None
+  | myReciprocal x = Some (1 div x);
+
+(* myReciprocal 0; *)
+(* myReciprocal 2; *)
+
+(* Tree: recursive datatype *)
+datatype 'a mytree =
+         Empty | Node of 'a mytree * 'a * 'a mytree;
+
+(* Function on recursive datatype *)
+fun myHeight Empty = 0
+  | myHeight (Node (left, _, right)) =
+    (* Multiple recursion *)
+    1 + Int.max (myHeight left, myHeight right);
+
+fun mySize Empty = 0
+  | mySize (Node (left, _, right)) =
+    1 + mySize left + mySize right;
+
+(* Forest: mutually recursive datatype *)
+datatype 'a mytree2 =
+         Empty2 | Node2 of 'a * 'a myforest
+     and 'a myforest =
+         None2 | Tree2 of 'a mytree2 * 'a myforest;
+
+(* Function on mutually recursive datatype *)
+fun myTreeSize Empty2 = 0
+  | myTreeSize (Node2 (_, f)) = 1 + myForestSize f
+and myForestSize None2 = 0
+  | myForestSize (Tree2 (t, f2)) = myTreeSize t + myForestSize f2;
