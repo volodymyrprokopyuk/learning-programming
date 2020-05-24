@@ -338,3 +338,45 @@ fun myTreeSize Empty2 = 0
   | myTreeSize (Node2 (_, f)) = 1 + myForestSize f
 and myForestSize None2 = 0
   | myForestSize (Tree2 (t, f2)) = myTreeSize t + myForestSize f2;
+
+datatype intOrString = Int of int | String of string;
+
+(* let *)
+(*     val number = Int 1 *)
+(*     val text = String "a" *)
+(* in *)
+(*     case number of *)
+(*         Int n => "Number: " ^ Int.toString n *)
+(*       | String s => "Text: " ^ s *)
+(* end *)
+
+(* datatype declarations and pattern matching *)
+(* for definging abstract syntax of a lenguage *)
+(* datatype defines an arithmetic langauge with numbers and operations *)
+datatype expr =
+         Numeral of int |
+         Plus of expr * expr |
+         Times of expr * expr;
+
+(* Pattern matching allows for easy evaluation of the arithmetic langauge expressions *)
+fun eval (Numeral n) = Numeral n
+  | eval (Plus (e1, e2)) =
+    let
+        val Numeral n1 = eval e1
+        val Numeral n2 = eval e2
+    in
+        Numeral (n1 + n2)
+    end
+  | eval (Times (e1, e2)) =
+    let
+        val Numeral n1 = eval e1
+        val Numeral n2 = eval e2
+    in
+        Numeral (n1 * n2)
+    end;
+
+let
+    val e = Plus (Numeral 1, Times (Numeral 2, Numeral 3))
+in
+    eval e
+end;
