@@ -693,3 +693,22 @@
 
 ;; (pp (div 5 3 list identity)); single identity
 ;; (pp (div 1 0 list values)); generalized identity
+
+;; product rewritten with CPS instead of continuations
+(define (product2 k . lst)
+  (let prod ([lst lst] [prd 1])
+    (cond [(null? lst) prd]
+          [(= (car lst) 0) (k 0)]
+          [else (prod (cdr lst) (* (car lst) prd))])))
+
+;; (pp (product2 identity 1 2 3 4))
+;; (pp (product2 identity 1 2 0 3 4))
+
+;; reciprocal rewritten with CPS
+(define (reciprocal4 x y success failure)
+  (if (= y 0)
+      (failure "division by zero")
+      (success (/ x y))))
+
+;; (pp (reciprocal4 1 2 identity identity))
+;; (pp (reciprocal4 1 0 identity identity))
