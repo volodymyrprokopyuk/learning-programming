@@ -81,12 +81,30 @@ SELECT pricing.put_pricing_rule(
     '6b429218-990a-457d-a4ae-87e614166e7b', 'c9947675-ee77-4d55-ae96-ffef7d9d0850'
 ) pricing_rule_id;
 
+-- PL
+SELECT pricing.put_pricing_rule(
+    'BASE > PL', 'PL', 0.03000,
+    'd76cefb9-f5d5-4d23-8447-62857c3b5d74', 'f6d6e67b-16f6-4214-b135-9845f72516d0'
+) pricing_rule_id;
+
+SELECT pricing.put_pricing_rule(
+    'BASE > PL > PLNEUR', 'PLNEUR', 0.03100,
+    '23530076-c52d-4d6e-94e7-ff606470ded2', 'd76cefb9-f5d5-4d23-8447-62857c3b5d74'
+) pricing_rule_id;
+
+
+-- Variable fee breakdown
 
 SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
 FROM pricing.get_variable_fee_breakdown('UK', 'GBPEUR', 100, 'CREDIT_CARD') vfb;
 
 SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
 FROM pricing.get_variable_fee_breakdown('BE', 'EURUSD', 100) vfb;
+
+SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
+FROM pricing.get_variable_fee_breakdown('PL', 'PLNEUR', 100) vfb;
+
+-- Base -> term
 
 SELECT tfb.base_amount base, tfb.base_currency bcurrency,
     tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
@@ -99,3 +117,20 @@ SELECT tfb.base_amount base, tfb.base_currency bcurrency,
     tfb.principal, tfb.rate,
     tfb.term_amount term, tfb.term_currency tcurrency
 FROM pricing.get_term_from_base('BE', 'EURUSD', 100, 3) tfb;
+
+SELECT tfb.base_amount base, tfb.base_currency bcurrency,
+    tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
+    tfb.principal, tfb.rate,
+    tfb.term_amount term, tfb.term_currency tcurrency
+FROM pricing.get_term_from_base('PL', 'PLNEUR', 100, 4) tfb;
+
+-- Term -> base
+
+SELECT bab.residence_country, bab.currency_corridor, bab.base_amount_range
+FROM pricing.get_base_amount_bands('UK', 'GBPEUR', 'CREDIT_CARD') bab;
+
+SELECT bab.residence_country, bab.currency_corridor, bab.base_amount_range
+FROM pricing.get_base_amount_bands('BE', 'EURUSD', 'BANK_ACCOUNT') bab;
+
+SELECT bab.residence_country, bab.currency_corridor, bab.base_amount_range
+FROM pricing.get_base_amount_bands('PL', 'PLNEUR') bab;

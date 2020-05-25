@@ -103,7 +103,6 @@ WITH RECURSIVE pricing_rule_chain(
         pr.update_ts,
         pr.parent_rule_id
     FROM pricing.pricing_rule pr
-    -- WHERE pr.rule_key = a_residence_country
     WHERE pr.rule_key = 'BASE'
     UNION
     -- Next pricing rule child
@@ -148,10 +147,9 @@ CREATE OR REPLACE FUNCTION pricing.get_term_from_base(
     term_currency varchar(50)
 ) LANGUAGE sql AS $$
 WITH variable_fee (
-    rule_name,
     variable_fee_total
 ) AS (
-    SELECT vfb.rule_name, vfb.variable_fee_total
+    SELECT vfb.variable_fee_total
     FROM pricing.get_variable_fee_breakdown(
         a_residence_country, a_currency_corridor, a_base_amount, a_funding_method
     ) vfb
@@ -167,4 +165,44 @@ SELECT a_base_amount,
     (a_base_amount - a_base_amount * vf.variable_fee_total) * a_rate term_amount,
     substring(a_currency_corridor from 4 for 3) term_currency
 FROM variable_fee vf;
+$$;
+
+CREATE OR REPLACE FUNCTION pricing.get_base_amount_bands(
+    a_residence_country varchar(50),
+    a_currency_corridor varchar(50),
+    a_funding_method varchar(50) DEFAULT 'UNKNOWN'
+) RETURNS TABLE (
+    residence_country varchar(50),
+    currency_corridor varchar(50),
+    funding_method varchar(50),
+    base_amount_range numrange
+) LANGUAGE sql AS $$
+WITH RECURSIVE pricing_rule_chain(
+    pricing_rule_id,
+    rule_key,
+    parent_rule_id
+) AS (
+    -- Pricing rule root
+    SELECT pr.pricing_rule_id, pr.rule_key, pr.parent_rule_id
+    FROM pricing.pricing_rule pr
+    WHERE pr.rule_key = 'BASE'
+    UNION
+    -- Next pricing rule child
+    SELECT npr.pricing_rule_id, npr.rule_key, npr.parent_rule_id
+    FROM pricing.pricing_rule npr
+        JOIN pricing_rule_chain prc ON prc.pricing_rule_id = npr.parent_rule_id
+    WHERE npr.rule_key IN (a_residence_country, a_currency_corridor, a_funding_method)
+        OR (npr.rule_key ~ '[\(\[]\d*, *\d*[\)\]]')
+)
+SELECT a_residence_country, a_currency_corridor, a_funding_method,
+    prc.rule_key::numrange
+FROM pricing_rule_chain prc
+WHERE prc.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
+UNION
+-- Default unbounded base amount range
+SELECT a_residence_country, a_currency_corridor, a_funding_method,
+    '(,)'::numrange
+WHERE NOT EXISTS (
+    SELECT 1 FROM pricing_rule_chain prc WHERE prc.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
+);
 $$;

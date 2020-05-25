@@ -52,3 +52,9 @@ pricing:
                 BANK_ACCOUNT:
                     name: BASE > BE > USDEUR > BANK_ACCOUNT
                     variable_fee: 0.02600
+        PL:
+            name: BASE > PL
+            variable_fee: 0.03000
+            PLNEUR:
+                name: BASE > PL > PLNEUR
+                variable_fee: 0.03100,
