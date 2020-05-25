@@ -232,7 +232,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
             (SELECT term_amount
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
-                upper(bab.base_amount_range), a_rate, a_funding_method)),
+                upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
             '()')
         -- Right unbounded range
         WHEN upper_inf(bab.base_amount_range)
@@ -252,7 +252,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
             (SELECT term_amount
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
-                upper(bab.base_amount_range), a_rate, a_funding_method)),
+                upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
             '[)')
     END,
     -- Variable fee
@@ -268,7 +268,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
         THEN (SELECT variable_fee_percentage
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
-                upper(bab.base_amount_range), a_rate, a_funding_method))
+                upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method))
         -- Right unbounded range
         WHEN upper_inf(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
