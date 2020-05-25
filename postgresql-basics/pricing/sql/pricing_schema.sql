@@ -74,7 +74,7 @@ CREATE OR REPLACE FUNCTION pricing.get_variable_fee_breakdown(
     a_residence_country varchar(50),
     a_currency_corridor varchar(50),
     a_base_amount numeric(10, 2),
-    a_funding_method varchar(50)
+    a_funding_method varchar(50) DEFAULT 'UNKNOWN'
 ) RETURNS TABLE (
     pricing_rule_id uuid,
     rule_name varchar(100),
@@ -129,4 +129,42 @@ SELECT prc.pricing_rule_id,
     prc.update_ts,
     prc.parent_rule_id
 FROM pricing_rule_chain prc;
+$$;
+
+CREATE OR REPLACE FUNCTION pricing.get_term_from_base(
+    a_residence_country varchar(50),
+    a_currency_corridor varchar(50),
+    a_base_amount numeric(10, 2),
+    a_rate numeric(10, 5),
+    a_funding_method varchar(50) DEFAULT 'UNKNOWN'
+) RETURNS TABLE (
+    base_amount numeric(10, 2),
+    base_currency varchar(50),
+    variable_fee_percentage numeric(7, 5),
+    variable_fee_amount numeric(10, 2),
+    principal numeric(10, 2),
+    rate numeric(10, 5),
+    term_amount numeric(10, 2),
+    term_currency varchar(50)
+) LANGUAGE sql AS $$
+WITH variable_fee (
+    rule_name,
+    variable_fee_total
+) AS (
+    SELECT vfb.rule_name, vfb.variable_fee_total
+    FROM pricing.get_variable_fee_breakdown(
+        a_residence_country, a_currency_corridor, a_base_amount, a_funding_method
+    ) vfb
+    ORDER BY vfb.rule_name DESC
+    LIMIT 1
+)
+SELECT a_base_amount,
+    substring(a_currency_corridor from 1 for 3) base_currency,
+    vf.variable_fee_total variable_fee_percentage,
+    a_base_amount * vf.variable_fee_total variable_fee_amount,
+    a_base_amount - a_base_amount * vf.variable_fee_total principal,
+    a_rate,
+    (a_base_amount - a_base_amount * vf.variable_fee_total) * a_rate term_amount,
+    substring(a_currency_corridor from 4 for 3) term_currency
+FROM variable_fee vf;
 $$;

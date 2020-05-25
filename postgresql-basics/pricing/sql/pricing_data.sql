@@ -84,3 +84,18 @@ SELECT pricing.put_pricing_rule(
 
 SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
 FROM pricing.get_variable_fee_breakdown('UK', 'GBPEUR', 100, 'CREDIT_CARD') vfb;
+
+SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
+FROM pricing.get_variable_fee_breakdown('BE', 'EURUSD', 100) vfb;
+
+SELECT tfb.base_amount base, tfb.base_currency bcurrency,
+    tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
+    tfb.principal, tfb.rate,
+    tfb.term_amount term, tfb.term_currency tcurrency
+FROM pricing.get_term_from_base('UK', 'GBPEUR', 100, 2, 'CREDIT_CARD') tfb;
+
+SELECT tfb.base_amount base, tfb.base_currency bcurrency,
+    tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
+    tfb.principal, tfb.rate,
+    tfb.term_amount term, tfb.term_currency tcurrency
+FROM pricing.get_term_from_base('BE', 'EURUSD', 100, 3) tfb;
