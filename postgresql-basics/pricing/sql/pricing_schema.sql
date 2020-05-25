@@ -157,13 +157,13 @@ WITH variable_fee (
     LIMIT 1
 )
 SELECT a_base_amount,
-    substring(a_currency_corridor from 1 for 3) base_currency,
-    vf.variable_fee_total variable_fee_percentage,
-    a_base_amount * vf.variable_fee_total variable_fee_amount,
-    a_base_amount - a_base_amount * vf.variable_fee_total principal,
+    substring(a_currency_corridor from 1 for 3),
+    vf.variable_fee_total,
+    round(a_base_amount * vf.variable_fee_total, 2),
+    round(a_base_amount - a_base_amount * vf.variable_fee_total, 2),
     a_rate,
-    (a_base_amount - a_base_amount * vf.variable_fee_total) * a_rate term_amount,
-    substring(a_currency_corridor from 4 for 3) term_currency
+    round((a_base_amount - a_base_amount * vf.variable_fee_total) * a_rate, 2),
+    substring(a_currency_corridor from 4 for 3)
 FROM variable_fee vf;
 $$;
 
@@ -203,6 +203,120 @@ UNION
 SELECT a_residence_country, a_currency_corridor, a_funding_method,
     '(,)'::numrange
 WHERE NOT EXISTS (
-    SELECT 1 FROM pricing_rule_chain prc WHERE prc.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
+    SELECT 1 FROM pricing_rule_chain WHERE rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
 );
+$$;
+
+CREATE OR REPLACE FUNCTION pricing.get_term_amount_bands(
+    a_residence_country varchar(50),
+    a_currency_corridor varchar(50),
+    a_rate numeric(10, 5),
+    a_funding_method varchar(50) DEFAULT 'UNKNOWN'
+) RETURNS TABLE (
+    residence_country varchar(50),
+    currency_corridor varchar(50),
+    funding_method varchar(50),
+    term_amount_range numrange,
+    variable_fee_percentage numeric(7, 5)
+) LANGUAGE sql AS $$
+SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
+    -- Term amount range
+    CASE
+        -- Empty range
+        WHEN isempty(bab.base_amount_range)
+        THEN bab.base_amount_range
+        -- Left unbounded range
+        WHEN lower_inf(bab.base_amount_range)
+        THEN numrange(
+            NULL,
+            (SELECT term_amount
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                upper(bab.base_amount_range), a_rate, a_funding_method)),
+            '()')
+        -- Right unbounded range
+        WHEN upper_inf(bab.base_amount_range)
+        THEN numrange(
+            (SELECT term_amount
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                lower(bab.base_amount_range), a_rate, a_funding_method)),
+            NULL,
+            '[)')
+        -- Fully specified range
+        ELSE numrange(
+            (SELECT term_amount
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                lower(bab.base_amount_range), a_rate, a_funding_method)),
+            (SELECT term_amount
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                upper(bab.base_amount_range), a_rate, a_funding_method)),
+            '[)')
+    END,
+    -- Variable fee
+    CASE
+        -- Empty range
+        WHEN isempty(bab.base_amount_range)
+        THEN (SELECT variable_fee_percentage
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                1.0, a_rate, a_funding_method))
+        -- Left unbounded range
+        WHEN lower_inf(bab.base_amount_range)
+        THEN (SELECT variable_fee_percentage
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                upper(bab.base_amount_range), a_rate, a_funding_method))
+        -- Right unbounded range
+        WHEN upper_inf(bab.base_amount_range)
+        THEN (SELECT variable_fee_percentage
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                lower(bab.base_amount_range), a_rate, a_funding_method))
+        -- Fully specified range
+        ELSE (SELECT variable_fee_percentage
+                FROM pricing.get_term_from_base(
+                a_residence_country, a_currency_corridor,
+                lower(bab.base_amount_range), a_rate, a_funding_method))
+    END
+FROM pricing.get_base_amount_bands(
+    a_residence_country, a_currency_corridor, a_funding_method
+) bab;
+$$;
+
+CREATE OR REPLACE FUNCTION pricing.get_base_from_term(
+    a_residence_country varchar(50),
+    a_currency_corridor varchar(50),
+    a_term_amount numeric(10, 2),
+    a_rate numeric(10, 5),
+    a_funding_method varchar(50) DEFAULT 'UNKNOWN'
+) RETURNS TABLE (
+    base_amount numeric(10, 2),
+    base_currency varchar(50),
+    variable_fee_percentage numeric(7, 5),
+    variable_fee_amount numeric(10, 2),
+    principal numeric(10, 2),
+    rate numeric(10, 5),
+    term_amount numeric(10, 2),
+    term_currency varchar(50)
+) LANGUAGE sql AS $$
+SELECT
+    -- Base amount
+    round((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage), 2),
+    substring(a_currency_corridor from 1 for 3),
+    tab.variable_fee_percentage,
+    -- Variable fee amount
+    round(((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage))
+        - (a_term_amount / a_rate), 2),
+    -- Principal
+    round(a_term_amount / a_rate, 2),
+    a_rate,
+    -- Term amount
+    a_term_amount,
+    substring(a_currency_corridor from 4 for 3)
+FROM pricing.get_term_amount_bands(
+   a_residence_country, a_currency_corridor, a_rate, a_funding_method) tab
+WHERE a_term_amount <@ tab.term_amount_range
 $$;
