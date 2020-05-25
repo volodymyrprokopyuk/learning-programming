@@ -668,11 +668,14 @@
 
 ;; Continuation may provide a non-local exit from a recustions
 (define (product . lst)
+  ;; Capture continuation
   (call/cc
    (lambda (break)
      (let prod ([lst lst] [prd 1])
        (cond [(null? lst) prd]
              ;; Return immediately by invoking the break continuation
+             ;; Break continuation returns the value to the point
+             ;; where continuation was captured
              [(= (car lst) 0) (break 0)]
              [else (prod (cdr lst) (* (car lst) prd))])))))
 
@@ -681,3 +684,12 @@
 ;; (pp (product 1))
 ;; (pp (product 1 2))
 ;; (pp (product 1 2 0 3))
+
+;; CPS: Continuation Passing Style
+(define (div x y success failure)
+  (if (= y 0)
+      (failure "division by zero")
+      (success (quotient x y) (remainder x y))))
+
+;; (pp (div 5 3 list identity)); single identity
+;; (pp (div 1 0 list values)); generalized identity
