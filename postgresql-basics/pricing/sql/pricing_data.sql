@@ -103,13 +103,13 @@ SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
     tfb.term_amount term, tfb.term_currency tcurrency
 FROM pricing.get_term_from_base('PL', 'PLNEUR', 100.00, 1.0) tfb;
 
--- SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
---     bab.base_amount_range
--- FROM pricing.get_base_amount_bands('PL', 'PLNEUR') bab;
+SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
+    bab.base_amount_range
+FROM pricing.get_base_amount_bands('PL', 'PLNEUR') bab;
 
--- SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
---     tab.term_amount_range, tab.variable_fee_percentage fee
--- FROM pricing.get_term_amount_bands('PL', 'PLNEUR', 1.0) tab;
+SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
+    tab.term_amount_range, tab.variable_fee_percentage fee
+FROM pricing.get_term_amount_bands('PL', 'PLNEUR', 1.0) tab;
 
 SELECT bft.base_amount base, bft.base_currency bcurrency,
     bft.variable_fee_percentage fee, bft.variable_fee_amount fee_amount,
@@ -128,13 +128,13 @@ SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
     tfb.term_amount term, tfb.term_currency tcurrency
 FROM pricing.get_term_from_base('BE', 'EURUSD', 100.00, 1.0) tfb;
 
--- SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
---     bab.base_amount_range
--- FROM pricing.get_base_amount_bands('BE', 'EURUSD') bab;
+SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
+    bab.base_amount_range
+FROM pricing.get_base_amount_bands('BE', 'EURUSD') bab;
 
--- SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
---     tab.term_amount_range, tab.variable_fee_percentage fee
--- FROM pricing.get_term_amount_bands('BE', 'EURUSD', 1.0) tab;
+SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
+    tab.term_amount_range, tab.variable_fee_percentage fee
+FROM pricing.get_term_amount_bands('BE', 'EURUSD', 1.0) tab;
 
 SELECT bft.base_amount base, bft.base_currency bcurrency,
     bft.variable_fee_percentage fee, bft.variable_fee_amount fee_amount,
@@ -153,13 +153,13 @@ SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
     tfb.term_amount term, tfb.term_currency tcurrency
 FROM pricing.get_term_from_base('UK', 'GBPEUR', 100.00, 1.0, 'CREDIT_CARD') tfb;
 
--- SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
---     bab.base_amount_range
--- FROM pricing.get_base_amount_bands('UK', 'GBPEUR', 'CREDIT_CARD') bab;
+SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
+    bab.base_amount_range
+FROM pricing.get_base_amount_bands('UK', 'GBPEUR', 'CREDIT_CARD') bab;
 
--- SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
---     tab.term_amount_range, tab.variable_fee_percentage fee
--- FROM pricing.get_term_amount_bands('UK', 'GBPEUR', 1.0, 'CREDIT_CARD') tab;
+SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
+    tab.term_amount_range, tab.variable_fee_percentage fee
+FROM pricing.get_term_amount_bands('UK', 'GBPEUR', 1.0, 'CREDIT_CARD') tab;
 
 SELECT bft.base_amount base, bft.base_currency bcurrency,
     bft.variable_fee_percentage fee, bft.variable_fee_amount fee_amount,

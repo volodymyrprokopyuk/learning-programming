@@ -26,7 +26,7 @@ CREATE TABLE pricing.pricing_rule (
 -- Logic
 
 -- SELECT pricing.put_pricing_rule(
---     a_rule_name := 'UK country variable fee percentage',
+--     a_rule_name := 'BASE > UK',
 --     a_rule_key := 'UK',
 --     a_variable_fee := 0.01000,
 --     a_pricing_rule_id := '6a055c23-f369-4386-94ea-ffae7f1d1089',
@@ -66,7 +66,7 @@ $$;
 -- FROM pricing.get_variable_fee_breakdown(
 --     a_residence_country := 'UK',
 --     a_currency_corridor := 'GBPEUR',
---     a_base_amount := 100,
+--     a_base_amount := 100.00,
 --     a_funding_method := 'CREDIT_CARD'
 -- ) vfb;
 
@@ -94,7 +94,7 @@ WITH RECURSIVE pricing_rule_chain(
     update_ts,
     parent_rule_id
 ) AS (
-    -- Pricing rule root
+    -- Pricing rule root for the BASE variable fee
     SELECT pr.pricing_rule_id,
         pr.rule_name,
         pr.rule_key,
@@ -105,7 +105,7 @@ WITH RECURSIVE pricing_rule_chain(
     FROM pricing.pricing_rule pr
     WHERE pr.rule_key = 'BASE'
     UNION
-    -- Next pricing rule child
+    -- Next pricing rule child in the chain
     SELECT npr.pricing_rule_id,
         npr.rule_name,
         npr.rule_key,
@@ -114,8 +114,11 @@ WITH RECURSIVE pricing_rule_chain(
         npr.update_ts,
         npr.parent_rule_id
     FROM pricing.pricing_rule npr
+        -- Join child pricing rule with its parent
         JOIN pricing_rule_chain prc ON prc.pricing_rule_id = npr.parent_rule_id
+    -- Satisfy the search criteria
     WHERE npr.rule_key IN (a_residence_country, a_currency_corridor, a_funding_method)
+        -- Select the corresponding base amount range
         OR (npr.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
             AND a_base_amount <@ npr.rule_key::numrange)
 )
@@ -123,12 +126,22 @@ SELECT prc.pricing_rule_id,
     prc.rule_name,
     prc.rule_key,
     prc.variable_fee,
+    -- Compute incremental variable fee total
     sum(prc.variable_fee) OVER (ORDER BY prc.rule_name) variable_fee_total,
     prc.creation_ts,
     prc.update_ts,
     prc.parent_rule_id
 FROM pricing_rule_chain prc;
 $$;
+
+-- SELECT tfb.*
+-- FROM pricing.get_term_from_base(
+--     a_residence_country := 'UK',
+--     a_currency_corridor := 'GBPEUR',
+--     a_base_amount := 100.00,
+--     a_rate := 1.0,
+--     a_funding_method := 'CREDIT_CARD'
+-- ) tfb;
 
 CREATE OR REPLACE FUNCTION pricing.get_term_from_base(
     a_residence_country varchar(50),
@@ -153,19 +166,34 @@ WITH variable_fee (
     FROM pricing.get_variable_fee_breakdown(
         a_residence_country, a_currency_corridor, a_base_amount, a_funding_method
     ) vfb
+    -- Get the most specific pricing rule that applies
+    -- and corresponding variable fee incremental total
     ORDER BY vfb.rule_name DESC
     LIMIT 1
 )
+-- Base amount
 SELECT a_base_amount,
     substring(a_currency_corridor from 1 for 3),
+    -- Variable fee percentage
     vf.variable_fee_total,
+    -- Variable fee amount
     round(a_base_amount * vf.variable_fee_total, 2),
+    -- Principal
     round(a_base_amount - a_base_amount * vf.variable_fee_total, 2),
+    -- Rate
     a_rate,
+    -- Term amount
     round((a_base_amount - a_base_amount * vf.variable_fee_total) * a_rate, 2),
     substring(a_currency_corridor from 4 for 3)
 FROM variable_fee vf;
 $$;
+
+-- SELECT bab.*
+-- FROM pricing.get_base_amount_bands(
+--     a_residence_country := 'UK',
+--     a_currency_corridor := 'GBPEUR',
+--     a_funding_method := 'CREDIT_CARD'
+-- ) bab;
 
 CREATE OR REPLACE FUNCTION pricing.get_base_amount_bands(
     a_residence_country varchar(50),
@@ -182,21 +210,25 @@ WITH RECURSIVE pricing_rule_chain(
     rule_key,
     parent_rule_id
 ) AS (
-    -- Pricing rule root
+    -- Pricing rule root for the BASE variable fee
     SELECT pr.pricing_rule_id, pr.rule_key, pr.parent_rule_id
     FROM pricing.pricing_rule pr
     WHERE pr.rule_key = 'BASE'
     UNION
-    -- Next pricing rule child
+    -- Next pricing rule child in the chain
     SELECT npr.pricing_rule_id, npr.rule_key, npr.parent_rule_id
     FROM pricing.pricing_rule npr
+        -- Join child pricing rule with its parent
         JOIN pricing_rule_chain prc ON prc.pricing_rule_id = npr.parent_rule_id
+    -- Satisfy the search criteria
     WHERE npr.rule_key IN (a_residence_country, a_currency_corridor, a_funding_method)
+        -- Select all base amount ranges
         OR (npr.rule_key ~ '[\(\[]\d*, *\d*[\)\]]')
 )
 SELECT a_residence_country, a_currency_corridor, a_funding_method,
     prc.rule_key::numrange
 FROM pricing_rule_chain prc
+-- Select exclusively all base amount ranges
 WHERE prc.rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
 UNION
 -- Default unbounded base amount range
@@ -206,6 +238,14 @@ WHERE NOT EXISTS (
     SELECT 1 FROM pricing_rule_chain WHERE rule_key ~ '[\(\[]\d*, *\d*[\)\]]'
 );
 $$;
+
+-- SELECT tab.*
+-- FROM pricing.get_term_amount_bands(
+--     a_residence_country := 'UK',
+--     a_currency_corridor := 'GBPEUR',
+--     a_rate := 1.0,
+--     a_funding_method := 'CREDIT_CARD'
+-- ) tab;
 
 CREATE OR REPLACE FUNCTION pricing.get_term_amount_bands(
     a_residence_country varchar(50),
@@ -222,10 +262,10 @@ CREATE OR REPLACE FUNCTION pricing.get_term_amount_bands(
 SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
     -- Term amount range
     CASE
-        -- Empty range
+        -- Empty range (,) -> (,)
         WHEN isempty(bab.base_amount_range)
         THEN bab.base_amount_range
-        -- Left unbounded range
+        -- Left unbounded range ( , x) -> ( , x' - 0.01]
         WHEN lower_inf(bab.base_amount_range)
         THEN numrange(
             NULL,
@@ -234,7 +274,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
                 a_residence_country, a_currency_corridor,
                 upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
             '(]')
-        -- Right unbounded range
+        -- Right unbounded range [x, ) -> [x', )
         WHEN upper_inf(bab.base_amount_range)
         THEN numrange(
             (SELECT term_amount
@@ -243,7 +283,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
                 lower(bab.base_amount_range), a_rate, a_funding_method)),
             NULL,
             '[)')
-        -- Fully specified range
+        -- Fully specified range [x, y) -> [x', y' - 0.01]
         ELSE numrange(
             (SELECT term_amount
                 FROM pricing.get_term_from_base(
@@ -257,25 +297,25 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
     END,
     -- Variable fee
     CASE
-        -- Empty range
+        -- Empty range (,) -> (,)
         WHEN isempty(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
                 1.0, a_rate, a_funding_method))
-        -- Left unbounded range
+        -- Left unbounded range ( , x) -> ( , x' - 0.01]
         WHEN lower_inf(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
                 upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method))
-        -- Right unbounded range
+        -- Right unbounded range [x, ) -> [x', )
         WHEN upper_inf(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
                 lower(bab.base_amount_range), a_rate, a_funding_method))
-        -- Fully specified range
+        -- Fully specified range [x, y) -> [x', y' - 0.01]
         ELSE (SELECT variable_fee_percentage
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
@@ -285,6 +325,15 @@ FROM pricing.get_base_amount_bands(
     a_residence_country, a_currency_corridor, a_funding_method
 ) bab;
 $$;
+
+-- SELECT bft.*
+-- FROM pricing.get_base_from_term(
+--     a_residence_country := 'UK',
+--     a_currency_corridor := 'GBPEUR',
+--     a_base_amount := 85.00,
+--     a_rate := 1.0,
+--     a_funding_method := 'CREDIT_CARD'
+-- ) bft;
 
 CREATE OR REPLACE FUNCTION pricing.get_base_from_term(
     a_residence_country varchar(50),
@@ -302,23 +351,27 @@ CREATE OR REPLACE FUNCTION pricing.get_base_from_term(
     term_amount numeric(10, 2),
     term_currency varchar(50)
 ) LANGUAGE sql AS $$
+-- Base amount
 SELECT
-    -- Base amount
     round((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage), 2) base_amount,
     substring(a_currency_corridor from 1 for 3),
+    -- Variable fee percentage
     tab.variable_fee_percentage,
     -- Variable fee amount
     round(((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage))
         - (a_term_amount / a_rate), 2),
     -- Principal
     round(a_term_amount / a_rate, 2),
+    -- Rate
     a_rate,
     -- Term amount
     a_term_amount,
     substring(a_currency_corridor from 4 for 3)
 FROM pricing.get_term_amount_bands(
    a_residence_country, a_currency_corridor, a_rate, a_funding_method) tab
+-- Term amount within the term amount range
 WHERE a_term_amount <@ tab.term_amount_range
+-- Get min/max base amount in case of overlapping term amount bans due to banded pricing
 ORDER BY base_amount;
 -- LIMIT 1;
 $$;
