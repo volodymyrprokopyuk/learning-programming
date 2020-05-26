@@ -160,7 +160,7 @@ CREATE OR REPLACE FUNCTION pricing.get_term_from_base(
     term_currency varchar(50)
 ) LANGUAGE sql AS $$
 WITH variable_fee (
-    variable_fee_total
+    variable_fee_percentage
 ) AS (
     SELECT vfb.variable_fee_total
     FROM pricing.get_variable_fee_breakdown(
@@ -175,17 +175,21 @@ WITH variable_fee (
 SELECT a_base_amount,
     substring(a_currency_corridor from 1 for 3),
     -- Variable fee percentage
-    vf.variable_fee_total,
+    vf.variable_fee_percentage,
     -- Variable fee amount
-    round(a_base_amount * vf.variable_fee_total, 2),
+    lat.variable_fee_amount,
     -- Principal
-    round(a_base_amount - a_base_amount * vf.variable_fee_total, 2),
+    round(a_base_amount - lat.variable_fee_amount, 2),
     -- Rate
     a_rate,
     -- Term amount
-    round((a_base_amount - a_base_amount * vf.variable_fee_total) * a_rate, 2),
+    round((a_base_amount - lat.variable_fee_amount) * a_rate, 2),
     substring(a_currency_corridor from 4 for 3)
-FROM variable_fee vf;
+FROM variable_fee vf,
+    LATERAL (SELECT
+        -- Variable fee amount
+        round(a_base_amount * vf.variable_fee_percentage, 2) variable_fee_amount
+    ) lat;
 $$;
 
 -- SELECT bab.*
@@ -351,24 +355,25 @@ CREATE OR REPLACE FUNCTION pricing.get_base_from_term(
     term_amount numeric(10, 2),
     term_currency varchar(50)
 ) LANGUAGE sql AS $$
--- Base amount
 SELECT
-    round((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage), 2) base_amount,
+    -- Base amount
+    round(lat.principal / (1 - tab.variable_fee_percentage), 2) base_amount,
     substring(a_currency_corridor from 1 for 3),
     -- Variable fee percentage
     tab.variable_fee_percentage,
     -- Variable fee amount
-    round(((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage))
-        - (a_term_amount / a_rate), 2),
+    round((lat.principal / (1 - tab.variable_fee_percentage)) - lat.principal, 2),
     -- Principal
-    round(a_term_amount / a_rate, 2),
+    lat.principal,
     -- Rate
     a_rate,
     -- Term amount
     a_term_amount,
     substring(a_currency_corridor from 4 for 3)
 FROM pricing.get_term_amount_bands(
-   a_residence_country, a_currency_corridor, a_rate, a_funding_method) tab
+        a_residence_country, a_currency_corridor, a_rate, a_funding_method) tab,
+    -- Principal
+    LATERAL (SELECT round(a_term_amount / a_rate, 2) principal) lat
 -- Term amount within the term amount range
 WHERE a_term_amount <@ tab.term_amount_range
 -- Get min/max base amount in case of overlapping term amount bans due to banded pricing
