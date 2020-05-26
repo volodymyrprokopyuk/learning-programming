@@ -274,29 +274,29 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
         THEN numrange(
             NULL,
             (SELECT term_amount
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
             '(]')
         -- Right unbounded range [x, ) -> [x', )
         WHEN upper_inf(bab.base_amount_range)
         THEN numrange(
             (SELECT term_amount
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                lower(bab.base_amount_range), a_rate, a_funding_method)),
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            lower(bab.base_amount_range), a_rate, a_funding_method)),
             NULL,
             '[)')
         -- Fully specified range [x, y) -> [x', y' - 0.01]
         ELSE numrange(
             (SELECT term_amount
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                lower(bab.base_amount_range), a_rate, a_funding_method)),
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            lower(bab.base_amount_range), a_rate, a_funding_method)),
             (SELECT term_amount
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
             '[]')
     END,
     -- Variable fee
@@ -304,26 +304,26 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
         -- Empty range (,) -> (,)
         WHEN isempty(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                1.0, a_rate, a_funding_method))
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            1.00, a_rate, a_funding_method))
         -- Left unbounded range ( , x) -> ( , x' - 0.01]
         WHEN lower_inf(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method))
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method))
         -- Right unbounded range [x, ) -> [x', )
         WHEN upper_inf(bab.base_amount_range)
         THEN (SELECT variable_fee_percentage
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                lower(bab.base_amount_range), a_rate, a_funding_method))
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            lower(bab.base_amount_range), a_rate, a_funding_method))
         -- Fully specified range [x, y) -> [x', y' - 0.01]
         ELSE (SELECT variable_fee_percentage
-                FROM pricing.get_term_from_base(
-                a_residence_country, a_currency_corridor,
-                lower(bab.base_amount_range), a_rate, a_funding_method))
+            FROM pricing.get_term_from_base(
+            a_residence_country, a_currency_corridor,
+            lower(bab.base_amount_range), a_rate, a_funding_method))
     END
 FROM pricing.get_base_amount_bands(
     a_residence_country, a_currency_corridor, a_funding_method
