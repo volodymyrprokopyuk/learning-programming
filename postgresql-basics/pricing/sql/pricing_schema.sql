@@ -23,7 +23,7 @@ CREATE TABLE pricing.pricing_rule (
         ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
--- Logic
+-- Interface
 
 -- SELECT pricing.put_pricing_rule(
 --     a_rule_name := 'BASE > UK',
