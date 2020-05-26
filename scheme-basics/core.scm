@@ -712,3 +712,41 @@
 
 ;; (pp (reciprocal4 1 2 identity identity))
 ;; (pp (reciprocal4 1 0 identity identity))
+
+;; (let* and (letrec* guarantees left-to-right evaluation order
+;; The next binding can depend on the previous binding
+;; (pp (let* ([x 1] [y x]) (+ x y)))
+
+;; Modularization with internal definitions
+;; Top-level, export, module public definition
+(define calc #f)
+(let ()
+  ;; internal private definitions
+  (define (do-calc ek expr)
+    (cond [(number? expr) expr]
+          [(and (list? expr) (= (length expr) 3))
+           (let ([op (car expr)]
+                 [args (cdr expr)])
+             (case op
+               [(add) (apply-op ek + args)]
+               [(sub) (apply-op ek - args)]
+               [(mul) (apply-op ek * args)]
+               [(div) (apply-op ek / args)]
+               [else (complain ek "invalid operator" op)]))]
+          [else (complain ek "invalid expression" expr)]))
+  (define (apply-op ek op args)
+    ;; recursively apply calc to operand subexpressions
+    (op (do-calc ek (car args)) (do-calc ek (cadr args))))
+  (define (complain ek msg expr)
+    (ek (list msg expr)))
+  ;; Assign top-level, export, module public definition
+  (set! calc
+        (lambda (expr)
+          ;; Grab error continuation for complain
+          (call/cc (lambda (ek)
+                     (do-calc ek expr))))))
+
+(pp (calc '(add (mul 2 3) 4)))
+(pp (calc '(div 1/2 1/3)))
+(pp (calc '(sub (mul 2 3) (div 4))))
+(pp (calc '(mul (add 1 2) (pow 2 3))))
