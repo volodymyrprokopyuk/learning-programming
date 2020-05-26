@@ -233,7 +233,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
                 upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
-            '()')
+            '(]')
         -- Right unbounded range
         WHEN upper_inf(bab.base_amount_range)
         THEN numrange(
@@ -253,7 +253,7 @@ SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
                 FROM pricing.get_term_from_base(
                 a_residence_country, a_currency_corridor,
                 upper(bab.base_amount_range) - 0.01, a_rate, a_funding_method)),
-            '[)')
+            '[]')
     END,
     -- Variable fee
     CASE
@@ -304,7 +304,7 @@ CREATE OR REPLACE FUNCTION pricing.get_base_from_term(
 ) LANGUAGE sql AS $$
 SELECT
     -- Base amount
-    round((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage), 2),
+    round((a_term_amount / a_rate) / (1 - tab.variable_fee_percentage), 2) base_amount,
     substring(a_currency_corridor from 1 for 3),
     tab.variable_fee_percentage,
     -- Variable fee amount
@@ -319,4 +319,6 @@ SELECT
 FROM pricing.get_term_amount_bands(
    a_residence_country, a_currency_corridor, a_rate, a_funding_method) tab
 WHERE a_term_amount <@ tab.term_amount_range
+ORDER BY base_amount;
+-- LIMIT 1;
 $$;

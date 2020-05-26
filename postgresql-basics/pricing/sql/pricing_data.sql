@@ -92,15 +92,16 @@ SELECT pricing.put_pricing_rule(
     '23530076-c52d-4d6e-94e7-ff606470ded2', 'd76cefb9-f5d5-4d23-8447-62857c3b5d74'
 ) pricing_rule_id;
 
--- PL
--- SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
--- FROM pricing.get_variable_fee_breakdown('PL', 'PLNEUR', 100) vfb;
+-- ** PL
+
+SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
+FROM pricing.get_variable_fee_breakdown('PL', 'PLNEUR', 100.00) vfb;
 
 SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
     tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
     tfb.principal, tfb.rate,
     tfb.term_amount term, tfb.term_currency tcurrency
-FROM pricing.get_term_from_base('PL', 'PLNEUR', 100, 1.0) tfb;
+FROM pricing.get_term_from_base('PL', 'PLNEUR', 100.00, 1.0) tfb;
 
 -- SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
 --     bab.base_amount_range
@@ -116,15 +117,16 @@ SELECT bft.base_amount base, bft.base_currency bcurrency,
     bft.term_amount "term*", bft.term_currency tcurrency
 FROM pricing.get_base_from_term('PL', 'PLNEUR', 83.90, 1.0) bft;
 
--- BE
--- SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
--- FROM pricing.get_variable_fee_breakdown('BE', 'EURUSD', 100) vfb;
+-- ** BE
+
+SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
+FROM pricing.get_variable_fee_breakdown('BE', 'EURUSD', 100.00) vfb;
 
 SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
     tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
     tfb.principal, tfb.rate,
     tfb.term_amount term, tfb.term_currency tcurrency
-FROM pricing.get_term_from_base('BE', 'EURUSD', 100, 1.0) tfb;
+FROM pricing.get_term_from_base('BE', 'EURUSD', 100.00, 1.0) tfb;
 
 -- SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
 --     bab.base_amount_range
@@ -140,15 +142,16 @@ SELECT bft.base_amount base, bft.base_currency bcurrency,
     bft.term_amount "term*", bft.term_currency tcurrency
 FROM pricing.get_base_from_term('BE', 'EURUSD', 83.60, 1.0) bft;
 
--- UK
--- SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
--- FROM pricing.get_variable_fee_breakdown('UK', 'GBPEUR', 100, 'CREDIT_CARD') vfb;
+-- ** UK
+
+SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
+FROM pricing.get_variable_fee_breakdown('UK', 'GBPEUR', 100.00, 'CREDIT_CARD') vfb;
 
 SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
     tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
     tfb.principal, tfb.rate,
     tfb.term_amount term, tfb.term_currency tcurrency
-FROM pricing.get_term_from_base('UK', 'GBPEUR', 100, 1.0, 'CREDIT_CARD') tfb;
+FROM pricing.get_term_from_base('UK', 'GBPEUR', 100.00, 1.0, 'CREDIT_CARD') tfb;
 
 -- SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
 --     bab.base_amount_range
