@@ -375,8 +375,52 @@ fun eval (Numeral n) = Numeral n
         Numeral (n1 * n2)
     end;
 
-let
-    val e = Plus (Numeral 1, Times (Numeral 2, Numeral 3))
+(* let *)
+(*     val e = Plus (Numeral 1, Times (Numeral 2, Numeral 3)) *)
+(* in *)
+(*     eval e *)
+(* end; *)
+
+(* Higher-order functions *)
+(* Non-tail-recursive map *)
+fun myMap (f, nil) = nil
+  | myMap (f, h :: t) = (f h) :: myMap (f, t);
+
+(* myMap (fn x => x * 10, [1, 2, 3, 4, 5]); *)
+
+(* Tail-recursive map *)
+local
+    fun mapResult (f, nil, res) = res
+      | mapResult (f, h :: t, res) = mapResult (f, t, res @ [f h])
 in
-    eval e
+fun myMap2 (f, l) = mapResult (f, l, nil)
 end;
+
+(* myMap2 (fn x => x * 10, [1, 2, 3, 4, 5]); *)
+
+(* Function type: 'a -> ('b -> 'a) *)
+val constantly = fn k => (fn a => k);
+
+(* constantly2 is equivalent to constantly above. Note SPACE between arguemnts *)
+fun constantly2 k a = k;
+
+(* let *)
+(*     val c1 = constantly2 1 *)
+(*     val c2 = constantly2 "Vlad" *)
+(* in *)
+(*     (c1 (), c2 ()) *)
+(* end; *)
+
+(* Curried map: ('a -> 'b) -> 'a list -> b' list *)
+fun myMap3 f nil = nil
+  | myMap3 f (h :: t) = (f h) :: (myMap3 f t);
+
+(* myMap3 (fn x => x * 10) [1, 2, 3, 4, 5]; *)
+
+(* curry type: ('a * b' -> 'c) -> ('a -> ('b -> c')) *)
+fun myCurry f x y = f (x, y);
+
+(* Curry two-argument myMap2 to get curried myMap4 *)
+fun myMap4 f l = myCurry myMap2 f l;
+
+myMap4 (fn x => x * 10) [1, 2, 3, 4, 5];
