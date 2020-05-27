@@ -498,3 +498,30 @@ fun myAppend2 l s = myAppend (l, s);
 val myAppend2l = myAppend2 [1, 2, 3];
 
 (* myAppend2l [4, 5, 6]; *)
+
+(* Recursive map *)
+(* myMap5 type: ('a -> b') * 'a list -> b' list *)
+fun myMap5 (f, nil) = nil
+  | myMap5 (f, h :: t) = (f h) :: myMap5 (f, t);
+
+(* myMap5 ((fn x => x * 10), [1, 2, 3, 4, 5]); *)
+
+(* Curried map *)
+(* myMap6 type: ('a -> b') -> 'a list -> b' list *)
+fun myMap6 f l = myMap5 (f, l);
+
+(* val myMap6f = myMap6 (fn x => x * 10); *)
+(* myMap6f [1, 2, 3, 4, 5]; *)
+(* myMap6 (fn x => x * 10) [1, 2, 3, 4, 5]; *)
+
+(* Exceptions *)
+
+(* Div: divide by zero *)
+(* 3 div 0;  *)
+
+(* Match: Inexhaustive match *)
+(* fun myHead (h:: _) = h; *)
+(* myHead []; *)
+
+(* Bind: inexhaustive binding *)
+(* val h::_ = nil; *)
