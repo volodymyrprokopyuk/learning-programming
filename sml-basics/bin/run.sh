@@ -2,4 +2,4 @@
 
 set -eu
 
-sml main.sml
+sml a-psml-2011.sml

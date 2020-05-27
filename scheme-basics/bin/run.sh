@@ -4,4 +4,4 @@ set -eu
 
 ROOT_DIR=$(pwd)
 
-guile3.0 -L "${ROOT_DIR}" a-tspl-2011.scm
+guile3.0 -L "${ROOT_DIR}" a-tspl-2009.scm
