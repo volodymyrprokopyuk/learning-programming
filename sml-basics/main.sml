@@ -423,4 +423,53 @@ fun myCurry f x y = f (x, y);
 (* Curry two-argument myMap2 to get curried myMap4 *)
 fun myMap4 f l = myCurry myMap2 f l;
 
-myMap4 (fn x => x * 10) [1, 2, 3, 4, 5];
+(* myMap4 (fn x => x * 10) [1, 2, 3, 4, 5]; *)
+
+(* Functions abstract patterns of control: reduce *)
+fun myReduce (unit, opn, nil) = unit
+  | myReduce (unit, opn, h :: t) = opn (h, myReduce (unit, opn, t));
+
+(* myReduce (0, op +, []); *)
+(* myReduce (0, op +, [1, 2, 3, 4, 5]); *)
+
+(* Tail-recursive reduce *)
+local
+    fun reduceResult (unit, opn, nil, res) = res
+      | reduceResult (unit, opn, h :: t, res) =
+        reduceResult (unit, opn, t, (opn (h, res)))
+in
+fun myReduce2 (unit, opn, l) = reduceResult (unit, opn, l, unit)
+end;
+
+myReduce2 (0, op +, []);
+myReduce2 (0, op +, [1, 2, 3, 4, 5]);
+
+fun addUp l = myReduce2 (0, op +, l);
+
+(* addUp [1, 2, 3, 4, 5]; *)
+
+fun mulUp l = myReduce2 (1, op *, l);
+
+(* mulUp [1, 2, 3, 4, 5]; *)
+
+fun consUp l = myReduce2 (nil, op ::, l);
+
+(* consUp [1, 2, 3, 4, 5]; *)
+
+(* Functions allow for staging computation: curry *)
+fun makeReduce (unit, opn) =
+    let
+        fun rdc nil = unit
+          | rdc (h :: t) = opn (h, rdc t)
+    in
+        (* Return function of list with unit and operation already defined *)
+        rdc
+    end;
+
+val mySum = makeReduce (0, op +);
+
+(* mySum [1, 2, 3, 4, 5]; *)
+
+val myProd = makeReduce (1, op *);
+
+(* myProd [1, 2, 3, 4, 5]; *)
