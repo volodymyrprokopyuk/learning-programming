@@ -716,6 +716,7 @@
 ;; (let* and (letrec* guarantees left-to-right evaluation order
 ;; The next binding can depend on the previous binding
 ;; (pp (let* ([x 1] [y x]) (+ x y)))
+;; (pp (letrec* ([x 1] [y x]) (+ x y)))
 
 ;; Modularization with internal definitions
 ;; Top-level, export, module public definition
