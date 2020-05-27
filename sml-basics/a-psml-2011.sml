@@ -525,3 +525,46 @@ fun myMap6 f l = myMap5 (f, l);
 
 (* Bind: inexhaustive binding *)
 (* val h::_ = nil; *)
+
+(* User-defined exceptions *)
+exception Factorial;
+
+fun factorial6 n =
+    (* Inefficiency: heck for negatives on every recursive call *)
+    if n < 0 then
+        raise Factorial
+    else if n = 0 then
+        1
+    else
+        n * factorial6 (n - 1);
+
+(* factorial6 5; *)
+(* factorial6 ~5; *)
+
+local
+    fun fact 0 = 1
+      | fact n = n * fact (n - 1)
+in
+fun factorial7 n =
+    if n < 0 then
+        raise Factorial
+    else
+        fact n
+end;
+
+(* factorial7 5; *)
+(* factorial7 ~5; *)
+
+(* Non-local transfer of control *)
+fun computeFactorial () =
+    let
+        val nStr = valOf (TextIO.inputLine TextIO.stdIn)
+        val n = valOf (Int.fromString nStr)
+        val fact = factorial7 n
+        val factStr = Int.toString fact
+    in
+        print (factStr ^ "\n")
+    end
+    handle Factorial => print ("Factorial: negative argument\n");
+
+computeFactorial ();
