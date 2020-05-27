@@ -2,4 +2,6 @@
 
 set -eu
 
-guile3.0 01-tspl-2011.scm
+ROOT_DIR=$(pwd)
+
+guile3.0 -L "${ROOT_DIR}" a-tspl-2011.scm

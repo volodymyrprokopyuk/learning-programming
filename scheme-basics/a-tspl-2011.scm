@@ -796,3 +796,11 @@
 ;; (let ([x #f])
 ;;   (when x (pp 'true))
 ;;   (unless x (pp 'false)))
+
+;; Guile (define-module, #:export, (use-modules <=> R6RS (library, (import, (export
+(use-modules (a-grade))
+
+;; (pp (gpa c a c b b))
+;; (pp (gpa->grade 2.8))
+;; (pp (gpa d d d))
+;; (pp (gpa->grade 0.0))
