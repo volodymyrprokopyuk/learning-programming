@@ -473,3 +473,28 @@ val mySum = makeReduce (0, op +);
 val myProd = makeReduce (1, op *);
 
 (* myProd [1, 2, 3, 4, 5]; *)
+
+(* Curried makeReduce *)
+fun makeReduce2 unit opn l = myReduce (unit, opn, l);
+
+(* Early arguments *)
+val mySum2 = makeReduce2 0 (op +);
+
+(* Late argumet *)
+(* mySum [1, 2, 3, 4, 5]; *)
+
+val myProd2 = makeReduce2 1 (op *);
+
+(* myProd2 [1, 2, 3, 4, 5]; *)
+
+fun myAppend (nil, l) = l
+  | myAppend (h :: t, l) = h :: (myAppend (t, l));
+
+myAppend ([1, 2, 3], [4, 5, 6]);
+
+(* Curried append *)
+fun myAppend2 l s = myAppend (l, s);
+
+val myAppend2l = myAppend2 [1, 2, 3];
+
+(* myAppend2l [4, 5, 6]; *)
