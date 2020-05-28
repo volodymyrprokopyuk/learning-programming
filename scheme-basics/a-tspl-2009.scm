@@ -805,3 +805,28 @@
 ;; (pp (gpa->grade 2.8))
 ;; (pp (gpa d d d))
 ;; (pp (gpa->grade 0.0))
+
+;; (case-lambda supports optional parameters
+(define my-make-list
+  (case-lambda
+    [(n) (my-make-list n #f)]
+    [(n f)
+     ;; (do iteration mechanism from R5RS
+     ;; variable, initialization, step
+     (do ([n n (- n 1)]
+          [lst '() (cons f lst)])
+         ;; test and body
+         ((zero? n) lst))]))
+
+;; (pp (my-make-list 5))
+;; (pp (my-make-list 5 'a))
+
+(define my-substring
+  (case-lambda
+    [(s) (my-substring s 0 (string-length s))]
+    [(s start) (my-substring s start (string-length s))]
+    [(s start end) (substring s start end)]))
+
+(pp (my-substring "Vlad"))
+(pp (my-substring "Vlad" 2))
+(pp (my-substring "Vlad" 1 4))
