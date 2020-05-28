@@ -827,6 +827,26 @@
     [(s start) (my-substring s start (string-length s))]
     [(s start end) (substring s start end)]))
 
-(pp (my-substring "Vlad"))
-(pp (my-substring "Vlad" 2))
-(pp (my-substring "Vlad" 1 4))
+;; (pp (my-substring "Vlad"))
+;; (pp (my-substring "Vlad" 2))
+;; (pp (my-substring "Vlad" 1 4))
+
+;; Recusive macro: (my-let* expands into a set of nested (let expressions
+(define-syntax my-let*
+  (syntax-rules ()
+    ;; Base case
+    [(_ () e1 e2 ...)
+     (let () e1 e2 ...)]
+    ;; Recursive case
+    [(_ ([x1 v1] [x2 v2] ...) e1 e2 ...)
+     (let ([x1 v1])
+       ;; Recursive call
+       (my-let* ([x2 v2] ...) e1 e2 ...))]))
+
+;; (pp (my-let* ([x 1] [y x])
+;;              (list x y)))
+
+;; (letrec example: recursive definition of sum
+;; (pp (letrec ([sum (lambda (x)
+;;                     (if (zero? x) 0 (+ x (sum (- x 1)))))])
+;;       (sum 5)))
