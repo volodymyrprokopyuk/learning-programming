@@ -557,14 +557,26 @@ end;
 
 (* Non-local transfer of control *)
 fun computeFactorial () =
+    (* Expression that may thorw an exception *)
     let
         val nStr = valOf (TextIO.inputLine TextIO.stdIn)
         val n = valOf (Int.fromString nStr)
         val fact = factorial7 n
         val factStr = Int.toString fact
+        val _ = print (factStr ^ "\n")
     in
-        print (factStr ^ "\n")
+        (* Factorial REPL *)
+        computeFactorial ()
     end
-    handle Factorial => print ("Factorial: negative argument\n");
+    (* Set of pattern matched exception handlers *)
+    handle Factorial =>
+           let
+               val _ = print ("Factorial: negative argument\n")
+           in
+               (* Restart computation on Factorial error *)
+               computeFactorial ()
+           end
+         (* Finish computation with an error *)
+         | Option => print ("Factorial: error!\n");
 
-computeFactorial ();
+(* computeFactorial (); *)
