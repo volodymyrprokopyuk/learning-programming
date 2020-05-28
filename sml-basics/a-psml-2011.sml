@@ -580,3 +580,20 @@ fun computeFactorial () =
          | Option => print ("Factorial: error!\n");
 
 (* computeFactorial (); *)
+
+(* Use exceptions to implement backtracking *)
+exception Change;
+
+fun change _ 0 = nil
+  | change nil _ = raise Change
+  | change (coin :: coins) amount =
+    if coin > amount then
+        change coins amount
+    else
+        (coin :: change (coin :: coins) (amount - coin))
+        (* Backtrack *)
+        handle Change => change coins amount;
+
+change [5, 2] 16;
+change [5, 2] 17;
+change [5, 2] 1;
