@@ -1,6 +1,6 @@
-(use-modules (system vm trace))
 (use-modules (ice-9 pretty-print))
-(use-modules (srfi srfi-1))
+(use-modules (srfi srfi-1)) ; drop/take
+(use-modules (srfi srfi-11)) ; let-values
 
 (define pp pretty-print)
 
@@ -850,3 +850,28 @@
 ;; (pp (letrec ([sum (lambda (x)
 ;;                     (if (zero? x) 0 (+ x (sum (- x 1)))))])
 ;;       (sum 5)))
+
+;; Construct, pattern match and bind multiple return values simultaneously
+(define (return-multiple x)
+  (values x (* x 10) (* x 100)))
+
+;; (pp (let-values ([(x y z) (return-multiple 4)])
+;;       (list x y z)))
+
+;; (pp (let-values ([(a b) (values 1 2)] [c (values 1 2 3)])
+;;       (list a b c)))
+
+;; (pp (let*-values ([(a b) (values 1 2)] [(a b) (values b a)])
+;;       (list a b)))
+
+;; State change with assignment
+(define (make-flip-flop)
+  (let ([state #f])
+    (lambda ()
+      (set! state (not state))
+      state)))
+
+;; (let ([flip-flop (make-flip-flop)])
+;;   (pp (flip-flop))
+;;   (pp (flip-flop))
+;;   (pp (flip-flop)))
