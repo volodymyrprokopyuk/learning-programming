@@ -875,3 +875,26 @@
 ;;   (pp (flip-flop))
 ;;   (pp (flip-flop))
 ;;   (pp (flip-flop)))
+
+;; (pp (apply + 1 2 '(3 4 5)))
+
+(define (my-first lst)
+  (apply (lambda (x . y) x) lst))
+
+;; (pp (my-first '(a b c)))
+
+(define (my-rest lst)
+  (apply (lambda (x . y) y) lst))
+
+;; (pp (my-rest '(a b c)))
+
+(pp (let ([x 1])
+      (cond
+        ;; Test result is returned
+        [(= x 2)]
+        ;; Last expression is returned
+        [(= x 2) 'is-one]
+        ;; Lambda is applied to the test result
+        [(= x 1) => (lambda (x) (if x 'is-true 'is-false))]
+        ;; Default expression is returned
+        [else 'default])))
