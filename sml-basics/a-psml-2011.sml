@@ -602,3 +602,13 @@ fun change _ 0 = nil
 (* change [5, 2] 16; *)
 (* change [5, 2] 17; *)
 (* change [5, 2] 1; *)
+
+(* Imperative programming with reference cells *)
+(* Allocation, referrencing, and assignment of reference cells *)
+(* Allocation and initialization *)
+val rc = ref 0;
+(* Reference *)
+val v1 = !rc;
+(* Assignment and side effect *)
+val _ = rc := 1;
+val v2 = !rc;
