@@ -582,18 +582,23 @@ fun computeFactorial () =
 (* computeFactorial (); *)
 
 (* Use exceptions to implement backtracking *)
-exception Change;
+exception Change of string;
 
 fun change _ 0 = nil
-  | change nil _ = raise Change
+  | change nil _ = raise Change "get stuck"
   | change (coin :: coins) amount =
     if coin > amount then
         change coins amount
     else
         (coin :: change (coin :: coins) (amount - coin))
         (* Backtrack *)
-        handle Change => change coins amount;
+        handle Change message =>
+               let
+                   val _ = print ("Error: Change: " ^ message ^ "\n")
+               in
+                   change coins amount
+               end;
 
-change [5, 2] 16;
-change [5, 2] 17;
-change [5, 2] 1;
+(* change [5, 2] 16; *)
+(* change [5, 2] 17; *)
+(* change [5, 2] 1; *)
