@@ -623,11 +623,86 @@ fun der (ref v) = v;
 
 (* Reference cell equality *)
 (* Every invocation of ref creates new different reference *)
-val r1 = ref 0;
-val r2 = ref 0;
+(* val r1 = ref 0; *)
+(* val r2 = ref 0; *)
 (* r1 is not equal to r2 *)
-if r1 = r2 then "equal" else "not equal";
+(* if r1 = r2 then "equal" else "not equal"; *)
 (* v1 is an alias to r1 *)
-val v1 = r1;
+(* val v1 = r1; *)
 (* r1 is equal to v1 *)
-if r1 = v1 then "equal" else "not equal";
+(* if r1 = v1 then "equal" else "not equal"; *)
+
+(* Bad style of programming in SML *)
+fun imperativeFactorial n =
+    let
+        val fact = ref 1
+        val i = ref 0
+        fun loopAndMultiply () =
+            if !i = n then ()
+            (* Sequencing of side effecting commands with ; *)
+            else (i := !i + 1; fact := !fact * !i; loopAndMultiply ())
+    in
+        loopAndMultiply(); !fact
+    end;
+
+imperativeFactorial 5;
+
+(* Global single counter *)
+(* Use references for private state management *)
+local
+    (* Private shared state in ref variable counter *)
+    val counter = ref 0
+in
+(* Two functions share the counter ref variable *)
+fun tickCounter () = (counter := !counter + 1; !counter)
+fun resetCounter () = counter := 0
+end;
+
+(* tickCounter(); *)
+(* tickCounter(); *)
+(* tickCounter(); *)
+(* resetCounter(); *)
+(* tickCounter(); *)
+
+(* Counter kind of object (OOP in ML) *)
+(* Class constructor *)
+fun makeCounter () =
+    (* Class definition *)
+    let
+        (* Instance private state *)
+        val counter = ref 0
+        (* Class methods access instance private state *)
+        fun tick () = (counter := !counter + 1; !counter)
+        fun reset () = counter := 0
+    in
+        (* Public class itnerface *)
+        { tick = tick, reset = reset}
+    end;
+
+(* val c1 = makeCounter (); *)
+(* val c2 = makeCounter (); *)
+(* Call method on an instance *)
+(* #tick c1 (); *)
+(* #tick c2 (); *)
+(* #tick c1 (); *)
+(* #tick c1 (); *)
+(* #reset c1 (); *)
+(* #tick c1 (); *)
+(* #tick c2 (); *)
+
+(* Possible Linked Lists *)
+(* A value of type pcl is essential a reference to a value of type pcell *)
+datatype 'a pcl = Pcl of 'a pcell ref
+     and 'a pcell = Nil | Cons of 'a * 'a pcl;
+
+fun pnil () = Pcl (ref Nil);
+fun cons (h, t) = Pcl (ref (Cons (h, t)));
+fun phead (Pcl (ref (Cons (h, _)))) = h;
+fun ptail (Pcl (ref (Cons (_, t)))) = t;
+(* Update the PCL tail reference to point to the head of the PCL *)
+fun makeCircular (Pcl (tail as ref (Cons (th, _))), pcl) = (tail := Cons (th, pcl));
+
+val finitePcl = cons (4, cons (3, cons (2, cons (1, pnil ()))))
+val infiniteTail = cons (1, pnil ());
+val infinitePcl = cons (4, cons (3, cons (2, infiniteTail)));
+val _ = makeCircular (infiniteTail, infinitePcl)
