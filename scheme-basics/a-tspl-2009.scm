@@ -999,3 +999,28 @@
 ;; (fold-right
 ;; (pp (fold-right + 0 '(1 2 3 4 5)))
 ;; (pp (fold-right cons '() '(a b c d)))
+
+;; Continuation allows for non-local exit
+(define (my-member x lst)
+  (call/cc (lambda (break)
+             (do ([lst lst (cdr lst)])
+                 ([null? lst] #f)
+               ;; Non-local exit, side effect
+               (when (equal? x (car lst)) (break lst))))))
+
+;; (pp (my-member 'e '(a b c d)))
+;; (pp (my-member 'b '(a b c d)))
+
+;; (dynamic-wind with normal body
+(let ()
+  (dynamic-wind
+    (lambda () (pp 'in-guard))
+    (lambda () (pp 'normal-body))
+    (lambda () (pp 'out-guard))))
+
+;; (dynamic-wind with continuation
+(let ()
+  (dynamic-wind
+    (lambda () (pp 'in-guard))
+    (lambda () (call/cc (lambda (k) (pp 'continuation-body) k)))
+    (lambda () (pp 'out-guard))))
