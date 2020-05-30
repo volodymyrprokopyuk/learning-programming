@@ -888,13 +888,91 @@
 
 ;; (pp (my-rest '(a b c)))
 
-(pp (let ([x 1])
-      (cond
-        ;; Test result is returned
-        [(= x 2)]
-        ;; Last expression is returned
-        [(= x 2) 'is-one]
-        ;; Lambda is applied to the test result
-        [(= x 1) => (lambda (x) (if x 'is-true 'is-false))]
-        ;; Default expression is returned
-        [else 'default])))
+;; (pp (let ([x 1])
+;;       (cond
+;;         ;; Test result is returned
+;;         [(= x 2)]
+;;         ;; Last expression is returned
+;;         [(= x 2) 'is-one]
+;;         ;; Lambda is applied to the test result
+;;         [(= x 1) => (lambda (x) (if x 'is-true 'is-false))]
+;;         ;; Default expression is returned
+;;         [else 'default])))
+
+(define-syntax my-when
+  (syntax-rules ()
+    [(_ e0 e1 e2 ...)
+     (if e0 (begin e1 e2 ...))]))
+
+;; (my-when #t (pp 'when-true))
+
+(define-syntax my-unless
+  (syntax-rules ()
+    [(_ e0 e1 e2 ...)
+     (if (not e0) (begin e1 e2 ...))]))
+
+;; (my-unless #f (pp 'unless-false))
+
+;; (pp (let ([x 1] [y 2])
+;;       (case (+ x y)
+;;         [(0 2 4 6 8) 'even]
+;;         [(1 3 5 7 9) 'odd]
+;;         [else 'out-of-range])))
+
+(define (divisors x)
+  (let divs ([i 2] [ds '()])
+    (cond
+      [(>= i x) ds]
+      [(integer? (/ x i)) (divs (+ i 1) (cons i ds))]
+      [else (divs (+ i 1) ds)])))
+
+;; (pp (divisors 0))
+;; (pp (divisors 1))
+;; (pp (divisors 2))
+;; (pp (divisors 12))
+
+;; Tail-recursive factorial with (do
+(define (factorial2 n)
+  ;; Variable, initialization, update/rebind
+  ;; Both input and results
+  (do ([i n (- i 1)] [fac 1 (* fac i)])
+      ;; Exit condition and result
+      ([zero? i] fac)))
+
+;; (pp (factorial2 0))
+;; (pp (factorial2 1))
+;; (pp (factorial2 5))
+
+(define (fibonacci2 n)
+  (do ([i 0 (+ i 1)] [prev 0 curr] [curr 1 (+ prev curr)])
+      ([= i n] curr)))
+
+;; (pp (fibonacci 0))
+;; (pp (fibonacci 1))
+;; (pp (fibonacci 2))
+;; (pp (fibonacci 3))
+;; (pp (fibonacci 4))
+;; (pp (fibonacci 5))
+
+(define (divisors2 x)
+  (do ([i 2 (+ i 1)]
+       [ds '() (if (integer? (/ x i)) (cons i ds) ds)])
+      ([>= i x] ds)))
+
+;; (pp (divisors2 0))
+;; (pp (divisors2 1))
+;; (pp (divisors2 2))
+;; (pp (divisors2 12))
+
+;; (scale-vector demonstrates (do for side effects
+(define (scale-vector! v k)
+  ;; Advance index
+  (do ([i 0 (+ i 1)])
+      ;; Stop when vector end reached
+      ([= i (vector-length v)])
+    ;; Side effect by updating vector cells
+    (vector-set! v i (* (vector-ref v i) k))))
+
+(pp (let ([v (vector 1 2 3 4 5)])
+      (scale-vector! v 10)
+      v))
