@@ -973,6 +973,29 @@
     ;; Side effect by updating vector cells
     (vector-set! v i (* (vector-ref v i) k))))
 
-(pp (let ([v (vector 1 2 3 4 5)])
-      (scale-vector! v 10)
-      v))
+;; (pp (let ([v (vector 1 2 3 4 5)])
+;;       (scale-vector! v 10)
+;;       v))
+
+;; Mapping unary operation over single list
+;; (pp (map abs '(1 -2 3 -4)))
+;; Mapping binary operation over two lists
+;; (pp (map + '(1 2 3 4) '(10 20 30 40)))
+;; (for-each for side effects
+;; (for-each pp '(a b c d))
+
+;; (exists = any/some
+;; (pp (any symbol? '(1 #\a "hi" b)))
+;; (pp (any member '(a b c) '((b c) (a c) (a b c))))
+
+;; (for-all = all/every
+;; (pp (every symbol? '(a b c d)))
+;; (pp (every = '(1 2 3 4) '(1.0 2.0 3.0 4.0)))
+
+;; (fold left
+;; (pp (fold + 0 '(1 2 3 4 5)))
+;; (pp (fold cons '() '(a b c d)))
+
+;; (fold-right
+;; (pp (fold-right + 0 '(1 2 3 4 5)))
+;; (pp (fold-right cons '() '(a b c d)))
