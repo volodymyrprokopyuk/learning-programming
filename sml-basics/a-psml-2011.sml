@@ -605,10 +605,29 @@ fun change _ 0 = nil
 
 (* Imperative programming with reference cells *)
 (* Allocation, referrencing, and assignment of reference cells *)
-(* Allocation and initialization *)
-val rc = ref 0;
-(* Reference *)
-val v1 = !rc;
+(* Allocation and initialization with ref function *)
+(* val rc = ref 0; *)
+(* Explicit de-referencing with ! function *)
+(* val v1 = !rc; *)
 (* Assignment and side effect *)
-val _ = rc := 1;
-val v2 = !rc;
+(* val _ = rc := 1; *)
+(* Explicit de-referencing must be done each time the cell is accessed *)
+(* val v2 = !rc; *)
+(* Implicit de-referencing with ref pattern matching *)
+(* let val ref v3 = rc in v3 end; *)
+
+(* De-referencing function with ref pattern matching *)
+fun der (ref v) = v;
+
+(* der rc; *)
+
+(* Reference cell equality *)
+(* Every invocation of ref creates new different reference *)
+val r1 = ref 0;
+val r2 = ref 0;
+(* r1 is not equal to r2 *)
+if r1 = r2 then "equal" else "not equal";
+(* v1 is an alias to r1 *)
+val v1 = r1;
+(* r1 is equal to v1 *)
+if r1 = v1 then "equal" else "not equal";
