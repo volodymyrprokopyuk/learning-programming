@@ -1032,9 +1032,52 @@
 ;;       (my-force p)))
 
 (define c1 (stream-counter))
-(pp (stream-car c1))
-(pp (stream-car (stream-cdr c1)))
+;; (pp (stream-car c1))
+;; (pp (stream-car (stream-cdr c1)))
 (define c2 (stream-counter))
 (define c1+c2 (stream-add c1 c2))
-(pp (stream-car c1+c2))
-(pp (stream-car (stream-cdr c1+c2)))
+;; (pp (stream-car c1+c2))
+;; (pp (stream-car (stream-cdr c1+c2)))
+
+;; Multiple values
+(define (head&tail lst)
+  (values (car lst) (cdr lst)))
+
+;; Apply latter consumer to the values produced by former producer with no arguments
+;; (pp (call-with-values (lambda () (head&tail '(a b c d))) list))
+;; (pp (call-with-values
+;;      (lambda () (values 'vlad 'lana))
+;;      (lambda (he she) (cons he she))))
+
+(define (split-even-odd lst)
+  (if [or (null? lst) (null? (cdr lst))]
+      ;; Empty or singular list
+      ;; Future (odds evens)
+      (values lst '())
+      (call-with-values
+       ;; Leave first tow elements to be consed by the below consumer
+       ;; Recurse with the rest of the list
+       (lambda () (split-even-odd (cddr lst)))
+       (lambda (odds evens)
+         ;; Cons the first two elements if the list with the recursively split list
+         (values (cons (car lst) odds)
+                 (cons (cadr lst) evens))))))
+
+;; (pp (call-with-values (lambda () (split-even-odd '(1 2 3 4 5))) list))
+
+;; Continuaiton may accept zero or more than one argument
+;; (pp (call-with-values
+;;      (lambda () (call/cc (lambda (k) (k 'a 'b))))
+;;      (lambda (a b) (list a b))))
+
+;; Syntactic extension to automate producer lambda definition
+(define-syntax with-values
+  (syntax-rules ()
+    [(_ expr consumer)
+     (call-with-values (lambda () expr) consumer)]))
+
+;; (pp (with-values (split-even-odd '(1 2 3 4 5 6 7)) list))
+
+;; (let-values to work with multiple values
+(pp (let-values ([(odds evens) (split-even-odd '(1 2 3 4 5 6 7))])
+      (list odds evens)))
