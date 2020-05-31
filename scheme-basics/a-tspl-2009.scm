@@ -1012,15 +1012,29 @@
 ;; (pp (my-member 'b '(a b c d)))
 
 ;; (dynamic-wind with normal body
-(let ()
-  (dynamic-wind
-    (lambda () (pp 'in-guard))
-    (lambda () (pp 'normal-body))
-    (lambda () (pp 'out-guard))))
+;; (let ()
+;;   (dynamic-wind
+;;     (lambda () (pp 'in-guard))
+;;     (lambda () (pp 'normal-body))
+;;     (lambda () (pp 'out-guard))))
 
 ;; (dynamic-wind with continuation
-(let ()
-  (dynamic-wind
-    (lambda () (pp 'in-guard))
-    (lambda () (call/cc (lambda (k) (pp 'continuation-body) k)))
-    (lambda () (pp 'out-guard))))
+;; (let ()
+;;   (dynamic-wind
+;;     (lambda () (pp 'in-guard))
+;;     (lambda () (call/cc (lambda (k) (pp 'continuation-body) k)))
+;;     (lambda () (pp 'out-guard))))
+
+(use-modules (a-stream))
+
+;; Basic delay/force functionality
+;; (pp (let ([p (my-delay (+ 1 2))])
+;;       (my-force p)))
+
+(define c1 (stream-counter))
+(pp (stream-car c1))
+(pp (stream-car (stream-cdr c1)))
+(define c2 (stream-counter))
+(define c1+c2 (stream-add c1 c2))
+(pp (stream-car c1+c2))
+(pp (stream-car (stream-cdr c1+c2)))
