@@ -706,3 +706,72 @@ val finitePcl = cons (4, cons (3, cons (2, cons (1, pnil ()))))
 val infiniteTail = cons (1, pnil ());
 val infinitePcl = cons (4, cons (3, cons (2, infiniteTail)));
 val _ = makeCircular (infiniteTail, infinitePcl)
+
+local
+    (* If hare reaches the finish line, it simply waits for the tortoise *)
+    (* to finis counting *)
+    fun race (Nil, Nil) = 0
+      | race (Cons (_, Pcl (ref c)), Nil) =
+        1 + race (c, Nil)
+      | race (Cons (_, Pcl (ref c)), Cons (_, Pcl (ref Nil))) =
+        1 + race (c, Nil)
+    (* Hare runs twice as fast as tortoise *)
+      | race (Cons(_, l), Cons (_, Pcl (ref (Cons (_, m))))) =
+        1 + race' (l, m)
+    and race' (Pcl (r as ref c), Pcl (s as ref d)) =
+        (* Hare detects cycles *)
+        if r = s then 0 else race (c, d)
+in
+fun size (Pcl (ref c)) = race (c, c)
+end;
+
+(* size finitePcl; *)
+(* size infinitePcl; *)
+
+local
+    fun csum' f 1 r = r
+      | csum' f n r = csum' f (n - 1) ((f n) + r)
+in
+fun csum f n = csum' f n (f 1)
+end;
+
+(* Ineficient Catalan numbers *)
+fun catalan 1 = 1
+  | catalan n = csum (fn k => ((catalan k) * (catalan (n - k)))) (n - 1);
+
+(* catalan 1; *)
+(* catalan 2; *)
+(* catalan 3; *)
+(* catalan 4; *)
+(* catalan 5; *)
+(* catalan 6; *)
+(* catalan 7; *)
+
+(* Efficient Catalan numbers with memoization *)
+local
+    val limit : int = 100
+    val memopad : int option array =
+        Array.array (limit, NONE)
+in
+fun catalan' 1 = 1
+  | catalan' n = csum (fn k => (mcatalan k) * (mcatalan (n - k))) (n - 1)
+and mcatalan n =
+    if n < limit then
+        case Array.sub (memopad, n)
+         of SOME r => r
+          | NONE =>
+            let val r = catalan' n
+            in
+                Array.update (memopad, n, SOME r);
+                r
+            end
+    else catalan' n
+end;
+
+(* mcatalan 1; *)
+(* mcatalan 2; *)
+(* mcatalan 3; *)
+(* mcatalan 4; *)
+(* mcatalan 5; *)
+(* mcatalan 6; *)
+(* mcatalan 7; *)
