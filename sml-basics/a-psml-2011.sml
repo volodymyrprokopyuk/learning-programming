@@ -775,3 +775,13 @@ end;
 (* mcatalan 5; *)
 (* mcatalan 6; *)
 (* mcatalan 7; *)
+
+(* Enable lazy evaluation in SML/NJ *)
+Control.lazysml := true;
+open Lazy;
+
+(* Define lazy infinit stream datatype *)
+datatype lazy 'a stream = Consx of 'a * 'a stream;
+
+(* Infinite stream of ones *)
+(* val rec lazy ones = Consx (1, ones); *)
