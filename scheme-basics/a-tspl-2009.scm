@@ -1079,5 +1079,8 @@
 ;; (pp (with-values (split-even-odd '(1 2 3 4 5 6 7)) list))
 
 ;; (let-values to work with multiple values
-(pp (let-values ([(odds evens) (split-even-odd '(1 2 3 4 5 6 7))])
-      (list odds evens)))
+;; (pp (let-values ([(odds evens) (split-even-odd '(1 2 3 4 5 6 7))])
+;;       (list odds evens)))
+;; vals without parentheses catches all values
+;; (pp (let-values ([vals (values 1 2 3 4 5)])
+;;       (apply list vals)))
