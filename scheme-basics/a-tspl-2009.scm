@@ -1084,3 +1084,20 @@
 ;; vals without parentheses catches all values
 ;; (pp (let-values ([vals (values 1 2 3 4 5)])
 ;;       (apply list vals)))
+
+;; (quote = '(... (quasiquote = `(... (unquote = ,... (unquote-splicing = ,@...
+;; (pp `(+ 2 ,(* 3 4)))
+;; (pp `(+ ,(cdr '(* 2 3))))
+;; (pp `(+ ,@(cdr '(* 2 3))))
+
+;; Eqivalence predicates
+;; (pp (eq? 'a 'a))
+;; (pp (eq? 1 1))
+;; (pp (eq? "Vlad" "Vlad"))
+
+;; (pp (= -0.0 0.0))
+;; (pp (eqv? -0.0 0.0))
+;; (pp (= 3.0 3.0+0.0i))
+;; (pp (eqv? 3.0 3.0+0.0i))
+
+;; (pp (equal? '(1 2 3) '(1 2 3)))
