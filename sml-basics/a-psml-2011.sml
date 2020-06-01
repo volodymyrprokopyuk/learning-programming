@@ -781,7 +781,55 @@ Control.lazysml := true;
 open Lazy;
 
 (* Define lazy infinit stream datatype *)
-datatype lazy 'a stream = Consx of 'a * 'a stream;
+datatype lazy 'a stream = Cons of 'a * 'a stream;
+
+(* Immediate pattern matching on function agrument *)
+fun shead (Cons (h, _)) = h;
+
+(* Lazy function does not evaluate its argument untill absolutely needed *)
+(* No immediate pattern matchin on function argument *)
+fun lazy stail (Cons (_, s)) = s;
 
 (* Infinite stream of ones *)
-(* val rec lazy ones = Consx (1, ones); *)
+val rec lazy ones = Cons (1, ones);
+(* val h = shead(ones); *)
+(* val t = stail(ones); *)
+(* val h' = shead(t); *)
+
+(* Lazy map *)
+fun smap f =
+    let
+        (* Lazy functions merely sets up a suspended computation yet to be evaluated *)
+        fun lazy mapOne (Cons (h, s)) = Cons (f h, mapOne s)
+    in
+        mapOne
+    end;
+
+val addOne = smap (fn x => x + 1);
+
+val rec lazy nats = Cons (1, addOne nats);
+(* val one = shead nats; *)
+(* val two = shead (stail nats); *)
+
+fun sfilter p =
+    let
+        fun lazy filterOne (Cons (h, s)) =
+            if p h then Cons (h, filterOne s)
+            else filterOne s
+    in
+        filterOne
+    end;
+
+fun divides m n = n mod m = 0;
+
+(* o is function composition *)
+fun lazy primeSieve (Cons (h, s)) =
+    Cons (h, primeSieve (sfilter (not o (divides h)) s));
+
+val nats2 = stail nats;
+val primes = primeSieve nats2;
+
+fun stake 0 _ = nil
+  | stake n (Cons (h, s)) = h :: stake (n - 1) s;
+
+val primes20 = stake 20 primes;
