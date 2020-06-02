@@ -143,3 +143,32 @@
       [else (part (cdr lst) tl (cons (car lst) fl))])))
 
 ;; (pp (call-with-values (lambda () (my-partition odd? '(1 2 3 4 5 6 7 8))) list))
+
+(define (my-find p lst)
+  (cond
+    [(null? lst) #f]
+    [(p (car lst)) (car lst)]
+    [else (my-find p (cdr lst))]))
+
+;; (pp (my-find even? '(1 3 5)))
+;; (pp (my-find odd? '(1 3 5)))
+
+(define (my-assoc k al)
+  (cond
+    [(null? al) #f]
+    [(equal? (caar al) k) (car al)]
+    [else (my-assoc k (cdr al))]))
+
+;; (pp (my-assoc 'b '((a . 1) (b . 2) (c . 3))))
+;; (pp (my-assoc 'd '((a . 1) (b . 2) (c . 3))))
+
+(define (my-assp p al)
+  (cond
+    [(null? al) #f]
+    [(p (caar al)) (car al)]
+    [else (my-assp p (cdr al))]))
+
+;; (pp (my-assp even? '((1 . a) (2 . b) (3 . c))))
+;; (pp (my-assp odd? '((1 . a) (2 . b) (3 . c))))
+
+;; (pp (sort '(1 4 3 2 8 5 6 7) >))
