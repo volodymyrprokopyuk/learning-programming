@@ -1,3 +1,5 @@
+;; Chapters 1-5
+
 (use-modules (ice-9 pretty-print))
 (use-modules (srfi srfi-1)) ; drop/take
 (use-modules (srfi srfi-11)) ; let-values
@@ -1084,74 +1086,3 @@
 ;; vals without parentheses catches all values
 ;; (pp (let-values ([vals (values 1 2 3 4 5)])
 ;;       (apply list vals)))
-
-;; (quote = '(... (quasiquote = `(... (unquote = ,... (unquote-splicing = ,@...
-;; (pp `(+ 2 ,(* 3 4)))
-;; (pp `(+ ,(cdr '(* 2 3))))
-;; (pp `(+ ,@(cdr '(* 2 3))))
-
-;; Eqivalence predicates
-;; (pp (eq? 'a 'a))
-;; (pp (eq? 1 1))
-;; (pp (eq? "Vlad" "Vlad"))
-
-;; (pp (= -0.0 0.0))
-;; (pp (eqv? -0.0 0.0))
-;; (pp (= 3.0 3.0+0.0i))
-;; (pp (eqv? 3.0 3.0+0.0i))
-
-;; (pp (equal? '(1 2 3) '(1 2 3)))
-
-(define (my-list-ref lst n)
-  (if [zero? n] (car lst) (my-list-ref (cdr lst) (- n 1))))
-
-;; (pp (my-list-ref 'a 0))
-;; (pp (my-list-ref '() 0))
-;; (pp (my-list-ref '() 1))
-;; (pp (my-list-ref '(1 2 3) 0))
-;; (pp (my-list-ref '(1 2 3) 2))
-
-(define (my-list-ref2 lst n)
-  (do ([n n (- n 1)] [lst lst (cdr lst)])
-      ([zero? n] (car lst))))
-
-;; (pp (my-list-ref2 'a 0))
-;; (pp (my-list-ref2 '() 0))
-;; (pp (my-list-ref2 '() 1))
-;; (pp (my-list-ref2 '(1 2 3) 0))
-;; (pp (my-list-ref2 '(1 2 3) 2))
-
-(define (my-list-tail lst n)
-  (if [zero? n] lst (my-list-tail (cdr lst) (- n 1))))
-
-;; (pp (my-list-tail '(1 2 3 4) 0))
-;; (pp (my-list-tail '(1 2 3 4) 2))
-
-(define (my-list-tail2 lst n)
-  (do ([n n (- n 1)] [lst lst (cdr lst)])
-      ([zero? n] lst)))
-
-;; (pp (my-list-tail2 '(1 2 3 4) 0))
-;; (pp (my-list-tail2 '(1 2 3 4) 2))
-
-(define (my-append . args)
-  (let append-lists ([res '()] [args args])
-    (if [null? args]
-        ;; All input lists are appended
-        res
-        ;; Append current list
-        (let append-list ([lst res])
-          (if [null? lst]
-              ;; Consume next input list
-              (append-lists (car args) (cdr args))
-              ;; Consume current list
-              (cons (car lst) (append-list (cdr lst))))))))
-
-;; (pp (my-append '(a) '(b) '(c)))
-;; (pp (my-append '(a a) '(b b) '(c c)))
-
-(define (my-reverse lst)
-  (let rev ([lst lst] [res '()])
-    (if [null? lst] res (rev (cdr lst) (cons (car lst) res)))))
-
-;; (pp (my-reverse '(1 2 3 4)))
