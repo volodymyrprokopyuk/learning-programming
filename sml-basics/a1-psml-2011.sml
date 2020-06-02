@@ -1,3 +1,5 @@
+(* Chapters 1-17 *)
+
 (* Value bindings *)
 (* val pi : real = 3.14; *)
 (* val s : real = Math.sin pi; *)
@@ -833,28 +835,3 @@ fun stake 0 _ = nil
   | stake n (Cons (h, s)) = h :: stake (n - 1) s;
 
 (* val primes20 = stake 20 primes; *)
-
-(* Signature *)
-signature QUEUE =
-sig
-    (* Unary type constructor *)
-    type 'a queue
-    (* Nullary exception constructor *)
-    exception Empty
-    (* Polymorphic values *)
-    val empty : 'a queue
-    (* Polymorphic functions *)
-    val insert : 'a * 'a queue -> 'a queue
-    val remove : 'a queue -> 'a * 'a queue
-end;
-
-(* Signature inclusion *)
-signature QUEUE_WITH_EMPTY =
-sig
-    include QUEUE
-    val isEmpty : 'a queue -> bool
-end;
-
-(* Signature specialization *)
-signature QUEUE_AS_LIST =
-QUEUE where type 'a queue = 'a list * 'a list;

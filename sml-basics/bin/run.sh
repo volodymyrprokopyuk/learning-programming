@@ -2,4 +2,7 @@
 
 set -eu
 
-sml a-psml-2011.sml
+# Chapters 1-17
+# sml a1-psml-2011.sml
+# Chapters 18-
+sml a2-psml-2011.sml
