@@ -36,3 +36,14 @@ fun remove (nil, nil) = raise Empty
   | remove (bs, nil) = remove (nil, rev bs)
   | remove (bs, f :: fs) = (f, (bs, fs))
 end;
+
+(* Use Queue *)
+val q = Queue.insert (10, ([6, 5, 4], [1, 2, 3]));
+(* Structure abbreviation *)
+structure Q = Queue;
+val (x1, q1) = Q.remove q;
+(* open structure *)
+open Queue;
+val (x2, q2) = remove q1;
+val (x3, q3) = remove q2;
+val (x4, q4) = remove q3;
