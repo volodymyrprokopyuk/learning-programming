@@ -166,3 +166,30 @@ SELECT bft.base_amount base, bft.base_currency bcurrency,
     bft.principal, bft.rate,
     bft.term_amount "term*", bft.term_currency tcurrency
 FROM pricing.get_base_from_term('UK', 'GBPEUR', 85.00, 1.0, 'CREDIT_CARD') bft;
+
+
+
+-- ** BE edge
+
+SELECT vfb.rule_name, vfb.rule_key, vfb.variable_fee, vfb.variable_fee_total
+FROM pricing.get_variable_fee_breakdown('BE', 'EURUSD', 1999.00) vfb;
+
+SELECT tfb.base_amount "base*", tfb.base_currency bcurrency,
+    tfb.variable_fee_percentage fee, tfb.variable_fee_amount fee_amount,
+    tfb.principal, tfb.rate,
+    tfb.term_amount term, tfb.term_currency tcurrency
+FROM pricing.get_term_from_base('BE', 'EURUSD', 1999.00, 1.0) tfb;
+
+SELECT bab.residence_country, bab.currency_corridor, bab.funding_method,
+    bab.base_amount_range
+FROM pricing.get_base_amount_bands('BE', 'EURUSD') bab;
+
+SELECT tab.residence_country, tab.currency_corridor, tab.funding_method,
+    tab.term_amount_range, tab.variable_fee_percentage fee
+FROM pricing.get_term_amount_bands('BE', 'EURUSD', 1.0) tab;
+
+SELECT bft.base_amount base, bft.base_currency bcurrency,
+    bft.variable_fee_percentage fee, bft.variable_fee_amount fee_amount,
+    bft.principal, bft.rate,
+    bft.term_amount "term*", bft.term_currency tcurrency
+FROM pricing.get_base_from_term('BE', 'EURUSD', 1671.16, 1.0) bft;
