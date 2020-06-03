@@ -50,6 +50,21 @@ structure Q = Queue;
 val (x1, q1) = Q.remove q;
 (* open structure *)
 open Queue;
-val (x2, q2) = remove q1;
-val (x3, q3) = remove q2;
-val (x4, q4) = remove q3;
+(* val (x2, q2) = remove q1; *)
+(* val (x3, q3) = remove q2; *)
+(* val (x4, q4) = remove q3; *)
+
+signature VALUE =
+sig
+    type a
+    val value : a
+end;
+
+structure Value :> VALUE =
+(* structure Value : VALUE = *)
+struct
+type a = int
+val value = 4
+end;
+
+val v = Value.value;
