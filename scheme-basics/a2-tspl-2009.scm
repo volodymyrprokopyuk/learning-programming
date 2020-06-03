@@ -172,3 +172,49 @@
 ;; (pp (my-assp odd? '((1 . a) (2 . b) (3 . c))))
 
 ;; (pp (sort '(1 4 3 2 8 5 6 7) >))
+
+;; Hash tables
+;; (define ht (make-hash-table))
+;; (pp (hash-table? ht))
+;; (hash-set! ht 'a #t)
+;; (hash-set! ht 'b 1)
+;; (hash-set! ht 'c "Vlad")
+;; (pp (hash-count (lambda (k v) #t) ht))
+;; (pp (hash-ref ht 'a))
+;; (pp (hash-ref ht 'b))
+;; (pp (hash-ref ht 'c))
+;; (hash-set! ht 'c "Vlad and Lana")
+;; (pp (hash-ref ht 'c))
+;; (pp (hash-get-handle ht 'a))
+;; (pp (hash-get-handle ht 'z))
+;; (pp (hash-create-handle! ht 'd 0))
+;; (pp (hash-count (lambda (k v) #t) ht))
+;; (hash-remove! ht 'd)
+;; (pp (hash-count (lambda (k v) #t) ht))
+;; (pp (hash-fold (lambda (k v a) (cons k a)) '() ht))
+;; (pp (hash-fold (lambda (k v a) (cons v a)) '() ht))
+;; (hash-clear! ht)
+;; (pp (hash-count (lambda (k v) #t) ht))
+
+;; Enumerations
+(use-modules (rnrs enums))
+
+(define weather (make-enumeration '(hot warm cloudy sunny rainy snowy windy)))
+;; (pp (enum-set->list weather))
+
+(define cold-weather ((enum-set-constructor weather) '(rainy snowy windy)))
+;; (pp (enum-set->list cold-weather))
+;; (pp (enum-set-member? 'snowy weather))
+;; (pp (enum-set-subset? cold-weather weather))
+;; (pp (enum-set=? cold-weather weather))
+;; (pp (enum-set->list (enum-set-intersection cold-weather weather)))
+;; (pp (enum-set->list (enum-set-difference weather cold-weather)))
+
+;; Define enumeration with subset construcor (make-nature) and predicate macro
+(define-enumeration nature (sun water air river forest mountain) make-nature)
+
+;; Subset constructor
+(define my-nature (make-nature river forest mountain))
+;; (pp (enum-set->list my-nature))
+;; Predicate macro
+;; (pp (nature mountain))
