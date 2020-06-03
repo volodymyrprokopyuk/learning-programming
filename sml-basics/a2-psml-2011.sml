@@ -3,7 +3,7 @@
 (* Signature specification *)
 signature QUEUE =
 sig
-    (* Unary type constructor *)
+    (* Unary type constructor: abstract type *)
     type 'a queue
     (* Nullary exception constructor *)
     exception Empty
@@ -18,15 +18,21 @@ end;
 signature QUEUE_WITH_EMPTY =
 sig
     include QUEUE
+    (* Add new operation: new value component *)
     val isEmpty : 'a queue -> bool
 end;
 
 (* Signature specialization *)
 signature QUEUE_AS_LIST =
+(* Specialize 'a queue abstract type with more concrete type *)
 QUEUE where type 'a queue = 'a list * 'a list;
 
 (* Structure declaration *)
-structure Queue =
+(* Opaque/restrictive signature ascription to enfoce data abstraction *)
+(* QUEUE_AS_LIST has specialized 'a queue abstract type *)
+(* so the insert function can be used *)
+structure Queue :> QUEUE_AS_LIST =
+(* structure Queue : QUEUE = *)
 struct
 type 'a queue = 'a list * 'a list
 exception Empty
