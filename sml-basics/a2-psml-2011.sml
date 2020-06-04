@@ -193,3 +193,46 @@ end;
 (* in *)
 (*     lookup (lsd, "a") *)
 (* end; *)
+
+(* Geometry in ML: space dimension is not part of the specification *)
+signature VECTOR =
+sig
+    type vector
+    (* Unit element for addition *)
+    val zero : vector
+    val scale : real * vector -> vector
+    val add : vector * vector -> vector
+    val dot : vector * vector -> real
+end;
+
+signature POINT =
+sig
+    structure Vector : VECTOR
+    type point
+    (* Move a point along a vector *)
+    val translate : point * Vector.vector -> point
+    (* Create a vector as a difference between two points *)
+    val ray : point * point -> Vector.vector
+end;
+
+signature SPHERE =
+sig
+    structure Vector : VECTOR
+    structure Point : POINT
+    sharing Point.Vector = Vector
+    type sphere
+    (* Create sphere from a center and a radius *)
+    val sphere : Point.point * Vector.vector -> sphere
+end;
+
+signature GEOMETRY =
+sig
+    structure Point : POINT
+    structure Sphere : SPHERE
+    sharing Sphere.Point = Point
+            and Sphere.Vector = Point.Vector
+end;
+
+(* Structures, and not signatures, specify the dimension *)
+(* structure Geometry2D :> GEOMETRY = ... *)
+(* structure Geometry3D :> GEOMETRY = ... *)
