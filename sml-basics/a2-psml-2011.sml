@@ -47,7 +47,7 @@ end;
 val q = Queue.insert (10, ([6, 5, 4], [1, 2, 3]));
 (* Structure abbreviation *)
 structure Q = Queue;
-val (x1, q1) = Q.remove q;
+(* val (x1, q1) = Q.remove q; *)
 (* open structure *)
 open Queue;
 (* val (x2, q2) = remove q1; *)
@@ -60,11 +60,136 @@ sig
     val value : a
 end;
 
-structure Value :> VALUE =
-(* structure Value : VALUE = *)
+(* Opaque signature ascription: type hiding *)
+(* structure Value :> VALUE = *)
+(* Transparent signature ascription: type exposure *)
+structure Value : VALUE =
 struct
 type a = int
 val value = 4
 end;
 
-val v = Value.value;
+(* val v = Value.value; *)
+
+(* string key dictionary *)
+signature STR_DICT =
+sig
+    type 'a dict
+    val empty : 'a dict
+    val insert : 'a dict * string * 'a -> 'a dict
+    val lookup : 'a dict * string -> 'a option
+end;
+
+structure StrDict :> STR_DICT =
+struct
+datatype 'a dict = Empty | Node of 'a dict * string * 'a * 'a dict
+val empty = Empty
+fun insert (Empty, k, v) = Node (Empty, k, v, Empty)
+fun lookup (Empty, _) = NONE |
+    lookup (Node (dl, l, v, dr), k) =
+    if k < l then lookup (dl, k)
+    else if k > l then lookup (dr, k)
+    else SOME v
+end;
+
+(* let *)
+(*     open StrDict *)
+(*     val sd = insert (empty, "a", 1) *)
+(* in *)
+(*     lookup (sd, "a") *)
+(* end; *)
+
+(* Generic key dictionary *)
+signature GEN_DICT =
+sig
+    (* Abstract type of dictionary key *)
+    type key
+    type 'a dict
+    val empty : 'a dict
+    val insert : 'a dict * key * 'a -> 'a dict
+    val lookup : 'a dict * key -> 'a option
+end;
+
+(* Signature specialization *)
+signature INT_DICT =
+GEN_DICT where type key = int;
+
+structure IntDict :> INT_DICT =
+struct
+type key = int
+datatype 'a dict = Empty | Node of 'a dict * key * 'a * 'a dict
+val empty = Empty
+fun insert (Empty, k, v) = Node (Empty, k, v, Empty)
+fun lookup (Empty, _) = NONE
+  | lookup (Node (dl, l, v, dr), k) =
+    if k < l then lookup (dl, k)
+    else if k > l then lookup (dr, k)
+    else SOME v
+end;
+
+(* let *)
+(*     open IntDict *)
+(*     val id = insert (empty, 1, "a") *)
+(* in *)
+(*     lookup (id, 1) *)
+(* end; *)
+
+(* Ordered key signature *)
+signature ORDERED =
+sig
+    type t
+    val eq : t * t -> bool
+    val lt : t * t -> bool
+end;
+
+(* Lexicographical string ordering *)
+structure LexStr : ORDERED =
+struct
+type t = string
+fun eq (a : string, b : string) = a = b
+fun lt (a : string, b : string) = a < b
+end;
+
+(* Ascending integer ordering *)
+structure AscInt : ORDERED =
+struct
+type t = int
+val eq = (op =)
+val lt = (op <)
+end;
+
+signature DICT =
+sig
+    (* Substructure abstracts key type and key ordering *)
+    structure Key : ORDERED
+    type 'a dict
+    val empty : 'a dict
+    val insert : 'a dict * Key.t * 'a -> 'a dict
+    val lookup : 'a dict * Key.t -> 'a option
+end;
+
+signature LEX_STR_DICT =
+DICT where type Key.t = string;
+
+signature ASC_INT_DICT =
+DICT where type Key.t = int;
+
+structure LexStrDict :> LEX_STR_DICT =
+struct
+structure Key = LexStr
+datatype 'a dict = Empty | Node of 'a dict * Key.t * 'a * 'a dict
+val empty = Empty
+fun insert (Empty, k, v) = Node (Empty, k, v, Empty)
+fun lookup (Empty, _) = NONE
+  | lookup (Node (dl, l, v, dr), k) =
+    if Key.lt(k, l) then lookup (dl, k)
+    else if Key.lt(l, k) then lookup (dr, k)
+    else SOME v
+end;
+
+(* let *)
+(*     open LexStrDict *)
+(*     val lsd = insert (empty, "a", 1) *)
+(* in *)
+(*     lookup (lsd, "a") *)
+(* end; *)
