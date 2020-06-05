@@ -236,3 +236,64 @@ end;
 (* Structures, and not signatures, specify the dimension *)
 (* structure Geometry2D :> GEOMETRY = ... *)
 (* structure Geometry3D :> GEOMETRY = ... *)
+
+(* Functor: generic/parametrized module *)
+(* Functor: takes a structure as argument, yeilds a structure as argument *)
+(* Functor: single implementation parameterized with argument structure *)
+(* Function binding *)
+functor DictFunctor (structure K : ORDERED) :>
+        DICT where type Key.t = K.t =
+struct
+structure Key = K
+datatype 'a dict = Empty | Node of 'a dict * Key.t * 'a * 'a dict
+val empty = Empty
+fun insert (Empty, k, v) = Node (Empty, k, v, Empty)
+fun lookup (Empty, _) = NONE
+  | lookup (Node (dl, l, v, dr), k) =
+    if Key.lt(k, l) then lookup (dl, k)
+    else if Key.lt(l, k) then lookup (dr, k)
+    else SOME v
+end;
+
+(* Function application *)
+structure LexStrDictF = DictFunctor (structure K = LexStr);
+
+(* let *)
+(*     open LexStrDictF *)
+(*     val lsd = insert (empty, "a", 1) *)
+(* in *)
+(*     lookup (lsd, "a") *)
+(* end; *)
+
+structure AscIntDictF = DictFunctor (structure K = AscInt);
+
+(* let *)
+(*     open AscIntDictF *)
+(*     val aid = insert (empty, 1, "a") *)
+(* in *)
+(*     lookup (aid, 1) *)
+(* end; *)
+
+(* 2D and 3D GEOMETRY with functors *)
+
+(* functor PointFunctor (structure V : VECTOR) : POINT = *)
+(* struct *)
+(* structure Vector = V *)
+(* end; *)
+
+(* functor SphereFunctor (structure V : VECTOR structure P : POINT) : SPHERE = *)
+(* struct *)
+(* structure Vector = V *)
+(* structure Point = P *)
+(* end; *)
+
+(* functor GeometryFunction (structure P : POINT structure S : SPHERE) : GEOMETRY = *)
+(* struct *)
+(* structure Point = P *)
+(* structure Sphere = S *)
+(* end; *)
+
+(* structure Vector2D = ... *)
+(* structure Point2D = PointFunctor (structure V = Vector2D); *)
+(* structure Sphere2D = SphereFunctor (structure V = Vector2D structure P = Point2D); *)
+(* structure Geometry2D = GeometryFunctor (structure P = Point2D structure S = Sphere2D); *)
