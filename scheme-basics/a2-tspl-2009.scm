@@ -218,3 +218,9 @@
 ;; (pp (enum-set->list my-nature))
 ;; Predicate macro
 ;; (pp (nature mountain))
+
+(use-modules (ice-9 rdelim)); (read-line)
+;; Open file
+(define f (open-input-file "a2-tspl-2009.scm"))
+(pp (read-line f))
+(close-input-port f)
