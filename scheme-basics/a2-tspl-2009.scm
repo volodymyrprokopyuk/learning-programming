@@ -219,8 +219,18 @@
 ;; Predicate macro
 ;; (pp (nature mountain))
 
-(use-modules (ice-9 rdelim)); (read-line)
+;; (use-modules (ice-9 rdelim)); (read-line)
 ;; Open file
-(define f (open-input-file "a2-tspl-2009.scm"))
-(pp (read-line f))
-(close-input-port f)
+;; (define f (open-input-file "a2-tspl-2009.scm"))
+;; (pp (read-line f))
+;; (close-input-port f)
+
+(define-syntax my-let*
+  (syntax-rules ()
+                [(_ () b1 b2 ...) (let () b1 b2 ...)]
+                [(_ ([i1 e1] [i2 e2] ...) b1 b2 ...)
+                 (let ([i1 e1])
+                   (my-let* ([i2 e2] ...) b1 b2 ...))]))
+
+;; (pp (my-let* ([x 1] [y x])
+;;       (+ x y)))
