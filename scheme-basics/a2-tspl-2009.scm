@@ -1,5 +1,4 @@
 ;; Chapters 6-
-
 (use-modules (ice-9 pretty-print))
 
 (define pp pretty-print)
@@ -277,3 +276,8 @@
     [(_ (e0 e1 e2 ...)) (if e0 (begin e1 e2 ...))]
     [(_ (e0 e1 e2 ...) c1 c2 ...)
      (if e0 (begin e1 e2 ...) (my-cond c1 c2 ...))]))
+
+;; (pp (my-cond
+;;      [#f 'a]
+;;      [#t 'b]
+;;      [my-else 'default]))
