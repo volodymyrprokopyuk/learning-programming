@@ -297,3 +297,75 @@ structure AscIntDictF = DictFunctor (structure K = AscInt);
 (* structure Point2D = PointFunctor (structure V = Vector2D); *)
 (* structure Sphere2D = SphereFunctor (structure V = Vector2D structure P = Point2D); *)
 (* structure Geometry2D = GeometryFunctor (structure P = Point2D structure S = Sphere2D); *)
+
+fun factorial n = if n = 0 then 1 else n * factorial (n - 1);
+
+(* factorial 5; *)
+
+(* fun = val rec *)
+val rec factorial2 = fn n => if n = 0 then 1 else n * factorial2 (n - 1);
+
+(* factorial2 5; *)
+
+(* Clausal function declaration with pattern matching *)
+fun factorial3 0 = 1
+  | factorial3 n = n * factorial3 (n - 1);
+
+(* factorial3 5; *)
+
+(* Head and tail or pattern matching*)
+(* let *)
+(*     val l = [1, 2, 3, 4] *)
+(*     val h = hd l *)
+(*     val t = tl l *)
+(*     val h2 :: t2 = l *)
+(* in *)
+(*     (h, t, h2, t2) *)
+(* end; *)
+
+(* Curried, recursive list append *)
+fun append2 nil l = l
+  | append2 (h :: t) l = h :: (append2 t l);
+
+(* let *)
+(*     val l = append2 [1, 2] [3, 4, 5]; *)
+(*     val a12 = append2 [1, 2] *)
+(*     val l2 = a12 [3, 4, 5] *)
+(* in *)
+(*     (l, l2) *)
+(* end; *)
+
+(* Polymorphic function *)
+fun makeList x = [x];
+
+(* o function composition *)
+fun makeListOfLists x = (makeList o makeList) x;
+
+(* makeListOfLists 1; *)
+
+fun map2 f nil = nil
+  | map2 f (h :: t) = (f h) :: (map2 f t);
+
+(* let *)
+(*     val add1 = map2 (fn x => x + 1) *)
+(* in *)
+(*     add1 [1, 2, 3, 4] *)
+(* end; *)
+
+(* Binary tree: recursive data type *)
+datatype 'a btree = Leaf of 'a | Node of 'a btree * 'a btree;
+
+fun addLeaves (Leaf x) = x
+  | addLeaves (Node (l, r)) = (addLeaves l) + (addLeaves r);
+
+fun tmap f (Leaf x) = x
+  | tmap f (Node (l, r)) = f ((tmap f l), (tmap f r));
+
+(* let *)
+(*     val t = Node (Node (Leaf 1, Leaf 4), Leaf 7) *)
+(*     val sumOfLeaves = addLeaves t *)
+(*     val addLeaves2 = tmap (op +) *)
+(*     val sumOfLeaves2 = addLeaves2 t *)
+(* in *)
+(*     (sumOfLeaves, sumOfLeaves2) *)
+(* end; *)
