@@ -227,10 +227,53 @@
 
 (define-syntax my-let*
   (syntax-rules ()
-                [(_ () b1 b2 ...) (let () b1 b2 ...)]
-                [(_ ([i1 e1] [i2 e2] ...) b1 b2 ...)
-                 (let ([i1 e1])
-                   (my-let* ([i2 e2] ...) b1 b2 ...))]))
+    [(_ () b1 b2 ...) (let () b1 b2 ...)]
+    [(_ ([i1 e1] [i2 e2] ...) b1 b2 ...)
+     (let ([i1 e1])
+       (my-let* ([i2 e2] ...) b1 b2 ...))]))
 
 ;; (pp (my-let* ([x 1] [y x])
 ;;       (+ x y)))
+
+;; (pp (let ()
+;;       ;; Internal variable definition
+;;       (define (my-even? x)
+;;         (if [zero? x] #t (my-odd? (- x 1))))
+;;       ;; Internal keyword definition
+;;       (define-syntax my-odd?
+;;         (syntax-rules ()
+;;           [(_ x) (if [zero? x] #f (my-even? (- x 1)))]))
+;;       ;; Visible within the body and definitions themselves
+;;       (list (my-even? 7) (my-odd? 7))))
+
+;; (let-syntax
+;; (pp (let ([f (lambda (x) (+ x 1))])
+;;       (let-syntax ([f (syntax-rules () [(_ x) x])]
+;;                    [g (syntax-rules () [(_ x) (f x)])])
+;;         (list (f 1) (g 1)))))
+
+;; (letrec-syntax
+;; (pp (let ([f (lambda (x) (+ x 1))])
+;;       (letrec-syntax ([f (syntax-rules () [(_ x) x])]
+;;                       [g (syntax-rules () [(_ x) (f x)])])
+;;         (list (f 1) (g 1)))))
+
+;; Recursive or macro: value or #f
+(define-syntax my-or
+  (syntax-rules ()
+    [(_) #f]
+    [(_ e) e]
+    [(_ e1 e2 e3 ...)
+     ;; (let to avoid evaluating the expression twice
+     (let ([r1 e1]) (if r1 r1 (my-or e2 e3 ...)))]))
+
+;; (pp (my-or #f))
+;; (pp (my-or #f 'a 'b))
+
+;; Recursive cond macro with auxiliary keyword
+(define-syntax my-cond
+  (syntax-rules (my-else)
+    [(_ (my-else e1 e2 ...)) (begin e1 e2 ...)]
+    [(_ (e0 e1 e2 ...)) (if e0 (begin e1 e2 ...))]
+    [(_ (e0 e1 e2 ...) c1 c2 ...)
+     (if e0 (begin e1 e2 ...) (my-cond c1 c2 ...))]))
