@@ -355,17 +355,26 @@ fun map2 f nil = nil
 (* Binary tree: recursive data type *)
 datatype 'a btree = Leaf of 'a | Node of 'a btree * 'a btree;
 
+(* f accepts a pair *)
 fun addLeaves (Leaf x) = x
   | addLeaves (Node (l, r)) = (addLeaves l) + (addLeaves r);
 
 fun tmap f (Leaf x) = x
   | tmap f (Node (l, r)) = f ((tmap f l), (tmap f r));
 
-(* let *)
-(*     val t = Node (Node (Leaf 1, Leaf 4), Leaf 7) *)
-(*     val sumOfLeaves = addLeaves t *)
-(*     val addLeaves2 = tmap (op +) *)
-(*     val sumOfLeaves2 = addLeaves2 t *)
-(* in *)
-(*     (sumOfLeaves, sumOfLeaves2) *)
-(* end; *)
+(* Curried f *)
+fun tmap2 f (Leaf x) = x
+  | tmap2 f (Node (l, r)) = f (tmap2 f l) (tmap2 f r);
+
+let
+    val t = Node (Node (Leaf 1, Leaf 4), Leaf 7)
+    val sumOfLeaves = addLeaves t
+    (* f accepts a pair *)
+    val addLeaves2 = tmap (op +)
+    val sumOfLeaves2 = addLeaves2 t
+    (* Curried f *)
+    val addLeaves3 = tmap2 (fn x => fn y => x + y)
+    val sumOfLeaves3 = addLeaves3 t
+in
+    (sumOfLeaves, sumOfLeaves2, sumOfLeaves3)
+end;
