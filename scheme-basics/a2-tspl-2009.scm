@@ -281,3 +281,30 @@
 ;;      [#f 'a]
 ;;      [#t 'b]
 ;;      [my-else 'default]))
+
+(define-syntax my-or2
+  (lambda (x)
+    (syntax-case x ()
+      [(_) #'#f]
+      [(_ e) #'e]
+      [(_ e1 e2 e3 ...) #'(let ([r1 e1]) (if r1 r1 (my-or2 e2 e3 ...)))])))
+
+;; (pp (my-or2 #f))
+;; (pp (my-or2 #f 'a 'b))
+
+(define-syntax my-syntax-rules
+  (lambda (x)
+    (syntax-case x ()
+      [(_ (i ...) ((keyword . pattern) template) ...)
+       #'(lambda (x)
+           (syntax-case x (i ...)
+             [(_ . pattern) #'template] ...))])))
+
+(define-syntax my-let
+  (my-syntax-rules
+   ()
+   [(_ ((x e) ...) b1 b2 ...)
+    ((lambda (x ...) b1 b2 ...) e ...)]))
+
+;; (pp (my-let ([x 1] [y 2])
+;;             (+ x y)))
