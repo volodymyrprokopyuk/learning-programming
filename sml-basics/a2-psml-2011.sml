@@ -392,5 +392,25 @@ fun factorial4 n =
     else f (n, 1)
 end;
 
-factorial4 5;
-factorial4 ~5 handle Factorial (m, n) => raise Factorial (m, n);
+(* factorial4 5; *)
+(* factorial4 ~5 handle Factorial (m, n) => raise Factorial (m, n); *)
+
+(* Point-free function definiiton via currying *)
+val sum = foldl (op +) 0;
+
+(* sum [1, 2, 3, 4, 5]; *)
+
+(* Explicit function type *)
+fun incInt (x : int) : int = x + 1;
+
+(* incInt 10; *)
+
+(* Tuple pattern matching *)
+fun myTuple (a, b) = {x = a, y = b};
+
+(* myTuple (1, "a"); *)
+
+(* Record pattern matching *)
+fun myRecord {first = a, second = b} = {x = a, y = b};
+
+(* myRecord {first = 1, second = "a"}; *)
