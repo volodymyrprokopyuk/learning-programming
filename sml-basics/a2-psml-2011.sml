@@ -414,3 +414,25 @@ fun myTuple (a, b) = {x = a, y = b};
 fun myRecord {first = a, second = b} = {x = a, y = b};
 
 (* myRecord {first = 1, second = "a"}; *)
+
+(* Function composition *)
+val incFactorial = incInt o factorial4;
+
+(* incFactorial 5; *)
+
+(* User-defined operators *)
+fun ** (x, 0) = 1
+  | ** (x, y) = x * ** (x, y - 1);
+
+(* Function application *)
+** (2, 5);
+
+(* Operator declaration: left associative, otherwise use infixr *)
+infix 7 **;
+
+(* Operator application *)
+2 ** 5;
+
+(* Use operator as function *)
+(op +) (2, 3);
+(op **) (2, 5);
