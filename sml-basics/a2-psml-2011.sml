@@ -366,15 +366,31 @@ fun tmap f (Leaf x) = x
 fun tmap2 f (Leaf x) = x
   | tmap2 f (Node (l, r)) = f (tmap2 f l) (tmap2 f r);
 
-let
-    val t = Node (Node (Leaf 1, Leaf 4), Leaf 7)
-    val sumOfLeaves = addLeaves t
-    (* f accepts a pair *)
-    val addLeaves2 = tmap (op +)
-    val sumOfLeaves2 = addLeaves2 t
-    (* Curried f *)
-    val addLeaves3 = tmap2 (fn x => fn y => x + y)
-    val sumOfLeaves3 = addLeaves3 t
+(* let *)
+(*     val t = Node (Node (Leaf 1, Leaf 4), Leaf 7) *)
+(*     val sumOfLeaves = addLeaves t *)
+(*     (* f accepts a pair *) *)
+(*     val addLeaves2 = tmap (op +) *)
+(*     val sumOfLeaves2 = addLeaves2 t *)
+(*     (* Curried f *) *)
+(*     val addLeaves3 = tmap2 (fn x => fn y => x + y) *)
+(*     val sumOfLeaves3 = addLeaves3 t *)
+(* in *)
+(*     (sumOfLeaves, sumOfLeaves2, sumOfLeaves3) *)
+(* end; *)
+
+(* Exceptions *)
+exception Factorial of string * int;
+
+(* Local helper function declaration *)
+local
+    fun f (0, r) = r
+      | f (n, r) = f (n - 1, n * r)
 in
-    (sumOfLeaves, sumOfLeaves2, sumOfLeaves3)
+fun factorial4 n =
+    if n < 0 then raise Factorial ("Negative number", n)
+    else f (n, 1)
 end;
+
+factorial4 5;
+factorial4 ~5 handle Factorial (m, n) => raise Factorial (m, n);
