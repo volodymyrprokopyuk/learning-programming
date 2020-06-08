@@ -491,3 +491,30 @@ fun // (a, b) =
 infix 7 //;
 
 (* val v = 5 // 0 handle DivizionByZero m => raise DivizionByZero m; *)
+
+(* Lexical scopeing, environemnt, and free variables in a closure *)
+(* let *)
+(*     val pi = 3.1415 *)
+(*     (* pi is a free variable and is recorded in the evfironment for the area closure *) *)
+(*     fun area r = pi * r * r *)
+(*     val a = area 1.0 *)
+(*     (* Rebound pi does not take effect on the resual of the area function *) *)
+(*     val pi = "PI" *)
+(*     val a2 = area 1.0 *)
+(* in *)
+(*     (a, a2) *)
+(* end; *)
+
+(* Multiple arguments: tuple and curried function *)
+fun pow (m, n) = if n = 0 then 1 else m * (pow (m, n - 1));
+
+pow (2, 5);
+
+(* Multiple functions: curried function with partial application *)
+fun power m n = if n = 0 then 1 else m * (power m (n - 1));
+
+power 2 5;
+
+(* Curried function allows to define new functions via partial application *)
+val powerOf2 = power 2;
+powerOf2 5;
