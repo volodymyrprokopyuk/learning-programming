@@ -513,8 +513,67 @@ pow (2, 5);
 (* Multiple functions: curried function with partial application *)
 fun power m n = if n = 0 then 1 else m * (power m (n - 1));
 
-power 2 5;
+(* power 2 5; *)
 
 (* Curried function allows to define new functions via partial application *)
 val powerOf2 = power 2;
-powerOf2 5;
+(* powerOf2 5; *)
+
+(* Factorial as function composition *)
+fun range n = List.tabulate (n, fn x => x + 1);
+
+val product = foldl (op *) 1;
+
+val factorial5 = product o range;
+
+(* factorial5 5; *)
+
+(* Mutual recursion *)
+fun take nil = nil
+  | take (h :: t) = h :: (skip t)
+and skip nil = nil
+  | skip (h :: t) = take t;
+
+(* take [1, 2, 3, 4, 5, 6]; *)
+(* skip [1, 2, 3, 4, 5, 6]; *)
+
+(* Quick sort *)
+local
+    fun partition (x, nil) = (nil, nil)
+      | partition (x, h :: t) =
+        let
+            val (ss, bs) = partition (x, t)
+        in
+            (* Integer comparison *)
+            if h < x then (h :: ss, bs)
+            else (ss, h :: bs)
+        end
+in
+fun qsort nil = nil
+  | qsort [x] = [x]
+  | qsort (h :: t) =
+    let
+        val (ss, bs) = partition (h, t)
+    in
+        qsort ss @ [h] @ qsort bs
+    end
+end;
+
+(* qsort [8, 2, 9, 5, 3, 1, 4, 0, 6, 7]; *)
+
+(* Fibonacci sequence *)
+local
+    fun fib a b 0 = a
+      | fib a b n = fib b (a + b) (n - 1)
+in
+fun fibonacci n = fib 1 1 n
+end;
+
+fibonacci 0;
+fibonacci 1;
+fibonacci 2;
+fibonacci 3;
+fibonacci 4;
+fibonacci 5;
+fibonacci 6;
+fibonacci 7;
