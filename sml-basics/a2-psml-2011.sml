@@ -452,16 +452,42 @@ fun pops (Stack (x :: l)) = (x, Stack l)
 fun toList (Stack l) = l
 end;
 
-let
-    val s = emptys
-    val s2 = pushs (1, s)
-    val s3 = pushs(2, s2)
-    val s4 = pushs(3, s3)
-    val (x5, s5) = pops s4
-in
-    (* isEmptys s *)
-    (* tops s2 *)
-    (* tops s3 *)
-    (* toList s4 *)
-    (x5, toList s5)
-end;
+(* let *)
+(*     val s = emptys *)
+(*     val s2 = pushs (1, s) *)
+(*     val s3 = pushs(2, s2) *)
+(*     val s4 = pushs(3, s3) *)
+(*     val (x5, s5) = pops s4 *)
+(* in *)
+(*     (* isEmptys s *) *)
+(*     (* tops s2 *) *)
+(*     (* tops s3 *) *)
+(*     (* toList s4 *) *)
+(*     (x5, toList s5) *)
+(* end; *)
+
+(* Imperative programming *)
+(* Reference variable declaration (ref), assignment (:=), and dereferencing (!) *)
+(* let *)
+(*     val refVar = ref 1 *)
+(*     val v1 = !refVar *)
+(*     val _ = refVar := 2 *)
+(*     val v2 = !refVar *)
+(*     val refEqSameRef = refVar = refVar *)
+(*     val refVar2 = ref 2 *)
+(*     val refEqDiffRef = refVar = refVar2 *)
+(*     val refEqSameVal = !refVar = !refVar2 *)
+(* in *)
+(*     (v1, v2, refEqSameRef, refEqDiffRef, refEqSameVal) *)
+(* end; *)
+
+(* Exception, raise, handle *)
+exception DivizionByZero of string;
+
+fun // (a, b) =
+    if b = 0 then raise DivizionByZero "Divisiont by zero"
+    else a div b;
+
+infix 7 //;
+
+(* val v = 5 // 0 handle DivizionByZero m => raise DivizionByZero m; *)
