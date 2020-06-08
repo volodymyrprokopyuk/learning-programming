@@ -425,14 +425,43 @@ fun ** (x, 0) = 1
   | ** (x, y) = x * ** (x, y - 1);
 
 (* Function application *)
-** (2, 5);
+(* ** (2, 5); *)
 
 (* Operator declaration: left associative, otherwise use infixr *)
 infix 7 **;
 
 (* Operator application *)
-2 ** 5;
+(* 2 ** 5; *)
 
 (* Use operator as function *)
-(op +) (2, 3);
-(op **) (2, 5);
+(* (op +) (2, 3); *)
+(* (op ** ) (2, 5); *)
+
+(* Abstract data types with opaque internal data representation: - *)
+(* Abstract data types exposes only interface for  *)
+(*     - construction: emptys *)
+(*     - manipulation: isEmptys, pushs, tops, pops *)
+(*     - conversion: toList *)
+abstype 'a stack = Stack of 'a list
+with
+val emptys = Stack nil
+fun isEmptys (Stack l) = l = nil
+fun pushs (x, Stack l) = Stack (x :: l)
+fun tops (s as Stack (x :: l)) = (x, s)
+fun pops (Stack (x :: l)) = (x, Stack l)
+fun toList (Stack l) = l
+end;
+
+let
+    val s = emptys
+    val s2 = pushs (1, s)
+    val s3 = pushs(2, s2)
+    val s4 = pushs(3, s3)
+    val (x5, s5) = pops s4
+in
+    (* isEmptys s *)
+    (* tops s2 *)
+    (* tops s3 *)
+    (* toList s4 *)
+    (x5, toList s5)
+end;
