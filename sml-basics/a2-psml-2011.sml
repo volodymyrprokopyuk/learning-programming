@@ -569,11 +569,33 @@ in
 fun fibonacci n = fib 1 1 n
 end;
 
-fibonacci 0;
-fibonacci 1;
-fibonacci 2;
-fibonacci 3;
-fibonacci 4;
-fibonacci 5;
-fibonacci 6;
-fibonacci 7;
+(* fibonacci 0; *)
+(* fibonacci 1; *)
+(* fibonacci 2; *)
+(* fibonacci 3; *)
+(* fibonacci 4; *)
+(* fibonacci 5; *)
+(* fibonacci 6; *)
+(* fibonacci 7; *)
+
+(* Type alias *)
+type user = {id : int, name : string};
+
+(* val u : user = {id = 1, name = "Vlad"}; *)
+
+type 'a apair = 'a * 'a;
+
+(* val p : char apair = (#"a", #"b"); *)
+
+(* Imperative while loop *)
+let
+    (* Reference variable *)
+    val c = ref 0;
+in
+    while !c < 5 do (
+        (* Command sequencing *)
+        print (Int.toString (!c) ^ "\n");
+        (* Dereferencing and assignment *)
+        c := !c + 1
+    )
+end;
