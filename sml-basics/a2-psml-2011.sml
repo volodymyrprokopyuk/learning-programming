@@ -621,3 +621,10 @@ val max5 = fn a => fn b => if a > b then a else b;
 (* in *)
 (*     (v, a, b) *)
 (* end; *)
+
+(* let *)
+(*     fun occur p = length o (List.filter p) *)
+(*     val l = [1, 0, 4, 0, 3, 4, 0] *)
+(* in *)
+(*     occur (fn x => x = 0) l *)
+(* end; *)
