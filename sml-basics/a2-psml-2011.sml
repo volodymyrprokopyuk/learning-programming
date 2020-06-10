@@ -628,3 +628,25 @@ val max5 = fn a => fn b => if a > b then a else b;
 (* in *)
 (*     occur (fn x => x = 0) l *)
 (* end; *)
+
+signature NAT =
+sig
+    type nat
+    val zero : nat
+    val succ : nat -> nat
+end;
+
+structure Nat :> NAT =
+struct
+type nat = int
+val zero = 0
+fun succ x = x + 1
+end;
+
+let
+    open Nat
+    val x = zero
+    val y = succ x
+in
+    (x, y)
+end;
