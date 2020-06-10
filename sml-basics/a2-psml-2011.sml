@@ -588,14 +588,36 @@ type 'a apair = 'a * 'a;
 (* val p : char apair = (#"a", #"b"); *)
 
 (* Imperative while loop *)
-let
-    (* Reference variable *)
-    val c = ref 0;
-in
-    while !c < 5 do (
-        (* Command sequencing *)
-        print (Int.toString (!c) ^ "\n");
-        (* Dereferencing and assignment *)
-        c := !c + 1
-    )
-end;
+(* let *)
+(*     (* Reference variable *) *)
+(*     val c = ref 0; *)
+(* in *)
+(*     while !c < 5 do ( *)
+(*         (* Command sequencing *) *)
+(*         print (Int.toString (!c) ^ "\n"); *)
+(*         (* Dereferencing and assignment *) *)
+(*         c := !c + 1 *)
+(*     ) *)
+(* end; *)
+
+(* Tuple argument *)
+fun max2 (a, b) = if a > b then a else b;
+
+val max3 = fn (a, b) => if a > b then a else b;
+
+(* max2 (1, 2); *)
+(* max3 (1, 2); *)
+
+fun max4 a b = if a > b then a else b;
+
+val max5 = fn a => fn b => if a > b then a else b;
+
+(* max4 1 2; *)
+(* max5 1 2; *)
+
+(* Pattern alias *)
+(* let *)
+(*     val v as (a, b) = (1, "a") *)
+(* in *)
+(*     (v, a, b) *)
+(* end; *)
