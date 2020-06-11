@@ -643,10 +643,93 @@ val zero = 0
 fun succ x = x + 1
 end;
 
+(* let *)
+(*     open Nat *)
+(*     val x = zero *)
+(*     val y = succ x *)
+(* in *)
+(*     (x, y) *)
+(* end; *)
+
+(* Dictionary signature *)
+signature DICTIONARY =
+sig
+    type (''a, 'b) dict
+    val empty : (''a, 'b) dict
+    val insert : ''a -> 'b -> (''a, 'b) dict -> (''a, 'b) dict
+    val lookup : ''a -> (''a, 'b) dict -> 'b option
+end;
+
+(* Dictionary implementation via associaltion list *)
+structure Dictionary :> DICTIONARY =
+struct
+type (''a, 'b) dict = (''a * 'b) list
+val empty = nil
+fun insert k v d = (k, v) :: d
+fun lookup k nil = NONE
+  | lookup k ((k', v) :: d) = if k' = k then SOME v else lookup k d
+end;
+
+(* let *)
+(*     open Dictionary *)
+(*     val d = insert "a" 1 empty *)
+(*     val l1 = lookup "a" d *)
+(*     val l2 = lookup "b" d *)
+(* in *)
+(*     (l1, l2) *)
+(* end; *)
+
+signature STACK =
+sig
+    type 'a stack
+    exception EmptyStack
+    val empty : 'a stack
+    val push : 'a -> 'a stack -> 'a stack
+    val pop : 'a stack -> 'a * 'a stack
+end;
+
+structure Stack2 :> STACK =
+struct
+type 'a stack = 'a list
+exception EmptyStack
+val empty = nil
+fun push x s = x :: s
+fun pop nil = raise EmptyStack
+  | pop (x :: s) = (x, s)
+end;
+
+datatype postfix_atom = Int of int | Plus | Times;
+
+functor PostfixEvalFn (S: STACK) =
+struct
+fun eval exp =
+    let
+        fun eval' (Int x, s) = S.push x s
+          | eval' (Plus, s) =
+            let
+                val (b, s) = S.pop s
+                val (a, s) = S.pop s
+            in
+                S.push (a + b) s
+            end
+          | eval' (Times, s) =
+            let
+                val (b, s) = S.pop s
+                val (a, s) = S.pop s
+            in
+                S.push (a * b) s
+            end
+        val (res, _) = S.pop (foldl eval' S.empty exp)
+    in
+        res
+    end
+end;
+
+structure PostfixEval = PostfixEvalFn(Stack2);
+
 let
-    open Nat
-    val x = zero
-    val y = succ x
+    open PostfixEval
+    val exp = [Int 3, Int 4, Plus, Int 2, Times]
 in
-    (x, y)
+    eval exp
 end;
