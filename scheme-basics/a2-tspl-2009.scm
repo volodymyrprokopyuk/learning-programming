@@ -308,3 +308,20 @@
 
 ;; (pp (my-let ([x 1] [y 2])
 ;;             (+ x y)))
+
+(use-modules (srfi srfi-9))
+
+;; Record is a new data type
+(define-record-type point
+  ;; Constructor and fields
+  (make-point x y)
+  ;; Type predicate
+  point?
+  ;; Mutable field with accessor and mutator
+  (x point-x set-point-x!)
+  ;; Immutable field with accessor only
+  (y point-y))
+
+(pp (let ([p (make-point 1 2)])
+      (set-point-x! p 10)
+      (list (point? p) (point-x p) (point-y p))))
