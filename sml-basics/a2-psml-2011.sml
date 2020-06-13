@@ -727,9 +727,83 @@ end;
 
 structure PostfixEval = PostfixEvalFn(Stack2);
 
-let
-    open PostfixEval
-    val exp = [Int 3, Int 4, Plus, Int 2, Times]
+(* let *)
+(*     open PostfixEval *)
+(*     val exp = [Int 3, Int 4, Plus, Int 2, Times] *)
+(* in *)
+(*     eval exp *)
+(* end; *)
+
+(* Curried function *)
+(* fun add a b = a + b; *)
+(* val add1 = add 1; *)
+(* val x = add1 1; *)
+
+(* Unduplicate *)
+local
+    fun undup' nil r = r
+      | undup' (h :: t) nil = undup' t [h]
+      | undup' (h :: t) (r as (h' :: _)) =
+        if h = h' then undup' t r else undup' t (h :: r)
 in
-    eval exp
+fun undup l = rev (undup' l nil)
 end;
+
+(* undup [0, 0, 1, 1, 1, 0, 0, 0, 1]; *)
+
+(* Reverse  *)
+local
+    fun rev' nil r = r
+      | rev' (h :: t) r = rev' t (h :: r)
+in
+fun myRev l = rev' l nil
+end;
+
+(* myRev [1, 2, 3, 4, 5, 6, 7, 8]; *)
+
+(* Length *)
+local
+    fun length' nil r = r
+      | length' (h :: t) r = length' t (r + 1)
+in
+fun myLength l = length' l 0
+end;
+
+(* myLength [1, 2, 3, 4]; *)
+
+fun subList l (j, k) =
+    let
+        fun subList' nil _ r = r
+          | subList' (h :: t) i r =
+            if i > k then r
+            else if i >= j andalso i < k
+            then subList' t (i + 1) (h :: r)
+            else subList' t (i + 1) r
+    in
+        if j >= k orelse j > (length l) orelse j < 0
+        then nil
+        else rev (subList' l 0 nil)
+    end;
+
+(* subList nil (0, 1); *)
+(* subList [0] (3, 2); *)
+(* subList [0] (~3, ~2); *)
+(* subList [0] (0, 2); *)
+(* subList [0, 1] (0, 1); *)
+(* subList [0, 1, 2, 3, 4, 5] (2, 4); *)
+
+local
+    fun member x l = List.exists (fn x' => x' = x) l
+    fun unique' nil r = r
+      | unique' (h :: t) r =
+        (* Get last unique element *)
+        (* if member h t *)
+        (* Get first unique element *)
+        if member h r
+        then unique' t r
+        else unique' t (h :: r)
+in
+fun unique l = rev (unique' l nil)
+end;
+
+(* unique [1, 2, 1, 3, 2, 4, 5, 1]; *)
