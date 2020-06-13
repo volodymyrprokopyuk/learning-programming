@@ -807,3 +807,30 @@ fun unique l = rev (unique' l nil)
 end;
 
 (* unique [1, 2, 1, 3, 2, 4, 5, 1]; *)
+
+(* Interleave, concat, permute *)
+fun interleave x nil = [[x]]
+  | interleave x (h :: t) =
+    (x :: h :: t) :: (map (fn l => h :: l) (interleave x t));
+
+(* interleave 10 [1, 2, 3]; *)
+
+fun concat nil = nil
+  | concat (h :: t) = h @ (concat t);
+
+(* concat [[1], [2], [3]]; *)
+
+fun permute nil = [nil]
+  | permute (h :: t) = concat (map (interleave h) (permute t));
+
+(* permute [1, 2, 3]; *)
+
+local
+    fun isPalindrome' nil nil = true
+      | isPalindrome' (h :: t) (h' :: t') = h = h' andalso isPalindrome' t t'
+in
+fun isPalindrome l = isPalindrome' l (rev l)
+end;
+
+(* isPalindrome [1, 2, 3, 3, 2]; *)
+(* isPalindrome [1, 2, 3, 3, 2, 1]; *)
