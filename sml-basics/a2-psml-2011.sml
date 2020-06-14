@@ -834,3 +834,17 @@ end;
 
 (* isPalindrome [1, 2, 3, 3, 2]; *)
 (* isPalindrome [1, 2, 3, 3, 2, 1]; *)
+
+(* Fold right *)
+fun foldr f b nil = b
+  | foldr f b (h :: t) = f (h, (foldr f b t));
+
+(* foldr (op +) 0 [1, 2, 3, 4, 5]; *)
+(* foldr (op -) 0 [5, 4, 7]; *)
+
+(* Fold left: new base *)
+fun foldl f b nil = b
+  | foldl f b (h :: t) = foldl f (f (h, b)) t;
+
+(* foldl (op +) 0 [1, 2, 3, 4, 5]; *)
+(* foldl (op -) 0 [5, 4, 7]; *)
