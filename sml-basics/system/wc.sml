@@ -1,3 +1,5 @@
+structure Wc =
+struct
 (* State machine to count words *)
 local
     fun outState nil count = count
@@ -16,8 +18,6 @@ end
 
 fun wordCount2 s = length (String.tokens Char.isSpace s)
 
-structure Wc =
-struct
 fun main (prog, args) =
     let
         val text = String.concatWith " " (tl args)

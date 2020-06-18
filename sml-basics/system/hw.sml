@@ -1,4 +1,4 @@
-structure Main =
+structure HelloWorld =
 struct
 fun main (program, arguments) =
     let
