@@ -20,7 +20,9 @@ CM_FILE=getopt.cm
 ENTRY_POINT=GetOpt.main
 HEAP_IMAGE=getopt.amd64-linux
 
-# Build heap image
-ml-build $CM_FILE $ENTRY_POINT $HEAP_IMAGE
-# Run heap image
-sml @SMLload $HEAP_IMAGE "${@}"
+# # Build heap image
+# ml-build $CM_FILE $ENTRY_POINT $HEAP_IMAGE
+# # Run heap image
+# sml @SMLload $HEAP_IMAGE "${@}"
+
+sml getopt.sml
