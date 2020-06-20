@@ -42,6 +42,17 @@ SELECT payment.put_iban_institution(
     a_iban_country_code := 'AD'
 ) iban_institution_id;
 
+SELECT payment.put_iban_institution(
+    a_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_institution_country_name := 'BELGIUM',
+    a_institution_country_code := 'BE',
+    a_iban_bic := 'ABNABEBRXXX',
+    a_routing_bic := 'ABNABEBRXXX',
+    a_iban_national_id := '271',
+    a_iban_country_code := 'BE',
+    a_is_sepa := true
+) iban_institution_id;
+
 -- IBAN exclusion list
 
 SELECT payment.put_iban_exclusion_list(
@@ -64,6 +75,7 @@ SELECT payment.put_swift_routing_ssi(
 ) swift_routing_ssi_id;
 
 -- IBAN validation
-SELECT * FROM payment.validate_iban('BE88271080782541');
-
+SELECT * FROM payment.is_valid_iban('BE88271080782541');
 SELECT * FROM payment.is_valid_iban('GB82WEST12345698765432');
+
+SELECT * FROM payment.validate_iban('BE88271080782541');

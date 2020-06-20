@@ -114,10 +114,10 @@ CREATE TABLE payment.swift_routing_ssi (
     correspondent_bic varchar(11) NOT NULL,
     correspondent_institution_name varchar(105) NOT NULL,
     correspondent_country_code varchar(2) NOT NULL,
+    correspondent_type payment.correspondent_type_t NOT NULL,
     owner_account_number_in_correspondent_bic varchar(70),
     is_preferred_correspondent bool
         DEFAULT false,
-    correspondent_type payment.correspondent_type_t NOT NULL,
     start_date date,
     end_date date,
     creation_ts timestamptz NOT NULL
@@ -353,16 +353,75 @@ VALUES
     ('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5), ('6', 6), ('7', 7),
     ('8', 8), ('9', 9)
 )
+-- Verify IBAN check digits
 SELECT string_agg(tr.number::text, '')::numeric % 97 = 1
+-- Rearrange IBAN (move IBAN country code and check digits to the end of IBAN)
 FROM regexp_split_to_table(substr(a_iban, 5) || substr(a_iban, 1, 4), '') ch
+    -- Translate IBAN letters into number
     JOIN translate tr ON tr.alphanum = ch;
 $$;
 
 CREATE OR REPLACE FUNCTION payment.validate_iban(a_iban varchar(34))
-RETURNS bool
+RETURNS TABLE (
+    iban varchar(34),
+    iban_country_code varchar(2),
+    iban_check_digits varchar(2),
+    iban_national_id varchar(30),
+    bank_identifier varchar(30),
+    branch_identifier varchar(30),
+    account_number varchar(30),
+    institution_name varchar(105),
+    institution_country_name varchar(70),
+    institution_country_code varchar(2),
+    iban_bic varchar(11),
+    is_sepa bool
+)
 LANGUAGE sql AS $$
-    SELECT length(a_iban) = ist.iban_total_length
+    SELECT a_iban,
+        ib.iban_country_code,
+        ib.iban_check_digits,
+        ib.iban_national_id,
+        ib.bank_identifier,
+        ib.branch_identifier,
+        ib.account_number,
+        iin.institution_name,
+        iin.institution_country_name,
+        iin.institution_country_code,
+        iin.iban_bic,
+        iin.is_sepa
+    FROM payment.iban_structure ist,
+        -- Parse IBAN structural components
+        LATERAL (SELECT substr(a_iban, 1, 2) iban_country_code,
+            substr(a_iban, 3, 2) iban_check_digits,
+            substr(a_iban, ist.bank_identifier_position,
+                ist.iban_national_id_length) iban_national_id,
+            substr(a_iban, ist.bank_identifier_position,
+                ist.bank_identifier_length) bank_identifier,
+            substr(a_iban, ist.branch_identifier_position,
+                ist.branch_identifier_length) branch_identifier,
+            substr(a_iban, ist.account_number_position,
+                ist.account_number_length) account_number
+        ) ib
+        -- Lookup IBAN BIC and instituiton details
+        JOIN payment.iban_institution iin ON
+            iin.iban_country_code = ib.iban_country_code
+                AND iin.iban_national_id = ib.iban_national_id
+    -- Lookup country code in IBAN structure
+    WHERE ist.iban_country_code = ib.iban_country_code
+        -- Validate IBAN length
+        AND length(a_iban) = ist.iban_total_length
+        -- Validate IBAN check digits
         AND payment.is_valid_iban(upper(a_iban))
-    FROM payment.iban_structure ist
-    WHERE ist.iban_country_code = substr(a_iban, 1, 2)
+        -- Check that the IBAN national ID is not in the IBAN exclusion list
+        AND NOT EXISTS (SELECT 1
+            FROM payment.iban_exclusion_list iex
+            WHERE iex.iban_country_code = ib.iban_country_code
+               AND iex.iban_national_id = ib.iban_national_id);
 $$;
+
+-- CREATE OR REPLACE FUNCTION payment.get_ssi(
+--     a_owner_bic varchar(11),
+--     a_currency_code varchar(3)
+-- ) RETURNS TABLE (
+-- ) LANGUAGE sql AS $$
+-- $$;
