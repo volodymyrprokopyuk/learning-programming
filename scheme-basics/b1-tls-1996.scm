@@ -61,3 +61,53 @@
 ;; (pp (my-last '(a)))
 ;; (pp (my-last '(a b c)))
 ;; (pp (my-last '()))
+
+(define* (make-counter #:optional (start 0) (step 1))
+  (let ([c start])
+    (lambda ()
+      (set! c (+ c step))
+      c)))
+
+;; (let ([c1 (make-counter)]
+;;       [c2 (make-counter 100 10)])
+;;   (pp (c1))
+;;   (pp (c2))
+;;   (pp (c1))
+;;   (pp (c1))
+;;   (pp (c1))
+;;   (pp (c2)))
+
+(use-modules (srfi srfi-11)) ; let-values
+
+(define (make-account)
+  (let* ([balance 0]
+         [get-balance (lambda () balance)]
+         [deposit (lambda (amount) (set! balance (+ balance amount)) balance)])
+    (values get-balance deposit)))
+
+;; (let-values ([(get-balance deposit) (make-account)])
+;;   (pp (get-balance))
+;;   (deposit 50)
+;;   (pp (get-balance))
+;;   (deposit -40)
+;;   (pp (get-balance)))
+
+(define (make-account2)
+  (let ([balance 0])
+    (define (get-balance) balance)
+    (define (deposit amount) (set! balance (+ balance amount)) balance)
+    (lambda args
+      (apply
+       (case (car args)
+         [(get-balance) get-balance]
+         [(deposit) deposit]
+         [else (error "account: invalid method")])
+       (cdr args)))))
+
+;; (let ([account (make-account2)])
+;;   (pp (account 'get-balance))
+;;   (account 'deposit 50)
+;;   (pp (account 'get-balance))
+;;   (account 'deposit -40)
+;;   (pp (account 'get-balance))
+;;   (account 'unknown-method))
