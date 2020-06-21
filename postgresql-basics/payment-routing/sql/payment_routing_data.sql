@@ -61,6 +61,8 @@ SELECT payment.put_iban_exclusion_list(
     a_iban_bic := 'CRDAADADXXX'
 ) iban_exclusion_list_id;
 
+-- SWIFT routing SSI
+
 SELECT payment.put_swift_routing_ssi(
     a_owner_bic := 'BINAADADXXX',
     a_owner_institution_name := 'MoraBanc',
@@ -74,8 +76,69 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_type := 'CORRESPONDENT'
 ) swift_routing_ssi_id;
 
+SELECT payment.put_swift_routing_ssi(
+    a_owner_bic := 'ABNABEBRXXX',
+    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_owner_institution_city := 'BRUSSELS',
+    a_owner_institution_country_code := 'BE',
+    a_currency_code := 'EUR',
+    a_asset_category := 'ANYY',
+    a_correspondent_bic := 'ABNABEBRXXX',
+    a_correspondent_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_correspondent_country_code := 'BE',
+    a_correspondent_type := 'CORRESPONDENT'
+) swift_routing_ssi_id;
+
+-- Routing SSI correspondent chain
+
+SELECT payment.put_swift_routing_ssi(
+    a_owner_bic := 'ABNABEBRXXX',
+    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_owner_institution_city := 'BRUSSELS',
+    a_owner_institution_country_code := 'BE',
+    a_currency_code := 'AED',
+    a_asset_category := 'ANYY',
+    a_correspondent_bic := 'CORRESPAXXX',
+    a_correspondent_institution_name := 'Correspondent A',
+    a_correspondent_country_code := 'ES',
+    a_correspondent_type := 'LOCAL_CORRESPONDENT'
+) swift_routing_ssi_id;
+
+SELECT payment.put_swift_routing_ssi(
+    a_owner_bic := 'CORRESPAXXX',
+    a_owner_institution_name := 'Correspondent A',
+    a_owner_institution_city := 'MADRID',
+    a_owner_institution_country_code := 'ES',
+    a_currency_code := 'AED',
+    a_asset_category := 'ANYY',
+    a_correspondent_bic := 'CORRESPBXXX',
+    a_correspondent_institution_name := 'Correspondent B',
+    a_correspondent_country_code := 'UK',
+    a_correspondent_type := 'LOCAL_CORRESPONDENT'
+) swift_routing_ssi_id;
+
+SELECT payment.put_swift_routing_ssi(
+    a_owner_bic := 'CORRESPBXXX',
+    a_owner_institution_name := 'Correspondent B',
+    a_owner_institution_city := 'LONDON',
+    a_owner_institution_country_code := 'UK',
+    a_currency_code := 'AED',
+    a_asset_category := 'ANYY',
+    a_correspondent_bic := 'CORRESPCXXX',
+    a_correspondent_institution_name := 'Correspondent C',
+    a_correspondent_country_code := 'AE',
+    a_correspondent_type := 'CORRESPONDENT'
+) swift_routing_ssi_id;
+
 -- IBAN validation
+
 SELECT * FROM payment.is_valid_iban('BE88271080782541');
 SELECT * FROM payment.is_valid_iban('GB82WEST12345698765432');
 
-SELECT * FROM payment.validate_iban('BE88271080782541');
+SELECT iban, iban_national_id, account_number, iban_bic, is_sepa
+FROM payment.validate_iban('BE88271080782541');
+
+-- Get routing SSI
+
+SELECT * FROM payment.get_routing_ssi('ABNABEBRXXX', 'EUR');
+SELECT * FROM payment.get_routing_ssi('ABNABEBRXXX', 'AED');

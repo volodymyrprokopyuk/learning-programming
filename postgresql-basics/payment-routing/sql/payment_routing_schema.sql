@@ -419,9 +419,46 @@ LANGUAGE sql AS $$
                AND iex.iban_national_id = ib.iban_national_id);
 $$;
 
--- CREATE OR REPLACE FUNCTION payment.get_ssi(
---     a_owner_bic varchar(11),
---     a_currency_code varchar(3)
--- ) RETURNS TABLE (
--- ) LANGUAGE sql AS $$
--- $$;
+CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
+    a_owner_bic varchar(11),
+    a_currency_code varchar(3)
+) RETURNS TABLE (
+    owner_bic varchar(11),
+    currency_code varchar(3),
+    correspondent_bic varchar(11),
+    correspondent_country_code varchar(2),
+    correspondent_type payment.correspondent_type_t
+) LANGUAGE sql AS $$
+WITH RECURSIVE routing_ssi(
+    owner_bic,
+    currency_code,
+    correspondent_bic,
+    correspondent_country_code,
+    correspondent_type
+) AS (
+    SELECT ossi.owner_bic,
+        ossi.currency_code,
+        ossi.correspondent_bic,
+        ossi.correspondent_country_code,
+        ossi.correspondent_type
+    FROM payment.swift_routing_ssi ossi
+    WHERE ossi.owner_bic = a_owner_bic
+        AND ossi.currency_code = a_currency_code
+    UNION
+    SELECT cssi.owner_bic,
+        cssi.currency_code,
+        cssi.correspondent_bic,
+        cssi.correspondent_country_code,
+        cssi.correspondent_type
+    FROM routing_ssi ossi
+        JOIN payment.swift_routing_ssi cssi ON
+            ossi.correspondent_bic = cssi.owner_bic
+    WHERE cssi.currency_code = a_currency_code
+)
+SELECT ssi.owner_bic,
+    ssi.currency_code,
+    ssi.correspondent_bic,
+    ssi.correspondent_country_code,
+    ssi.correspondent_type
+FROM routing_ssi ssi;
+$$;
