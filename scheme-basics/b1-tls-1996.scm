@@ -111,3 +111,11 @@
 ;;   (account 'deposit -40)
 ;;   (pp (account 'get-balance))
 ;;   (account 'unknown-method))
+
+;; MY_VAR=Vlad guile3.0 -c '(display (getenv "MY_VAR"))'
+;; guile3.0 -c '(display (command-line))' a b c d
+;; (pp (command-line))
+
+;; guile3.0 -e print-last-argument b1-tls-1996.scm a b c d
+(define (print-last-argument args)
+  (pp (my-last args)))
