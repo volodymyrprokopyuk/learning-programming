@@ -119,3 +119,13 @@
 ;; guile3.0 -e print-last-argument b1-tls-1996.scm a b c d
 (define (print-last-argument args)
   (pp (my-last args)))
+
+(define* (string-interleave-camel-case s #:optional (upcase? #t))
+  (let* ([up? upcase?]
+         [f (lambda (c)
+              (if up?
+                  (begin (set! up? #f) (char-upcase c))
+                  (begin (set! up? #t) (char-downcase c))))])
+    (string-map f s)))
+
+(pp (string-interleave-camel-case "vlad and lana" #f))
