@@ -128,4 +128,13 @@
                   (begin (set! up? #t) (char-downcase c))))])
     (string-map f s)))
 
-(pp (string-interleave-camel-case "vlad and lana" #f))
+;; (pp (string-interleave-camel-case "vlad and lana" #f))
+
+;; Keyword arguments with default values
+(define* (opt-args #:key (a 1) (b 2))
+  (list a b))
+
+;; (pp (opt-args))
+;; (pp (opt-args #:a 10))
+;; (pp (opt-args #:b 20))
+;; (pp (opt-args #:b 200 #:a 100))
