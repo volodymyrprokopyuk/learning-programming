@@ -138,3 +138,32 @@
 ;; (pp (opt-args #:a 10))
 ;; (pp (opt-args #:b 20))
 ;; (pp (opt-args #:b 200 #:a 100))
+
+(use-modules (srfi srfi-9) ; define-record-type
+             (srfi srfi-9 gnu)) ; set-record-type-printer!
+
+(define-record-type employee
+  ;; Constructor
+  (make-employee name salary)
+  ;; Type predicate
+  employee?
+  ;; Accessor only (immutable field)
+  (name employee-name)
+  ;; Accessor + mutator
+  (salary employee-salary set-employee-salary!))
+
+(pp (let ([vlad (make-employee "Vlad" 5000)])
+      (pp vlad)
+      (set-employee-salary! vlad 10000)
+      vlad))
+
+;; Custom record printer
+(set-record-type-printer!
+ employee
+ (lambda (record port)
+   (write-char #\[ port)
+   (display (employee-name record) port)
+   (write-char #\] port)))
+
+(pp (let ([vlad (make-employee "Vlad" 5000)])
+      vlad))
