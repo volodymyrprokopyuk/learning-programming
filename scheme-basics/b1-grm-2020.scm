@@ -42,13 +42,6 @@
        [(eqv? x (car l)) (append (reverse (cdr l)) r)]
        [else (remove-first' (cdr l) (cons (car l) r))]))))
 
-(define (remove-first x l)
-  (cond
-    [(null? l) '()]
-    [else (cond
-            [(eqv? x (car l)) (cdr l)]
-            [else (remove-first x (cdr l))])]))
-
 ;; (pp (remove-first 'b '(a b c b d)))
 ;; (pp (remove-first 'd '(a b c)))
 
@@ -152,10 +145,10 @@
   ;; Accessor + mutator
   (salary employee-salary set-employee-salary!))
 
-(pp (let ([vlad (make-employee "Vlad" 5000)])
-      (pp vlad)
-      (set-employee-salary! vlad 10000)
-      vlad))
+;; (pp (let ([vlad (make-employee "Vlad" 5000)])
+;;       (pp vlad)
+;;       (set-employee-salary! vlad 10000)
+;;       vlad))
 
 ;; Custom record printer
 (set-record-type-printer!
@@ -165,5 +158,22 @@
    (display (employee-name record) port)
    (write-char #\] port)))
 
-(pp (let ([vlad (make-employee "Vlad" 5000)])
-      vlad))
+;; (pp (let ([vlad (make-employee "Vlad" 5000)])
+;;       vlad))
+
+;; Asociation list
+;; (pp (let* ([al '((a . 1) (b . 2) (c . 3))]
+;;            [al2 (acons 'z 0 al)]
+;;            [al3 (assq-set! al2 'z 100)])
+;;       (list (assq 'z al3) (assq-ref al3 'z)
+;;             (assq-remove! al3 'z))))
+
+;; Hash table
+;; (let ([h (make-hash-table)])
+;;   (hashq-set! h 'a 1)
+;;   (hashq-set! h 'b 2)
+;;   (hashq-set! h 'c 3)
+;;   (pp (hashq-ref h 'a))
+;;   (pp (hashq-get-handle h 'b))
+;;   (pp (hash-fold (lambda (k v b) (+ b v)) 0 h))
+;;   (pp (hash-fold (lambda (k v b) (1+ b)) 0 h)))

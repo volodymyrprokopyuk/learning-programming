@@ -10,4 +10,4 @@ ROOT_DIR=$(pwd)
 # guile3.0 -L "${ROOT_DIR}" a2-tspl-2009.scm
 
 # Chapters 1-
-guile3.0 -L "${ROOT_DIR}" b1-tls-1996.scm "${@}"
+guile3.0 -L "${ROOT_DIR}" b1-grm-2020.scm "${@}"
