@@ -220,3 +220,22 @@
 ;;   (pp (vec v 1))
 ;;   (set! (vec v 1) 'B)
 ;;   (pp (vec v 1)))
+
+;; Global macro
+(define-syntax my-when
+  (syntax-rules ()
+    [(_ condition expression ...)
+     (if condition (begin expression ...))]))
+
+;; (my-when #t
+;;          (pp "Vlad")
+;;          (pp "Lana"))
+
+;; ;; Local macro
+;; (let-syntax ([my-unless
+;;                  (syntax-rules ()
+;;                      [(_ condition expression ...)
+;;                       (if (not condition) (begin expression ...))])])
+;;   (my-unless #f
+;;     (pp "Vlad")
+;;     (pp "Lana")))
