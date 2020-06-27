@@ -177,3 +177,46 @@
 ;;   (pp (hashq-get-handle h 'b))
 ;;   (pp (hash-fold (lambda (k v b) (+ b v)) 0 h))
 ;;   (pp (hash-fold (lambda (k v b) (1+ b)) 0 h)))
+
+;; case-lambda
+(define* (make-accum #:optional (a 0))
+  (case-lambda
+    [() a]
+    [(b) (set! a (+ a b)) a]))
+
+;; (let ([acc (make-accum)])
+;;   (pp (acc))
+;;   (acc 10)
+;;   (acc 20)
+;;   (pp (acc)))
+
+(define plus
+  (case-lambda
+    "Returns sum of all arguments"
+    [() 0]
+    [(a) a]
+    [(a b) (+ a b)]
+    [(a b . r) (apply plus (+ a b) r)]))
+
+;; (pp (procedure-documentation plus))
+;; (pp (plus 1 2 3 4 5))
+
+(use-modules (srfi srfi-1)) ; fold
+
+(define (my-length l)
+  "Returns length of a list"
+  (fold + 0 (map (const 1) l)))
+
+;; (pp (procedure-documentation my-length))
+;; (pp (my-length '(1 2 3 4)))
+
+;; Procedure with setter
+(define vec (make-procedure-with-setter vector-ref vector-set!))
+
+;; (let ([v (vector 'a 'b 'c)])
+;;   ;; (pp (vector-ref v 1))
+;;   ;; (vector-set! v 1 'B)
+;;   ;; (pp (vector-ref v 1)))
+;;   (pp (vec v 1))
+;;   (set! (vec v 1) 'B)
+;;   (pp (vec v 1)))
