@@ -231,7 +231,7 @@
 ;;          (pp "Vlad")
 ;;          (pp "Lana"))
 
-;; ;; Local macro
+;; Local macro
 ;; (let-syntax ([my-unless
 ;;                  (syntax-rules ()
 ;;                      [(_ condition expression ...)
@@ -239,3 +239,19 @@
 ;;   (my-unless #f
 ;;     (pp "Vlad")
 ;;     (pp "Lana")))
+
+;; (pp (sort '(4 3 6 7 9 2 8 7) <))
+
+;; Hooks
+;; (let ([h (make-hook 1)])
+;;   (add-hook! h (lambda (x) (pp (string-append "Hook A: " x))))
+;;   (add-hook! h (lambda (x) (pp (string-append "Hook B: " x))))
+;;   (run-hook h "ok"))
+
+;; Multiple return values. Formals binding as in (lambda
+;; (define-values (a b) (values 1 2))
+;; (pp (cons a b))
+;; (define-values (a . b) (values 1 2 3 4))
+;; (pp (list a b))
+;; (define-values a (values 1 2 3 4))
+;; (pp a)
