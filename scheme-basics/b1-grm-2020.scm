@@ -255,3 +255,14 @@
 ;; (pp (list a b))
 ;; (define-values a (values 1 2 3 4))
 ;; (pp a)
+
+;; Iteration with (do
+;; (pp (do ([i 0 (1+ i)]
+;;          [j 0 (+ j 10)])
+;;         ((> i 5) 'done)
+;;       (format #t "~s ~s\n" i j)))
+
+;; Iteration with named (let
+;; (pp (let loop ([i 0] [j 0])
+;;       (format #t "~s ~s\n" i j)
+;;       (if (< i 5) (loop (1+ i) (+ j 10)) 'done)))
