@@ -126,8 +126,8 @@ CREATE TABLE payment.swift_routing_ssi (
         DEFAULT date_trunc('milliseconds', current_timestamp),
     CONSTRAINT pk_swift_routing_ssi
         PRIMARY KEY (swift_routing_ssi_id),
-    CONSTRAINT uq_swift_routing_ssi_owner_bic_and_currency_code
-        UNIQUE (owner_bic, currency_code)
+    CONSTRAINT uq_swift_routing_ssi_owner_bic_currency_code_correspondent_bic
+        UNIQUE (owner_bic, currency_code, correspondent_bic)
 );
 
 -- Interface
@@ -238,7 +238,6 @@ INSERT INTO payment.iban_institution (
     institution_name = excluded.institution_name,
     institution_country_name = excluded.institution_country_name,
     institution_country_code = excluded.institution_country_code,
-    iban_bic = excluded.iban_bic,
     routing_bic = excluded.routing_bic,
     iban_national_id = excluded.iban_national_id,
     iban_country_code = excluded.iban_country_code,
@@ -320,15 +319,13 @@ INSERT INTO payment.swift_routing_ssi (
     a_is_preferred_correspondent,
     a_start_date,
     a_end_date
-) ON CONFLICT ON CONSTRAINT uq_swift_routing_ssi_owner_bic_and_currency_code
+) ON CONFLICT
+ON CONSTRAINT uq_swift_routing_ssi_owner_bic_currency_code_correspondent_bic
 DO UPDATE SET
-    owner_bic = excluded.owner_bic,
     owner_institution_name = excluded.owner_institution_name,
     owner_institution_city = excluded.owner_institution_city,
     owner_institution_country_code = excluded.owner_institution_country_code,
-    currency_code = excluded.currency_code,
     asset_category = excluded.asset_category,
-    correspondent_bic = excluded.correspondent_bic,
     correspondent_institution_name = excluded.correspondent_institution_name,
     correspondent_country_code = excluded.correspondent_country_code,
     correspondent_type = excluded.correspondent_type,
@@ -423,6 +420,7 @@ CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
     a_owner_bic varchar(11),
     a_currency_code varchar(3)
 ) RETURNS TABLE (
+    routing_ssi_id uuid,
     owner_bic varchar(11),
     currency_code varchar(3),
     correspondent_bic varchar(11),
@@ -430,13 +428,16 @@ CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
     correspondent_type payment.correspondent_type_t
 ) LANGUAGE sql AS $$
 WITH RECURSIVE routing_ssi(
+    routing_ssi_id,
     owner_bic,
     currency_code,
     correspondent_bic,
     correspondent_country_code,
     correspondent_type
 ) AS (
-    SELECT ossi.owner_bic,
+    -- Label for the whole routing SSI chain used for individual chain aggregation
+    SELECT ossi.swift_routing_ssi_id,
+        ossi.owner_bic,
         ossi.currency_code,
         ossi.correspondent_bic,
         ossi.correspondent_country_code,
@@ -445,7 +446,8 @@ WITH RECURSIVE routing_ssi(
     WHERE ossi.owner_bic = a_owner_bic
         AND ossi.currency_code = a_currency_code
     UNION
-    SELECT cssi.owner_bic,
+    SELECT ossi.routing_ssi_id,
+        cssi.owner_bic,
         cssi.currency_code,
         cssi.correspondent_bic,
         cssi.correspondent_country_code,
@@ -455,10 +457,12 @@ WITH RECURSIVE routing_ssi(
             ossi.correspondent_bic = cssi.owner_bic
     WHERE cssi.currency_code = a_currency_code
 )
-SELECT ssi.owner_bic,
+SELECT ssi.routing_ssi_id,
+    ssi.owner_bic,
     ssi.currency_code,
     ssi.correspondent_bic,
     ssi.correspondent_country_code,
     ssi.correspondent_type
-FROM routing_ssi ssi;
+FROM routing_ssi ssi
+ORDER BY ssi.routing_ssi_id;
 $$;
