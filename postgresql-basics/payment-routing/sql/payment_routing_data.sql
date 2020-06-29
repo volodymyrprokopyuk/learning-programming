@@ -63,7 +63,7 @@ SELECT payment.put_iban_exclusion_list(
 
 -- SWIFT routing SSI
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'BINAADADXXX',
     a_owner_institution_name := 'MoraBanc',
     a_owner_institution_city := 'ANDORRA',
@@ -73,10 +73,11 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'BINAADADXXX',
     a_correspondent_institution_name := 'MoraBanc',
     a_correspondent_country_code := 'AD',
-    a_correspondent_type := 'CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'CORRESPONDENT',
+    a_routing_ssi_source := 'SWIFT'
+) routing_ssi_id;
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'ABNABEBRXXX',
     a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
     a_owner_institution_city := 'BRUSSELS',
@@ -86,12 +87,29 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'ABNABEBRXXX',
     a_correspondent_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
     a_correspondent_country_code := 'BE',
-    a_correspondent_type := 'CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'CORRESPONDENT',
+    a_routing_ssi_source := 'SWIFT'
+) routing_ssi_id;
 
--- Routing SSI correspondent chain 1
+-- PagoFX preferred direct correspondent
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
+    a_owner_bic := 'ABNABEBRXXX',
+    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_owner_institution_city := 'BRUSSELS',
+    a_owner_institution_country_code := 'BE',
+    a_currency_code := 'EUR',
+    a_asset_category := 'ANYY',
+    a_correspondent_bic := 'PAGOFXCOXXX',
+    a_correspondent_institution_name := 'Preferred PagoFX correspondent',
+    a_correspondent_country_code := 'BE',
+    a_correspondent_type := 'CORRESPONDENT',
+    a_routing_ssi_source := 'PAGOFX'
+) routing_ssi_id;
+
+-- SWIFT routing SSI correspondent chain
+
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'ABNABEBRXXX',
     a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
     a_owner_institution_city := 'BRUSSELS',
@@ -101,10 +119,11 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'CORRESPAXXX',
     a_correspondent_institution_name := 'Correspondent A',
     a_correspondent_country_code := 'ES',
-    a_correspondent_type := 'LOCAL_CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'LOCAL_CORRESPONDENT',
+    a_routing_ssi_source := 'SWIFT'
+) routing_ssi_id;
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'CORRESPAXXX',
     a_owner_institution_name := 'Correspondent A',
     a_owner_institution_city := 'MADRID',
@@ -114,10 +133,11 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'CORRESPBXXX',
     a_correspondent_institution_name := 'Correspondent B',
     a_correspondent_country_code := 'UK',
-    a_correspondent_type := 'LOCAL_CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'LOCAL_CORRESPONDENT',
+    a_routing_ssi_source := 'SWIFT'
+) routing_ssi_id;
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'CORRESPBXXX',
     a_owner_institution_name := 'Correspondent B',
     a_owner_institution_city := 'LONDON',
@@ -127,12 +147,13 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'CORRESPCXXX',
     a_correspondent_institution_name := 'Correspondent C',
     a_correspondent_country_code := 'AE',
-    a_correspondent_type := 'CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'CORRESPONDENT',
+    a_routing_ssi_source := 'SWIFT'
+) routing_ssi_id;
 
--- Routing SSI correspondent chain 2
+-- PAGOFX routing SSI correspondent chain
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'ABNABEBRXXX',
     a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
     a_owner_institution_city := 'BRUSSELS',
@@ -142,10 +163,11 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'CORRESPDXXX',
     a_correspondent_institution_name := 'Correspondent D',
     a_correspondent_country_code := 'FR',
-    a_correspondent_type := 'LOCAL_CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'LOCAL_CORRESPONDENT',
+    a_routing_ssi_source := 'PAGOFX'
+) routing_ssi_id;
 
-SELECT payment.put_swift_routing_ssi(
+SELECT payment.put_routing_ssi(
     a_owner_bic := 'CORRESPDXXX',
     a_owner_institution_name := 'Correspondent D',
     a_owner_institution_city := 'PARIS',
@@ -155,8 +177,9 @@ SELECT payment.put_swift_routing_ssi(
     a_correspondent_bic := 'CORRESPEXXX',
     a_correspondent_institution_name := 'Correspondent E',
     a_correspondent_country_code := 'AE',
-    a_correspondent_type := 'CORRESPONDENT'
-) swift_routing_ssi_id;
+    a_correspondent_type := 'CORRESPONDENT',
+    a_routing_ssi_source := 'PAGOFX'
+) routing_ssi_id;
 
 -- IBAN validation
 
@@ -168,7 +191,9 @@ FROM payment.validate_iban('BE88271080782541');
 
 -- Get routing SSI
 
-SELECT routing_ssi_id, owner_bic, currency_code, correspondent_bic, correspondent_type
+SELECT routing_ssi_id, owner_bic, currency_code,
+    correspondent_bic, correspondent_type, routing_ssi_source
 FROM payment.get_routing_ssi('ABNABEBRXXX', 'EUR');
-SELECT routing_ssi_id, owner_bic, currency_code, correspondent_bic, correspondent_type
+SELECT routing_ssi_id, owner_bic, currency_code,
+    correspondent_bic, correspondent_type, routing_ssi_source
 FROM payment.get_routing_ssi('ABNABEBRXXX', 'AED');

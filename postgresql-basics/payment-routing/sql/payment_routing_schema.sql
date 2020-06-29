@@ -13,6 +13,9 @@ ENUM (
     'LOCAL_CORRESPONDENT'
 );
 
+CREATE TYPE payment.routing_ssi_source_type AS
+ENUM ('PAGOFX', 'SWIFT');
+
 CREATE TABLE payment.iban_structure (
     iban_structure_id uuid NOT NULL
         DEFAULT gen_random_uuid(),
@@ -96,8 +99,8 @@ CREATE TABLE payment.iban_exclusion_list (
         PRIMARY KEY (iban_exclusion_list_id)
 );
 
-CREATE TABLE payment.swift_routing_ssi (
-    swift_routing_ssi_id uuid NOT NULL
+CREATE TABLE payment.routing_ssi (
+    routing_ssi_id uuid NOT NULL
         DEFAULT gen_random_uuid(),
     owner_bic varchar(11) NOT NULL,
     owner_institution_name varchar(105) NOT NULL,
@@ -115,6 +118,7 @@ CREATE TABLE payment.swift_routing_ssi (
     correspondent_institution_name varchar(105) NOT NULL,
     correspondent_country_code varchar(2) NOT NULL,
     correspondent_type payment.correspondent_type_t NOT NULL,
+    routing_ssi_source payment.routing_ssi_source_type NOT NULL,
     owner_account_number_in_correspondent_bic varchar(70),
     is_preferred_correspondent bool
         DEFAULT false,
@@ -124,10 +128,10 @@ CREATE TABLE payment.swift_routing_ssi (
         DEFAULT date_trunc('milliseconds', current_timestamp),
     update_ts timestamptz NOT NULL
         DEFAULT date_trunc('milliseconds', current_timestamp),
-    CONSTRAINT pk_swift_routing_ssi
-        PRIMARY KEY (swift_routing_ssi_id),
-    CONSTRAINT uq_swift_routing_ssi_owner_bic_currency_code_correspondent_bic
-        UNIQUE (owner_bic, currency_code, correspondent_bic)
+    CONSTRAINT pk_routing_ssi
+        PRIMARY KEY (routing_ssi_id),
+    CONSTRAINT uq_routing_ssi_owner_bic_currency_correspondent_bic_routing_ssi_source
+        UNIQUE (owner_bic, currency_code, correspondent_bic, routing_ssi_source)
 );
 
 -- Interface
@@ -272,7 +276,7 @@ INSERT INTO payment.iban_exclusion_list (
 RETURNING iban_exclusion_list_id;
 $$;
 
-CREATE OR REPLACE FUNCTION payment.put_swift_routing_ssi (
+CREATE OR REPLACE FUNCTION payment.put_routing_ssi (
     a_owner_bic varchar(11),
     a_owner_institution_name varchar(105),
     a_owner_institution_city varchar(35),
@@ -283,13 +287,14 @@ CREATE OR REPLACE FUNCTION payment.put_swift_routing_ssi (
     a_correspondent_institution_name varchar(105),
     a_correspondent_country_code varchar(2),
     a_correspondent_type payment.correspondent_type_t,
+    a_routing_ssi_source payment.routing_ssi_source_type,
     a_owner_account_number_in_correspondent_bic varchar(70) DEFAULT NULL,
     a_is_preferred_correspondent bool DEFAULT false,
     a_start_date date DEFAULT NULL,
     a_end_date date DEFAULT NULL
 ) RETURNS uuid
 LANGUAGE sql AS $$
-INSERT INTO payment.swift_routing_ssi (
+INSERT INTO payment.routing_ssi (
     owner_bic,
     owner_institution_name,
     owner_institution_city,
@@ -300,6 +305,7 @@ INSERT INTO payment.swift_routing_ssi (
     correspondent_institution_name,
     correspondent_country_code,
     correspondent_type,
+    routing_ssi_source,
     owner_account_number_in_correspondent_bic,
     is_preferred_correspondent,
     start_date,
@@ -315,12 +321,13 @@ INSERT INTO payment.swift_routing_ssi (
     a_correspondent_institution_name,
     a_correspondent_country_code,
     a_correspondent_type,
+    a_routing_ssi_source,
     a_owner_account_number_in_correspondent_bic,
     a_is_preferred_correspondent,
     a_start_date,
     a_end_date
 ) ON CONFLICT
-ON CONSTRAINT uq_swift_routing_ssi_owner_bic_currency_code_correspondent_bic
+ON CONSTRAINT uq_routing_ssi_owner_bic_currency_correspondent_bic_routing_ssi_source
 DO UPDATE SET
     owner_institution_name = excluded.owner_institution_name,
     owner_institution_city = excluded.owner_institution_city,
@@ -335,7 +342,7 @@ DO UPDATE SET
     start_date = excluded.start_date,
     end_date = excluded.end_date,
     update_ts = date_trunc('milliseconds', current_timestamp)
-RETURNING swift_routing_ssi_id;
+RETURNING routing_ssi_id;
 $$;
 
 CREATE OR REPLACE FUNCTION payment.is_valid_iban(a_iban varchar(34))
@@ -425,7 +432,8 @@ CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
     currency_code varchar(3),
     correspondent_bic varchar(11),
     correspondent_country_code varchar(2),
-    correspondent_type payment.correspondent_type_t
+    correspondent_type payment.correspondent_type_t,
+    routing_ssi_source payment.routing_ssi_source_type
 ) LANGUAGE sql AS $$
 WITH RECURSIVE routing_ssi(
     routing_ssi_id,
@@ -433,16 +441,19 @@ WITH RECURSIVE routing_ssi(
     currency_code,
     correspondent_bic,
     correspondent_country_code,
-    correspondent_type
+    correspondent_type,
+    routing_ssi_source
 ) AS (
-    -- Label for the whole routing SSI chain used for individual chain aggregation
-    SELECT ossi.swift_routing_ssi_id,
+    -- Routing SSI chain label for routing SSI chain aggregation
+    SELECT ossi.routing_ssi_id,
         ossi.owner_bic,
         ossi.currency_code,
         ossi.correspondent_bic,
         ossi.correspondent_country_code,
-        ossi.correspondent_type
-    FROM payment.swift_routing_ssi ossi
+        ossi.correspondent_type,
+        ossi.routing_ssi_source
+    FROM payment.routing_ssi ossi
+    -- Start with owner BIC and term currency
     WHERE ossi.owner_bic = a_owner_bic
         AND ossi.currency_code = a_currency_code
     UNION
@@ -451,10 +462,13 @@ WITH RECURSIVE routing_ssi(
         cssi.currency_code,
         cssi.correspondent_bic,
         cssi.correspondent_country_code,
-        cssi.correspondent_type
+        cssi.correspondent_type,
+        ossi.routing_ssi_source
     FROM routing_ssi ossi
-        JOIN payment.swift_routing_ssi cssi ON
+        JOIN payment.routing_ssi cssi ON
+            -- follow the routing SSI chain through LOCAL_CORRESPONDENTs
             ossi.correspondent_bic = cssi.owner_bic
+            AND ossi.correspondent_type = 'LOCAL_CORRESPONDENT'
     WHERE cssi.currency_code = a_currency_code
 )
 SELECT ssi.routing_ssi_id,
@@ -462,7 +476,8 @@ SELECT ssi.routing_ssi_id,
     ssi.currency_code,
     ssi.correspondent_bic,
     ssi.correspondent_country_code,
-    ssi.correspondent_type
+    ssi.correspondent_type,
+    ssi.routing_ssi_source
 FROM routing_ssi ssi
 ORDER BY ssi.routing_ssi_id;
 $$;
