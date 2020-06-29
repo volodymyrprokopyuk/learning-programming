@@ -70,7 +70,7 @@
 ;;   (pp (c1))
 ;;   (pp (c2)))
 
-(use-modules (srfi srfi-11)) ; let-values
+(use-modules (srfi srfi-11)) ;; let-values
 
 (define (make-account)
   (let* ([balance 0]
@@ -132,8 +132,8 @@
 ;; (pp (opt-args #:b 20))
 ;; (pp (opt-args #:b 200 #:a 100))
 
-(use-modules (srfi srfi-9) ; define-record-type
-             (srfi srfi-9 gnu)) ; set-record-type-printer!
+(use-modules (srfi srfi-9) ;; define-record-type
+             (srfi srfi-9 gnu)) ;; set-record-type-printer!
 
 (define-record-type employee
   ;; Constructor
@@ -201,7 +201,7 @@
 ;; (pp (procedure-documentation plus))
 ;; (pp (plus 1 2 3 4 5))
 
-(use-modules (srfi srfi-1)) ; fold
+(use-modules (srfi srfi-1)) ;; fold
 
 (define (my-length l)
   "Returns length of a list"
@@ -266,3 +266,32 @@
 ;; (pp (let loop ([i 0] [j 0])
 ;;       (format #t "~s ~s\n" i j)
 ;;       (if (< i 5) (loop (1+ i) (+ j 10)) 'done)))
+
+;; Prompt/abort
+(define prompt-cont
+  (call-with-prompt
+   ;; Tag
+   'ptag
+   ;; Thunk
+   (lambda () (+ 10 (abort-to-prompt 'ptag)))
+   ;; Handler
+   (lambda (k) k)))
+
+;; (pp (prompt-cont 1))
+;; Composable continuation
+;; (pp (* 2 (prompt-cont 1)))
+
+(use-modules (ice-9 control)) ;; call/ec
+
+;; Escape continuation
+(define (my-prefix x l)
+  (call/ec
+   (lambda (return-ec)
+     (fold
+      (lambda (el res)
+        (if (eqv? el x)
+            (return-ec (reverse res)) ;; escape fold
+            (cons el res)))
+      '() l))))
+
+;; (pp (my-prefix 'd '(a b c d e f g)))
