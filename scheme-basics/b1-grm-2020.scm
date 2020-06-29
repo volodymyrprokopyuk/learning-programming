@@ -295,3 +295,15 @@
       '() l))))
 
 ;; (pp (my-prefix 'd '(a b c d e f g)))
+
+;; Multiple values
+;; (pp (call-with-values
+;;      (lambda () (values 1 2))
+;;      (lambda (a b) (+ a b))))
+
+(use-modules (ice-9 receive)) ;; receive
+
+;; Receive multiple values
+;; (pp (receive (a b)
+;;         ((lambda () (values 1 2)))
+;;       (+ a b)))
