@@ -307,3 +307,23 @@
 ;; (pp (receive (a b)
 ;;         ((lambda () (values 1 2)))
 ;;       (+ a b)))
+
+;; (use-modules (ice-9 exceptions)) ;; with-exception-hanlder
+
+;; Exceptions
+;; (with-exception-handler
+;;   ;; Handler
+;;   (lambda (exc) (pp exc))
+;;   ;; Thunk
+;;   (lambda () (raise-exception 'oh #:continuable? #t)))
+
+;; Resources management
+;; (call/cc
+;;  (lambda (escape)
+;;    (dynamic-wind
+;;      ;; In-guard
+;;      (lambda () (pp 'in-guard))
+;;      ;; Thunk
+;;      (lambda () (pp 'thunk) (escape) #;(raise-exception 'oh))
+;;      ;; Out-guard
+;;      (lambda () (pp 'out-guard)))))
