@@ -327,3 +327,12 @@
 ;;      (lambda () (pp 'thunk) (escape) #;(raise-exception 'oh))
 ;;      ;; Out-guard
 ;;      (lambda () (pp 'out-guard)))))
+
+;; Parameters (dynamic variable binding)
+(let* ([my-param (make-parameter 'a)]
+       [show-param (lambda () (pp (my-param)))])
+  (pp (my-param))
+  (my-param 'b)
+  (pp (my-param))
+  (parameterize ((my-param 'c))
+    (show-param)))
