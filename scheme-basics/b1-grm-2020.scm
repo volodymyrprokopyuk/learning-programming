@@ -329,10 +329,24 @@
 ;;      (lambda () (pp 'out-guard)))))
 
 ;; Parameters (dynamic variable binding)
-(let* ([my-param (make-parameter 'a)]
-       [show-param (lambda () (pp (my-param)))])
-  (pp (my-param))
-  (my-param 'b)
-  (pp (my-param))
-  (parameterize ((my-param 'c))
-    (show-param)))
+;; (let* ([my-param (make-parameter 'a)]
+;;        [show-param (lambda () (pp (my-param)))])
+;;   (pp (my-param))
+;;   (my-param 'b)
+;;   (pp (my-param))
+;;   (parameterize ((my-param 'c))
+;;     (show-param)))
+
+;; Ports
+;; (let ([p (open-output-file "file.txt")])
+;;   (display "Hello Vlad and Lana!" p)
+;;   (close-port p))
+
+;; (call-with-output-file "file2.txt"
+;;   (lambda (p)
+;;     (display "Vlad and Lana" p)
+;;     (display (format #f "\nLanguage: ~A, implementation: ~A" "Scheme" "Guile") p)))
+
+(use-modules (ice-9 textual-ports)) ;; get-string-all
+
+(display (call-with-input-file "b1-grm-2020.scm" get-string-all))
