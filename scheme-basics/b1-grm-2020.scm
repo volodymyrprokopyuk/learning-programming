@@ -349,4 +349,10 @@
 
 (use-modules (ice-9 textual-ports)) ;; get-string-all
 
-(display (call-with-input-file "b1-grm-2020.scm" get-string-all))
+;; (display (call-with-input-file "b1-grm-2020.scm" get-string-all))
+
+;; (with-input-from-file "b1-grm-2020.scm"
+;;   (lambda () (display (get-string-all (current-input-port)))))
+
+;; (with-output-to-file "file.txt"
+;;   (lambda () (display "Vlad and Lana!" (current-output-port))))
