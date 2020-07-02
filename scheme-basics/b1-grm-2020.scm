@@ -356,3 +356,27 @@
 
 ;; (with-output-to-file "file.txt"
 ;;   (lambda () (display "Vlad and Lana!" (current-output-port))))
+
+(use-modules (ice-9 regex)) ;; string-match
+
+;; (pp (string-match "V.{3}" "Vlad and Lana"))
+
+;; (pp (let ([r (make-regexp "([a-z]+)" regexp/icase)]
+;;           [s "Vlad and Lana1"])
+;;       (regexp-exec r s)
+;;       (map match:substring (list-matches r s))
+;;       (fold-matches r s '() (lambda (m b) (cons (match:substring m) b)))))
+
+;; (pp (regexp-substitute #f (string-match "[0-9]+" "begin 34 end") 'pre "45" 'post))
+
+;; (pp (let ([r (make-regexp "([0-9]{4})([0-9]{2})([0-9]{2})")]
+;;           [s "Date 20200702"])
+;;       (regexp-substitute #f (regexp-exec r s) 'pre 1 "-" 2 "-" 3)))
+
+;; (pp (let ([r (make-regexp " +")]
+;;           [s "out of  the   box"])
+;;       (regexp-substitute/global #f r s 'pre "-" 'post)))
+
+;; (pp (let ([r (make-regexp "(.)(.)")]
+;;           [s "Vlad"])
+;;       (regexp-substitute/global #f r s 2 1 'post)))
