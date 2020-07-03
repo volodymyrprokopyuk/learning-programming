@@ -380,3 +380,7 @@
 ;; (pp (let ([r (make-regexp "(.)(.)")]
 ;;           [s "Vlad"])
 ;;       (regexp-substitute/global #f r s 2 1 'post)))
+
+;; Promise
+(pp (let ([p (delay (+ 1 2))])
+      (force p)))
