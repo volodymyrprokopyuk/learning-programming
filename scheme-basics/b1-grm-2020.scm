@@ -1,6 +1,6 @@
-(use-modules (ice-9 pretty-print))
-
-(define pp pretty-print)
+(use-modules
+ ((ice-9 pretty-print)
+  #:select ((pretty-print . pp))))
 
 (define (atom? x)
   (and (not (pair? x)) (not (null? x))))
@@ -382,5 +382,5 @@
 ;;       (regexp-substitute/global #f r s 2 1 'post)))
 
 ;; Promise
-(pp (let ([p (delay (+ 1 2))])
-      (force p)))
+;; (pp (let ([p (delay (+ 1 2))])
+;;       (force p)))
