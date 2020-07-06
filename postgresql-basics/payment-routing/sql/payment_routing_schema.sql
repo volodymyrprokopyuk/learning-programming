@@ -16,6 +16,9 @@ ENUM (
 CREATE TYPE payment.routing_ssi_source_type AS
 ENUM ('PAGOFX', 'SWIFT');
 
+CREATE TYPE payment.holiday_type_type AS
+ENUM ('NORMAL_HOLIDAY', 'SPECIAL_HOLIDAY', 'EXCHANGE_HOLIDAY', 'WEEKEND_HOLIDAY');
+
 CREATE TABLE payment.iban_structure (
     iban_structure_id uuid NOT NULL
         DEFAULT gen_random_uuid(),
@@ -130,8 +133,27 @@ CREATE TABLE payment.routing_ssi (
         DEFAULT date_trunc('milliseconds', current_timestamp),
     CONSTRAINT pk_routing_ssi
         PRIMARY KEY (routing_ssi_id),
-    CONSTRAINT uq_routing_ssi_owner_bic_currency_correspondent_bic_routing_ssi_source
-        UNIQUE (owner_bic, currency_code, correspondent_bic, routing_ssi_source)
+    CONSTRAINT uq_routing_ssi_bic_currency_country_ssi_source
+        UNIQUE (owner_bic, currency_code, owner_institution_country_code,
+            correspondent_bic, routing_ssi_source)
+);
+
+CREATE TABLE payment.bank_holiday (
+    bank_holiday_id uuid NOT NULL
+        DEFAULT gen_random_uuid(),
+    country_code varchar(2) NOT NULL,
+    holiday_date date NOT NULL,
+    holiday_type payment.holiday_type_type NOT NULL,
+    holiday_details jsonb,
+    holiday_services varchar(3)[],
+    creation_ts timestamptz NOT NULL
+        DEFAULT date_trunc('milliseconds', current_timestamp),
+    update_ts timestamptz NOT NULL
+        DEFAULT date_trunc('milliseconds', current_timestamp),
+    CONSTRAINT pk_bank_holiday
+        PRIMARY KEY (bank_holiday_id),
+    CONSTRAINT uq_bank_holiday_country_code_holiday_date_holiday_type
+        UNIQUE (country_code, holiday_date, holiday_type)
 );
 
 -- Interface
@@ -327,7 +349,7 @@ INSERT INTO payment.routing_ssi (
     a_start_date,
     a_end_date
 ) ON CONFLICT
-ON CONSTRAINT uq_routing_ssi_owner_bic_currency_correspondent_bic_routing_ssi_source
+ON CONSTRAINT uq_routing_ssi_bic_currency_country_ssi_source
 DO UPDATE SET
     owner_institution_name = excluded.owner_institution_name,
     owner_institution_city = excluded.owner_institution_city,
@@ -436,7 +458,9 @@ CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
     correspondent_country_code varchar(2),
     correspondent_type payment.correspondent_type_t,
     routing_ssi_source payment.routing_ssi_source_type,
-    is_preferred_correspondent bool
+    is_preferred_correspondent bool,
+    holiday_date date,
+    holiday_type payment.holiday_type_type
 ) LANGUAGE sql AS $$
 WITH RECURSIVE routing_ssi(
     routing_ssi_id,
@@ -447,7 +471,9 @@ WITH RECURSIVE routing_ssi(
     correspondent_country_code,
     correspondent_type,
     routing_ssi_source,
-    is_preferred_correspondent
+    is_preferred_correspondent,
+    holiday_date,
+    holiday_type
 ) AS (
     -- Routing SSI chain label for routing SSI chain aggregation
     SELECT ossi.routing_ssi_id,
@@ -458,8 +484,15 @@ WITH RECURSIVE routing_ssi(
         ossi.correspondent_country_code,
         ossi.correspondent_type,
         ossi.routing_ssi_source,
-        ossi.is_preferred_correspondent
+        ossi.is_preferred_correspondent,
+        obh.holiday_date,
+        obh.holiday_type
     FROM payment.routing_ssi ossi
+        -- Check holidays for owner institution
+        LEFT JOIN payment.bank_holiday obh
+            ON obh.country_code = ossi.owner_institution_country_code
+            AND obh.holiday_date <@ daterange(
+                current_date, (current_date + INTERVAL '3 days')::date)
     -- Start with owner BIC, term currency, and destination (owner) country
     WHERE ossi.owner_bic = a_owner_bic
         AND ossi.currency_code = a_currency_code
@@ -473,12 +506,19 @@ WITH RECURSIVE routing_ssi(
         cssi.correspondent_country_code,
         cssi.correspondent_type,
         ossi.routing_ssi_source,
-        cssi.is_preferred_correspondent
+        cssi.is_preferred_correspondent,
+        cbh.holiday_date,
+        cbh.holiday_type
     FROM routing_ssi ossi
         JOIN payment.routing_ssi cssi ON
             -- follow the routing SSI chain through LOCAL_CORRESPONDENTs
             ossi.correspondent_bic = cssi.owner_bic
             AND ossi.correspondent_type = 'LOCAL_CORRESPONDENT'
+        -- Check holidays for correspondent instituiton
+        LEFT JOIN payment.bank_holiday cbh
+            ON cbh.country_code = cssi.owner_institution_country_code
+            AND cbh.holiday_date <@ daterange(
+                current_date, (current_date + INTERVAL '3 days')::date)
     WHERE cssi.currency_code = a_currency_code
 )
 SELECT ssi.routing_ssi_id,
@@ -489,7 +529,27 @@ SELECT ssi.routing_ssi_id,
     ssi.correspondent_country_code,
     ssi.correspondent_type,
     ssi.routing_ssi_source,
-    ssi.is_preferred_correspondent
+    ssi.is_preferred_correspondent,
+    ssi.holiday_date,
+    ssi.holiday_type
 FROM routing_ssi ssi
+-- Prioritize by SSI source, show evary  SSI routing option one after another
 ORDER BY ssi.routing_ssi_source, ssi.routing_ssi_id;
+$$;
+
+CREATE OR REPLACE FUNCTION payment.put_bank_holiday(
+    a_country_code varchar(2),
+    a_holiday_date date,
+    a_holiday_type payment.holiday_type_type
+) RETURNS uuid
+LANGUAGE sql AS $$
+INSERT INTO payment.bank_holiday (country_code, holiday_date, holiday_type)
+VALUES (a_country_code, a_holiday_date, a_holiday_type)
+ON CONFLICT ON CONSTRAINT uq_bank_holiday_country_code_holiday_date_holiday_type
+DO UPDATE SET
+    country_code = excluded.country_code,
+    holiday_date = excluded.holiday_date,
+    holiday_type = excluded.holiday_type,
+    update_ts = date_trunc('milliseconds', current_timestamp)
+RETURNING bank_holiday_id;
 $$;

@@ -184,6 +184,10 @@ SELECT payment.put_routing_ssi(
     a_is_preferred_correspondent := true
 ) routing_ssi_id;
 
+-- Bank holiday
+SELECT payment.put_bank_holiday('BE', current_date, 'NORMAL_HOLIDAY') bank_holiday_id;
+SELECT payment.put_bank_holiday('FR', current_date, 'SPECIAL_HOLIDAY') bank_holiday_id;
+
 -- IBAN validation
 
 SELECT * FROM payment.is_valid_iban('BE88271080782541');
@@ -200,7 +204,9 @@ SELECT owner_bic,
     correspondent_bic corresp_bic,
     correspondent_type corresp_type,
     routing_ssi_source ssi_source,
-    is_preferred_correspondent is_preffered
+    is_preferred_correspondent is_preffered,
+    holiday_date,
+    holiday_type
 FROM payment.get_routing_ssi('ABNABEBRXXX', 'EUR', 'BE');
 SELECT owner_bic,
     currency_code currency,
@@ -208,5 +214,7 @@ SELECT owner_bic,
     correspondent_bic corresp_bic,
     correspondent_type corresp_type,
     routing_ssi_source ssi_source,
-    is_preferred_correspondent is_preffered
+    is_preferred_correspondent is_preffered,
+    holiday_date,
+    holiday_type
 FROM payment.get_routing_ssi('ABNABEBRXXX', 'AED', 'BE');
