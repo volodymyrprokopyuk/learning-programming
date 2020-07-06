@@ -104,7 +104,8 @@ SELECT payment.put_routing_ssi(
     a_correspondent_institution_name := 'Preferred PagoFX correspondent',
     a_correspondent_country_code := 'BE',
     a_correspondent_type := 'CORRESPONDENT',
-    a_routing_ssi_source := 'PAGOFX'
+    a_routing_ssi_source := 'PAGOFX',
+    a_is_preferred_correspondent := true
 ) routing_ssi_id;
 
 -- SWIFT routing SSI correspondent chain
@@ -164,7 +165,8 @@ SELECT payment.put_routing_ssi(
     a_correspondent_institution_name := 'Correspondent D',
     a_correspondent_country_code := 'FR',
     a_correspondent_type := 'LOCAL_CORRESPONDENT',
-    a_routing_ssi_source := 'PAGOFX'
+    a_routing_ssi_source := 'PAGOFX',
+    a_is_preferred_correspondent := true
 ) routing_ssi_id;
 
 SELECT payment.put_routing_ssi(
@@ -178,7 +180,8 @@ SELECT payment.put_routing_ssi(
     a_correspondent_institution_name := 'Correspondent E',
     a_correspondent_country_code := 'AE',
     a_correspondent_type := 'CORRESPONDENT',
-    a_routing_ssi_source := 'PAGOFX'
+    a_routing_ssi_source := 'PAGOFX',
+    a_is_preferred_correspondent := true
 ) routing_ssi_id;
 
 -- IBAN validation
@@ -191,9 +194,19 @@ FROM payment.validate_iban('BE88271080782541');
 
 -- Get routing SSI
 
-SELECT routing_ssi_id, owner_bic, currency_code,
-    correspondent_bic, correspondent_type, routing_ssi_source
-FROM payment.get_routing_ssi('ABNABEBRXXX', 'EUR');
-SELECT routing_ssi_id, owner_bic, currency_code,
-    correspondent_bic, correspondent_type, routing_ssi_source
-FROM payment.get_routing_ssi('ABNABEBRXXX', 'AED');
+SELECT owner_bic,
+    currency_code currency,
+    owner_country_code country,
+    correspondent_bic corresp_bic,
+    correspondent_type corresp_type,
+    routing_ssi_source ssi_source,
+    is_preferred_correspondent is_preffered
+FROM payment.get_routing_ssi('ABNABEBRXXX', 'EUR', 'BE');
+SELECT owner_bic,
+    currency_code currency,
+    owner_country_code country,
+    correspondent_bic corresp_bic,
+    correspondent_type corresp_type,
+    routing_ssi_source ssi_source,
+    is_preferred_correspondent is_preffered
+FROM payment.get_routing_ssi('ABNABEBRXXX', 'AED', 'BE');

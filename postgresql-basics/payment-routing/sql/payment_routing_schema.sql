@@ -425,45 +425,55 @@ $$;
 
 CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
     a_owner_bic varchar(11),
-    a_currency_code varchar(3)
+    a_currency_code varchar(3),
+    a_country_code varchar(2)
 ) RETURNS TABLE (
     routing_ssi_id uuid,
     owner_bic varchar(11),
     currency_code varchar(3),
+    owner_country_code varchar(2),
     correspondent_bic varchar(11),
     correspondent_country_code varchar(2),
     correspondent_type payment.correspondent_type_t,
-    routing_ssi_source payment.routing_ssi_source_type
+    routing_ssi_source payment.routing_ssi_source_type,
+    is_preferred_correspondent bool
 ) LANGUAGE sql AS $$
 WITH RECURSIVE routing_ssi(
     routing_ssi_id,
     owner_bic,
     currency_code,
+    owner_country_code,
     correspondent_bic,
     correspondent_country_code,
     correspondent_type,
-    routing_ssi_source
+    routing_ssi_source,
+    is_preferred_correspondent
 ) AS (
     -- Routing SSI chain label for routing SSI chain aggregation
     SELECT ossi.routing_ssi_id,
         ossi.owner_bic,
         ossi.currency_code,
+        ossi.owner_institution_country_code,
         ossi.correspondent_bic,
         ossi.correspondent_country_code,
         ossi.correspondent_type,
-        ossi.routing_ssi_source
+        ossi.routing_ssi_source,
+        ossi.is_preferred_correspondent
     FROM payment.routing_ssi ossi
-    -- Start with owner BIC and term currency
+    -- Start with owner BIC, term currency, and destination (owner) country
     WHERE ossi.owner_bic = a_owner_bic
         AND ossi.currency_code = a_currency_code
+        AND ossi.owner_institution_country_code = a_country_code
     UNION
     SELECT ossi.routing_ssi_id,
         cssi.owner_bic,
         cssi.currency_code,
+        ossi.owner_country_code,
         cssi.correspondent_bic,
         cssi.correspondent_country_code,
         cssi.correspondent_type,
-        ossi.routing_ssi_source
+        ossi.routing_ssi_source,
+        cssi.is_preferred_correspondent
     FROM routing_ssi ossi
         JOIN payment.routing_ssi cssi ON
             -- follow the routing SSI chain through LOCAL_CORRESPONDENTs
@@ -474,10 +484,12 @@ WITH RECURSIVE routing_ssi(
 SELECT ssi.routing_ssi_id,
     ssi.owner_bic,
     ssi.currency_code,
+    ssi.owner_country_code,
     ssi.correspondent_bic,
     ssi.correspondent_country_code,
     ssi.correspondent_type,
-    ssi.routing_ssi_source
+    ssi.routing_ssi_source,
+    ssi.is_preferred_correspondent
 FROM routing_ssi ssi
-ORDER BY ssi.routing_ssi_id;
+ORDER BY ssi.routing_ssi_source, ssi.routing_ssi_id;
 $$;
