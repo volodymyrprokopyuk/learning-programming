@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="666.1272mm"
+   height="208.10022mm"
+   viewBox="0 0 666.1272 208.10022"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="Payment routing - Architecture overview.svg"
+   inkscape:export-filename="/home/vlad/Projects/PagoFX/inkscape/Payment rounting/Payment routing - Architecture overview.png"
+   inkscape:export-xdpi="220"
+   inkscape:export-ydpi="220">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2646"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path2644"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker2518"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path2516" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2398"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path2396"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker2358"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path2356" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2132"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path2130"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker2030"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path2028" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1942"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path1940"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker1862"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1860" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1808"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path1806"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker1584"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1582" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path1153"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1450"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1448"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1428"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1426"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1150"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.66076741"
+     inkscape:cx="1253.8231"
+     inkscape:cy="393.26027"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     inkscape:window-width="1680"
+     inkscape:window-height="829"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showborder="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid833"
+       originx="42.831687"
+       originy="6.72584" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(42.831685,6.7258399)">
+    <g
+       id="g847">
+      <rect
+         y="79.375"
+         x="13.229166"
+         height="26.458334"
+         width="74.083336"
+         id="rect835"
+         style="fill:#e5ff80;stroke-width:0.342112" />
+      <text
+         id="text839"
+         y="91.067314"
+         x="25.075495"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="91.067314"
+           x="25.075495"
+           id="tspan837"
+           sodipodi:role="line">iban_structure</tspan><tspan
+           id="tspan841"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="96.358978"
+           x="25.075495"
+           sodipodi:role="line">- iban_country_code UQ</tspan></text>
+    </g>
+    <g
+       id="g897"
+       transform="translate(0,-5.2916641)">
+      <rect
+         style="fill:#e5ff80;stroke-width:0.371404"
+         id="rect849"
+         width="87.312508"
+         height="26.458334"
+         x="126.99999"
+         y="84.666664" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="130.15746"
+         y="91.067314"
+         id="text855"><tspan
+           sodipodi:role="line"
+           id="tspan851"
+           x="130.15746"
+           y="91.067314"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">iban_institution</tspan><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="96.358978"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan853">- iban_national_id UQ</tspan><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="101.65063"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan877">- iban_bic UQ</tspan><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="106.9423"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan881">- iban_country_code FK iban_structure</tspan></text>
+    </g>
+    <g
+       transform="translate(124.35417,-5.2916641)"
+       id="g911">
+      <rect
+         y="84.666664"
+         x="126.99999"
+         height="26.458334"
+         width="87.312508"
+         id="rect899"
+         style="fill:#e5ff80;stroke-width:0.371404" />
+      <text
+         id="text909"
+         y="91.067314"
+         x="130.15746"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="91.067314"
+           x="130.15746"
+           id="tspan901"
+           sodipodi:role="line">iban_exclusion_list</tspan><tspan
+           id="tspan903"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="96.358978"
+           x="130.15746"
+           sodipodi:role="line">- iban_country_code</tspan><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="101.65063"
+           x="130.15746"
+           sodipodi:role="line"
+           id="tspan913">- iban_national_id</tspan><tspan
+           id="tspan907"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="106.9423"
+           x="130.15746"
+           sodipodi:role="line">- iban_bic</tspan></text>
+    </g>
+    <g
+       id="g1133">
+      <rect
+         style="fill:#e5ff80;stroke-width:0.6255"
+         id="rect917"
+         width="95.250031"
+         height="68.791664"
+         x="375.70831"
+         y="79.375" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="378.86578"
+         y="85.77565"
+         id="text927"><tspan
+           sodipodi:role="line"
+           id="tspan919"
+           x="378.86578"
+           y="85.77565"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">routing_ssi</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="91.067314"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan921">- owner_bic</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="96.358978"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan933">- currency_code</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="101.65063"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan935">- correspondent_bic</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="106.9423"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan937">- correspondent_type</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="112.23396"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan950">    - CORRESPONDENT,</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="117.52562"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan925">    - LOCAL_CORRESPONDENT</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="122.81728"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1025">- routing_ssi_source</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="128.10895"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1027">    - SWIFT - PAGOFX</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="133.4006"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan952">- UQ (owner_bic, currency_code,</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="138.69228"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1031">    correspondent_bic, routing_ssi_source)</tspan></text>
+    </g>
+    <g
+       id="g1014"
+       transform="translate(0,26.458333)">
+      <rect
+         style="fill:#ffccaa;stroke-width:0.342112"
+         id="rect978"
+         width="74.083336"
+         height="26.458334"
+         x="13.229166"
+         y="134.9375" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="29.134157"
+         y="144.20412"
+         id="text984"><tspan
+           sodipodi:role="line"
+           id="tspan980"
+           x="29.134157"
+           y="144.20412"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">put_iban_structure (</tspan><tspan
+           sodipodi:role="line"
+           x="29.134157"
+           y="149.49577"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan998">    iban_structure</tspan><tspan
+           sodipodi:role="line"
+           x="29.134157"
+           y="154.78745"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan982">)</tspan></text>
+    </g>
+    <g
+       id="g1074"
+       transform="translate(-2.6975505e-6,26.458338)">
+      <rect
+         y="134.9375"
+         x="126.99999"
+         height="26.458334"
+         width="74.083336"
+         id="rect1016"
+         style="fill:#ffccaa;stroke-width:0.342112" />
+      <text
+         id="text1024"
+         y="144.20412"
+         x="141.83424"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="144.20412"
+           x="141.83424"
+           id="tspan1018"
+           sodipodi:role="line">put_iban_institution (</tspan><tspan
+           id="tspan1020"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="149.49577"
+           x="141.83424"
+           sodipodi:role="line">    iban_institution</tspan><tspan
+           id="tspan1022"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="154.78745"
+           x="141.83424"
+           sodipodi:role="line">)</tspan></text>
+    </g>
+    <g
+       id="g1062"
+       transform="translate(-2.6975505e-6,26.458338)">
+      <rect
+         style="fill:#ffccaa;stroke-width:0.342112"
+         id="rect1028"
+         width="74.083336"
+         height="26.458334"
+         x="251.35417"
+         y="134.9375" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="262.79639"
+         y="144.20412"
+         id="text1036"><tspan
+           sodipodi:role="line"
+           id="tspan1030"
+           x="262.79639"
+           y="144.20412"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">put_iban_exclusion_list (</tspan><tspan
+           sodipodi:role="line"
+           x="262.79639"
+           y="149.49577"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1032">    iban_exclusion_list</tspan><tspan
+           sodipodi:role="line"
+           x="262.79639"
+           y="154.78745"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1034">)</tspan></text>
+    </g>
+    <g
+       id="g1050"
+       transform="translate(362.47917,26.458338)">
+      <rect
+         y="134.9375"
+         x="13.229166"
+         height="26.458334"
+         width="74.083336"
+         id="rect1040"
+         style="fill:#ffccaa;stroke-width:0.342112" />
+      <text
+         id="text1048"
+         y="144.20412"
+         x="29.134157"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="144.20412"
+           x="29.134157"
+           id="tspan1042"
+           sodipodi:role="line">put_routing_ssi (</tspan><tspan
+           id="tspan1044"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="149.49577"
+           x="29.134157"
+           sodipodi:role="line">    swift_routing_ssi</tspan><tspan
+           id="tspan1046"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="154.78745"
+           x="29.134157"
+           sodipodi:role="line">)</tspan></text>
+    </g>
+    <g
+       id="g1098"
+       transform="translate(158.74999,-7.9375095)">
+      <rect
+         y="23.81251"
+         x="-84.666664"
+         height="26.458334"
+         width="74.083336"
+         id="rect1076"
+         style="fill:#ffccaa;stroke-width:0.342112" />
+      <text
+         id="text1084"
+         y="33.079132"
+         x="-62.401344"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="33.079132"
+           x="-62.401344"
+           id="tspan1078"
+           sodipodi:role="line">is_valid_iban (</tspan><tspan
+           id="tspan1080"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="38.370796"
+           x="-62.401344"
+           sodipodi:role="line">    iban</tspan><tspan
+           id="tspan1082"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="43.662457"
+           x="-62.401344"
+           sodipodi:role="line">) &gt; bool</tspan></text>
+    </g>
+    <g
+       id="g1122"
+       transform="translate(193.14583,-7.9375)">
+      <rect
+         style="fill:#ffccaa;stroke-width:0.342112"
+         id="rect1100"
+         width="74.083336"
+         height="26.458334"
+         x="13.229164"
+         y="23.8125" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="28.708342"
+         y="33.079121"
+         id="text1108"><tspan
+           sodipodi:role="line"
+           id="tspan1102"
+           x="28.708342"
+           y="33.079121"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">validate_iban (</tspan><tspan
+           sodipodi:role="line"
+           x="28.708342"
+           y="38.370781"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1104">    iban</tspan><tspan
+           sodipodi:role="line"
+           x="28.708342"
+           y="43.662445"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1106">) &gt; IBAN details, BIC</tspan></text>
+    </g>
+    <g
+       transform="translate(0,-2.6458334)"
+       id="g1080">
+      <rect
+         y="18.52083"
+         x="376.28711"
+         height="26.458334"
+         width="74.083336"
+         id="rect1124"
+         style="fill:#ffccaa;stroke-width:0.342112" />
+      <text
+         id="text1132"
+         y="24.980391"
+         x="381.40311"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="24.980391"
+           x="381.40311"
+           id="tspan1126"
+           sodipodi:role="line">get_routing_ssi (</tspan><tspan
+           id="tspan1128"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="30.272053"
+           x="381.40311"
+           sodipodi:role="line">    ownder_bic, currency_code,</tspan><tspan
+           id="tspan1066"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="35.563713"
+           x="381.40311"
+           sodipodi:role="line">    country_code</tspan><tspan
+           id="tspan1130"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="40.855377"
+           x="381.40311"
+           sodipodi:role="line">) &gt; correspondent BIC</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#aad400;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 127,92.604166 c -21.16667,-10.583334 -39.687501,0 -39.687501,0"
+       id="path1148" />
+    <path
+       id="path1580"
+       d="m 164.04167,161.39583 c -13.22917,-29.10416 0,-55.5625 0,-55.5625"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker1808)"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker1862)"
+       d="m 47.625,161.39583 c -13.22917,-29.10416 0,-55.5625 0,-55.5625"
+       id="path1858" />
+    <path
+       id="path1938"
+       d="m 291.04167,161.39583 c -13.22917,-29.10416 0,-55.5625 0,-55.5625"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker1942)"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2030)"
+       d="m 415.39583,161.39583 c -5.29166,-5.29166 0,-13.22916 0,-13.22916"
+       id="path2026" />
+    <path
+       id="path2128"
+       d="m 418.04167,42.333333 c 10.58333,21.166667 0,37.041667 0,37.041667"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2132)"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2358)"
+       d="m 206.375,29.104167 c -31.75,-13.229167 -58.20833,0 -58.20833,0"
+       id="path2244" />
+    <path
+       id="path2394"
+       d="M 269.875,42.333333 C 309.5625,55.5625 317.5,79.375 317.5,79.375"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2398)"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2518)"
+       d="M 238.125,42.333333 C 190.5,52.916667 187.85417,79.375 187.85417,79.375"
+       id="path2514" />
+    <path
+       id="path2642"
+       d="M 211.66667,42.333333 C 87.3125,44.979167 50.270833,79.375 50.270833,79.375"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2646)"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+       x="227.8846"
+       y="200.49382"
+       id="text1071"><tspan
+         sodipodi:role="line"
+         id="tspan1069"
+         x="227.8846"
+         y="200.49382"
+         style="stroke-width:0.264583">Idempotent data load from external data sources. Carefully selected UNIQUE keys for every entity ensure correct data load or update even on repeated data load of the same data</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+       x="-14.370274"
+       y="112.49776"
+       id="text1075"><tspan
+         sodipodi:role="line"
+         id="tspan1073"
+         x="-14.370274"
+         y="112.49776"
+         style="text-align:start;text-anchor:start;stroke-width:0.264583">Only one IBAN structure</tspan><tspan
+         sodipodi:role="line"
+         x="-14.370274"
+         y="117.78942"
+         style="text-align:start;text-anchor:start;stroke-width:0.264583"
+         id="tspan1077">is allowed per country</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="74.619476"
+       y="112.98952"
+       id="text1081"><tspan
+         sodipodi:role="line"
+         id="tspan1079"
+         x="74.619476"
+         y="112.98952"
+         style="stroke-width:0.264583">For every IBAN national ID or IBAN BIC</tspan><tspan
+         sodipodi:role="line"
+         x="74.619476"
+         y="118.28118"
+         style="stroke-width:0.264583"
+         id="tspan1083">the IBAN institution details and IBAN</tspan><tspan
+         sodipodi:role="line"
+         x="74.619476"
+         y="123.57285"
+         style="stroke-width:0.264583"
+         id="tspan1085">structure is  known</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="220.52715"
+       y="112.49775"
+       id="text1089"><tspan
+         sodipodi:role="line"
+         id="tspan1087"
+         x="220.52715"
+         y="112.49775"
+         style="stroke-width:0.264583">IBAN exclusion list is checked</tspan><tspan
+         sodipodi:role="line"
+         x="220.52715"
+         y="117.78941"
+         style="stroke-width:0.264583"
+         id="tspan1091">on every IBAN validation</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="476.10049"
+       y="82.950722"
+       id="text1095"><tspan
+         sodipodi:role="line"
+         id="tspan1093"
+         x="476.10049"
+         y="82.950722"
+         style="stroke-width:0.264583">Routing SSI holds a mapping between the owner BIC and</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="88.242386"
+         style="stroke-width:0.264583"
+         id="tspan1099">the LOCAL_CORRESPONDNET of final (direct) CORRESPONDENT</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="93.534042"
+         style="stroke-width:0.264583"
+         id="tspan1103">for a given currency and routing SSI source combination.</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="98.825706"
+         style="stroke-width:0.264583"
+         id="tspan1137">Routing SSI holds routing SSI from multiple sources (SWIFT, PAGOFX).</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="104.11737"
+         style="stroke-width:0.264583"
+         id="tspan1141">Routing SSI allows for routing SSI chains to be encoded recursively</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="109.40903"
+         style="stroke-width:0.264583"
+         id="tspan1143">where we start with the owner BIC and currency and recursively go</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="114.7007"
+         style="stroke-width:0.264583"
+         id="tspan1145">down the chain on LOCAL_CORRESPONDENTs till find the final (direct)</tspan><tspan
+         sodipodi:role="line"
+         x="476.10049"
+         y="119.99236"
+         style="stroke-width:0.264583"
+         id="tspan1147">CORRESPONDENT</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="-42.893578"
+       y="72.128685"
+       id="text1151"><tspan
+         sodipodi:role="line"
+         id="tspan1149"
+         x="-42.893578"
+         y="72.128685"
+         style="font-size:4.93889px;fill:#ff0000;fill-opacity:1;stroke-width:0.264583">Internal data model</tspan></text>
+    <text
+       id="text1155"
+       y="154.68098"
+       x="-42.511364"
+       style="font-size:4.93889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:4.93889px;fill:#ff0000;fill-opacity:1;stroke-width:0.264583"
+         y="154.68098"
+         x="-42.511364"
+         id="tspan1153"
+         sodipodi:role="line">Data load internal interface</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="-43.31641"
+       y="14.023"
+       id="text1159"><tspan
+         sodipodi:role="line"
+         id="tspan1157"
+         x="-43.31641"
+         y="14.023"
+         style="font-size:4.93889px;fill:#ff0000;fill-opacity:1;stroke-width:0.264583">Data query public interface</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="69.079231"
+       y="5.9811001"
+       id="text1163"><tspan
+         sodipodi:role="line"
+         id="tspan1161"
+         x="69.079231"
+         y="5.9811001"
+         style="stroke-width:0.264583">Validate IBAN by check digits without</tspan><tspan
+         sodipodi:role="line"
+         x="69.079231"
+         y="11.272762"
+         style="stroke-width:0.264583"
+         id="tspan1165">any dependency on external data sources</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="191.41301"
+       y="5.291667"
+       id="text1169"><tspan
+         sodipodi:role="line"
+         id="tspan1167"
+         x="191.41301"
+         y="5.291667"
+         style="stroke-width:0.264583">Validate IBAN, check IBAN exclusion list, parse IBAN</tspan><tspan
+         sodipodi:role="line"
+         x="191.41301"
+         y="10.583329"
+         style="stroke-width:0.264583"
+         id="tspan1171">and provide IBAN BIC and institution details </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="359.60263"
+       y="-3.5095015"
+       id="text1175"><tspan
+         sodipodi:role="line"
+         id="tspan1173"
+         x="359.60263"
+         y="-3.5095015"
+         style="stroke-width:0.264583">Recursively get all available routing SSI options for a given owner BIC and currency combination</tspan><tspan
+         sodipodi:role="line"
+         x="359.60263"
+         y="1.7821608"
+         style="stroke-width:0.264583"
+         id="tspan1177">from all availalbe routing SSI sources (SWIFT, PAGOFX). Priority and preffered correspondent</tspan><tspan
+         sodipodi:role="line"
+         x="359.60263"
+         y="7.073823"
+         style="stroke-width:0.264583"
+         id="tspan1179">may be indicated in the internal data model to order all availalbe routing SSI options in order</tspan><tspan
+         sodipodi:role="line"
+         x="359.60263"
+         y="12.365485"
+         style="stroke-width:0.264583"
+         id="tspan1181">priority and preferences</tspan></text>
+  </g>
+</svg>
