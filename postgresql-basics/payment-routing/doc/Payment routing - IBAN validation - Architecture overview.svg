@@ -9,14 +9,14 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:export-ydpi="220"
    inkscape:export-xdpi="220"
-   inkscape:export-filename="/home/vlad/Projects/learning-programming/postgresql-basics/payment-routing/doc/Payment routing - Architecture overview.png"
-   sodipodi:docname="Payment routing - Architecture overview.svg"
+   inkscape:export-filename="/home/vlad/Projects/learning-programming/postgresql-basics/payment-routing/doc/Payment routing - IBAN validation - Architecture overview.png"
+   sodipodi:docname="Payment routing - IBAN validation - Architecture overview.svg"
    inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
    id="svg8"
    version="1.1"
-   viewBox="0 0 675.18585 208.10022"
-   height="208.10022mm"
-   width="675.18585mm">
+   viewBox="0 0 392.3204 197.98209"
+   height="197.98209mm"
+   width="392.3204mm">
   <defs
      id="defs2">
     <marker
@@ -91,21 +91,6 @@
          style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="path2130" />
-    </marker>
-    <marker
-       inkscape:collect="always"
-       inkscape:stockid="Arrow1Lend"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker2030"
-       style="overflow:visible"
-       inkscape:isstock="true">
-      <path
-         id="path2028"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
-         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
     </marker>
     <marker
        inkscape:collect="always"
@@ -235,8 +220,8 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="393.26027"
-     inkscape:cx="876.89974"
+     inkscape:cy="359.99601"
+     inkscape:cx="696.44625"
      inkscape:zoom="0.93446623"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1"
@@ -245,7 +230,7 @@
      pagecolor="#ffffff"
      id="base">
     <inkscape:grid
-       originy="6.7258401"
+       originy="-2.0753284"
        originx="42.831687"
        id="grid833"
        type="xygrid" />
@@ -263,7 +248,7 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(42.831685,6.7258399)"
+     transform="translate(42.831685,-2.0753285)"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
@@ -368,82 +353,6 @@
            id="tspan907">- iban_bic</tspan></text>
     </g>
     <g
-       id="g1133">
-      <rect
-         y="79.375"
-         x="375.70831"
-         height="68.791664"
-         width="95.250031"
-         id="rect917"
-         style="fill:#e5ff80;stroke-width:0.6255" />
-      <text
-         id="text927"
-         y="85.77565"
-         x="378.86578"
-         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
-         xml:space="preserve"><tspan
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="85.77565"
-           x="378.86578"
-           id="tspan919"
-           sodipodi:role="line">routing_ssi</tspan><tspan
-           id="tspan921"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="91.067314"
-           x="378.86578"
-           sodipodi:role="line">- owner_bic</tspan><tspan
-           id="tspan933"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="96.358978"
-           x="378.86578"
-           sodipodi:role="line">- currency_code</tspan><tspan
-           id="tspan160"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="101.65063"
-           x="378.86578"
-           sodipodi:role="line">- country_code</tspan><tspan
-           id="tspan935"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="106.9423"
-           x="378.86578"
-           sodipodi:role="line">- correspondent_bic</tspan><tspan
-           id="tspan937"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="112.23396"
-           x="378.86578"
-           sodipodi:role="line">- correspondent_type</tspan><tspan
-           id="tspan950"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="117.52562"
-           x="378.86578"
-           sodipodi:role="line">    - CORRESPONDENT,</tspan><tspan
-           id="tspan925"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="122.81728"
-           x="378.86578"
-           sodipodi:role="line">    - LOCAL_CORRESPONDENT</tspan><tspan
-           id="tspan1025"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="128.10895"
-           x="378.86578"
-           sodipodi:role="line">- routing_ssi_source</tspan><tspan
-           id="tspan1027"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="133.4006"
-           x="378.86578"
-           sodipodi:role="line">    - SWIFT - PAGOFX</tspan><tspan
-           id="tspan952"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="138.69228"
-           x="378.86578"
-           sodipodi:role="line">- UQ (owner_bic, currency, country </tspan><tspan
-           id="tspan1031"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="143.98393"
-           x="378.86578"
-           sodipodi:role="line">    correspondent_bic, routing_ssi_source)</tspan></text>
-    </g>
-    <g
        transform="translate(0,26.458333)"
        id="g1014">
       <rect
@@ -540,38 +449,6 @@
            sodipodi:role="line">)</tspan></text>
     </g>
     <g
-       transform="translate(362.47917,26.458338)"
-       id="g1050">
-      <rect
-         style="fill:#ffccaa;stroke-width:0.342112"
-         id="rect1040"
-         width="74.083336"
-         height="26.458334"
-         x="13.229166"
-         y="134.9375" />
-      <text
-         xml:space="preserve"
-         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
-         x="29.134157"
-         y="144.20412"
-         id="text1048"><tspan
-           sodipodi:role="line"
-           id="tspan1042"
-           x="29.134157"
-           y="144.20412"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583">put_routing_ssi (</tspan><tspan
-           sodipodi:role="line"
-           x="29.134157"
-           y="149.49577"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           id="tspan1044">    swift_routing_ssi</tspan><tspan
-           sodipodi:role="line"
-           x="29.134157"
-           y="154.78745"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           id="tspan1046">)</tspan></text>
-    </g>
-    <g
        transform="translate(158.74999,-7.9375095)"
        id="g1098">
       <rect
@@ -635,43 +512,6 @@
            x="28.708342"
            sodipodi:role="line">) &gt; IBAN details, BIC</tspan></text>
     </g>
-    <g
-       id="g1080"
-       transform="translate(0,-2.6458334)">
-      <rect
-         style="fill:#ffccaa;stroke-width:0.342112"
-         id="rect1124"
-         width="74.083336"
-         height="26.458334"
-         x="376.28711"
-         y="18.52083" />
-      <text
-         xml:space="preserve"
-         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
-         x="381.40311"
-         y="24.980391"
-         id="text1132"><tspan
-           sodipodi:role="line"
-           id="tspan1126"
-           x="381.40311"
-           y="24.980391"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583">get_routing_ssi (</tspan><tspan
-           sodipodi:role="line"
-           x="381.40311"
-           y="30.272053"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           id="tspan1128">    ownder_bic, currency_code,</tspan><tspan
-           sodipodi:role="line"
-           x="381.40311"
-           y="35.563713"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           id="tspan1066">    country_code</tspan><tspan
-           sodipodi:role="line"
-           x="381.40311"
-           y="40.855377"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           id="tspan1130">) &gt; correspondent BIC</tspan></text>
-    </g>
     <path
        id="path1148"
        d="m 127,92.604166 c -21.16667,-10.583334 -39.687501,0 -39.687501,0"
@@ -691,16 +531,6 @@
        style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker1942)"
        d="m 291.04167,161.39583 c -13.22917,-29.10416 0,-55.5625 0,-55.5625"
        id="path1938" />
-    <path
-       id="path2026"
-       d="m 415.39583,161.39583 c -5.29166,-5.29166 0,-13.22916 0,-13.22916"
-       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2030)"
-       sodipodi:nodetypes="cc" />
-    <path
-       sodipodi:nodetypes="cc"
-       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2132)"
-       d="m 418.04167,42.333333 c 10.58333,21.166667 0,37.041667 0,37.041667"
-       id="path2128" />
     <path
        id="path2244"
        d="m 206.375,29.104167 c -31.75,-13.229167 -58.20833,0 -58.20833,0"
@@ -723,13 +553,13 @@
        id="path2642" />
     <text
        id="text1071"
-       y="200.49382"
-       x="227.8846"
+       y="199.17685"
+       x="159.50047"
        style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
        xml:space="preserve"><tspan
          style="stroke-width:0.264583"
-         y="200.49382"
-         x="227.8846"
+         y="199.17685"
+         x="159.50047"
          id="tspan1069"
          sodipodi:role="line">Idempotent data load from external data sources. Carefully selected UNIQUE keys for every entity ensure correct data load or update even on repeated data load of the same data</tspan></text>
     <text
@@ -785,52 +615,6 @@
          y="117.78941"
          x="220.52715"
          sodipodi:role="line">on every IBAN validation</tspan></text>
-    <text
-       id="text1095"
-       y="114.50407"
-       x="475.1347"
-       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="stroke-width:0.264583"
-         y="114.50407"
-         x="475.1347"
-         id="tspan1093"
-         sodipodi:role="line">Routing SSI holds a mapping between the owner BIC and</tspan><tspan
-         id="tspan1099"
-         style="stroke-width:0.264583"
-         y="119.79573"
-         x="475.1347"
-         sodipodi:role="line">the LOCAL_CORRESPONDNET of final (direct) CORRESPONDENT</tspan><tspan
-         id="tspan1103"
-         style="stroke-width:0.264583"
-         y="125.08739"
-         x="475.1347"
-         sodipodi:role="line">for a given currency and routing SSI source combination.</tspan><tspan
-         id="tspan1137"
-         style="stroke-width:0.264583"
-         y="130.37906"
-         x="475.1347"
-         sodipodi:role="line">Routing SSI holds routing SSI from multiple sources (SWIFT, PAGOFX).</tspan><tspan
-         id="tspan1141"
-         style="stroke-width:0.264583"
-         y="135.67072"
-         x="475.1347"
-         sodipodi:role="line">Routing SSI allows for routing SSI chains to be encoded recursively</tspan><tspan
-         id="tspan1143"
-         style="stroke-width:0.264583"
-         y="140.96237"
-         x="475.1347"
-         sodipodi:role="line">where we start with the owner BIC and currency and recursively go</tspan><tspan
-         id="tspan1145"
-         style="stroke-width:0.264583"
-         y="146.25404"
-         x="475.1347"
-         sodipodi:role="line">down the chain on LOCAL_CORRESPONDENTs till find the final (direct)</tspan><tspan
-         id="tspan1147"
-         style="stroke-width:0.264583"
-         y="151.5457"
-         x="475.1347"
-         sodipodi:role="line">CORRESPONDENT</tspan></text>
     <text
        id="text1151"
        y="72.128685"
@@ -896,121 +680,5 @@
          y="10.583329"
          x="191.41301"
          sodipodi:role="line">and provide IBAN BIC and institution details </tspan></text>
-    <text
-       id="text1175"
-       y="-3.5095015"
-       x="359.60263"
-       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="stroke-width:0.264583"
-         y="-3.5095015"
-         x="359.60263"
-         id="tspan1173"
-         sodipodi:role="line">Recursively get all available routing SSI options for a given owner BIC and currency combination</tspan><tspan
-         id="tspan1177"
-         style="stroke-width:0.264583"
-         y="1.7821608"
-         x="359.60263"
-         sodipodi:role="line">from all availalbe routing SSI sources (SWIFT, PAGOFX). Priority and preffered correspondent</tspan><tspan
-         id="tspan1179"
-         style="stroke-width:0.264583"
-         y="7.073823"
-         x="359.60263"
-         sodipodi:role="line">may be indicated in the internal data model to order all availalbe routing SSI options in order</tspan><tspan
-         id="tspan1181"
-         style="stroke-width:0.264583"
-         y="12.365485"
-         x="359.60263"
-         sodipodi:role="line">priority and preferences</tspan></text>
-    <g
-       transform="translate(418.04164,-5.291664)"
-       id="g174">
-      <rect
-         y="84.666664"
-         x="126.99999"
-         height="26.458334"
-         width="87.312508"
-         id="rect162"
-         style="fill:#e5ff80;stroke-width:0.371404" />
-      <text
-         id="text172"
-         y="91.067314"
-         x="130.15746"
-         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
-         xml:space="preserve"><tspan
-           id="tspan170"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="91.067314"
-           x="130.15746"
-           sodipodi:role="line">bank_holiday</tspan><tspan
-           id="tspan197"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="96.358978"
-           x="130.15746"
-           sodipodi:role="line">- country_code</tspan><tspan
-           id="tspan201"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="101.65063"
-           x="130.15746"
-           sodipodi:role="line">- holiday_date</tspan><tspan
-           id="tspan199"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="106.9423"
-           x="130.15746"
-           sodipodi:role="line">- holiday_type</tspan></text>
-    </g>
-    <g
-       id="g186"
-       transform="translate(545.04164,26.458339)">
-      <rect
-         y="134.9375"
-         x="13.229166"
-         height="26.458334"
-         width="74.083336"
-         id="rect176"
-         style="fill:#ffccaa;stroke-width:0.342112" />
-      <text
-         id="text184"
-         y="144.20412"
-         x="29.134157"
-         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
-         xml:space="preserve"><tspan
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="144.20412"
-           x="29.134157"
-           id="tspan178"
-           sodipodi:role="line">put_bank_holiday (</tspan><tspan
-           id="tspan180"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="149.49577"
-           x="29.134157"
-           sodipodi:role="line">    bank_holiday</tspan><tspan
-           id="tspan182"
-           style="text-align:start;text-anchor:start;stroke-width:0.264583"
-           y="154.78745"
-           x="29.134157"
-           sodipodi:role="line">)</tspan></text>
-    </g>
-    <path
-       sodipodi:nodetypes="cc"
-       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2030)"
-       d="m 621.77084,161.39583 c 13.22917,-26.45833 0,-55.5625 0,-55.5625"
-       id="path203" />
-    <path
-       id="path205"
-       d="M 449.79167,37.041667 C 542.39584,42.333333 592.66667,79.375 592.66667,79.375"
-       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2132)"
-       sodipodi:nodetypes="cc" />
-    <text
-       id="text209"
-       y="84.300392"
-       x="488.07141"
-       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="font-size:4.23333px;stroke-width:0.264583"
-         y="84.300392"
-         x="488.07141"
-         id="tspan207"
-         sodipodi:role="line">Per country bank holidays</tspan></text>
   </g>
 </svg>

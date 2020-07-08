@@ -1,22 +1,6 @@
 -- IBAN structure
 
 SELECT payment.put_iban_structure(
-    a_iban_country_code := 'AD',
-    a_iban_country_code_position := 1,
-    a_iban_country_code_length := 2,
-    a_iban_check_digits_position := 3,
-    a_iban_check_digits_length := 2,
-    a_bank_identifier_position := 5,
-    a_bank_identifier_length := 4,
-    a_branch_identifier_position := 9,
-    a_branch_identifier_length := 4,
-    a_iban_national_id_length := 8,
-    a_account_number_position := 13,
-    a_account_number_length := 12,
-    a_iban_total_length := 24
-) iban_structure_id;
-
-SELECT payment.put_iban_structure(
     a_iban_country_code := 'BE',
     a_iban_country_code_position := 1,
     a_iban_country_code_length := 2,
@@ -31,16 +15,6 @@ SELECT payment.put_iban_structure(
 ) iban_structure_id;
 
 -- IBAN instituiton
-
-SELECT payment.put_iban_institution(
-    a_institution_name := 'MoraBanc',
-    a_institution_country_name := 'ANDORRA',
-    a_institution_country_code := 'AD',
-    a_iban_bic := 'BINAADADXXX',
-    a_routing_bic := 'BINAADADXXX',
-    a_iban_national_id := '00070014',
-    a_iban_country_code := 'AD'
-) iban_institution_id;
 
 SELECT payment.put_iban_institution(
     a_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
@@ -61,27 +35,54 @@ SELECT payment.put_iban_exclusion_list(
     a_iban_bic := 'CRDAADADXXX'
 ) iban_exclusion_list_id;
 
+-- Bank holiday
+
+SELECT payment.put_bank_holiday('BE', current_date, 'NORMAL_HOLIDAY') bank_holiday_id;
+SELECT payment.put_bank_holiday('FR', current_date, 'SPECIAL_HOLIDAY') bank_holiday_id;
+
+-- SEPA routing
+
+SELECT payment.put_sepa_routing(
+    a_beneficiary_bic := 'ABNABEBRXXX',
+    a_beneficiary_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_beneficiary_institution_country_code := 'BE',
+    a_beneficiary_institution_city := 'BRUSSELS',
+    a_sepa_scheme := 'SCT',
+    a_payment_channel := 'CECB',
+    a_is_preferred_channel := true,
+    a_beneficiary_institution_reachability := 'DIRECT'
+) sepa_routing_id;
+
+SELECT payment.put_sepa_routing(
+    a_beneficiary_bic := 'CORRESPDXXX',
+    a_beneficiary_institution_name := 'Correspondent D',
+    a_beneficiary_institution_country_code := 'FR',
+    a_beneficiary_institution_city := 'PARIS',
+    a_sepa_scheme := 'SCT',
+    a_payment_channel := 'STET',
+    a_is_preferred_channel := true,
+    a_beneficiary_institution_reachability := 'DIRECT'
+) sepa_routing_id;
+
+SELECT payment.put_sepa_routing(
+    a_beneficiary_bic := 'CORRESPBXXX',
+    a_beneficiary_institution_name := 'Correspondent B',
+    a_beneficiary_institution_country_code := 'UK',
+    a_beneficiary_institution_city := 'LONDON',
+    a_sepa_scheme := 'SDD B2B',
+    a_payment_channel := 'UKPC',
+    a_is_preferred_channel := false,
+    a_beneficiary_institution_reachability := 'INDIRECT',
+    a_intermediaryBic := 'INTERMDXXXX'
+) sepa_routing_id;
+
 -- SWIFT routing SSI
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'BINAADADXXX',
-    a_owner_institution_name := 'MoraBanc',
-    a_owner_institution_city := 'ANDORRA',
-    a_owner_institution_country_code := 'AD',
-    a_currency_code := 'EUR',
-    a_asset_category := 'ANYY',
-    a_correspondent_bic := 'BINAADADXXX',
-    a_correspondent_institution_name := 'MoraBanc',
-    a_correspondent_country_code := 'AD',
-    a_correspondent_type := 'CORRESPONDENT',
-    a_routing_ssi_source := 'SWIFT'
-) routing_ssi_id;
-
-SELECT payment.put_routing_ssi(
-    a_owner_bic := 'ABNABEBRXXX',
-    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
-    a_owner_institution_city := 'BRUSSELS',
-    a_owner_institution_country_code := 'BE',
+    a_beneficiary_bic := 'ABNABEBRXXX',
+    a_beneficiary_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_beneficiary_institution_city := 'BRUSSELS',
+    a_beneficiary_institution_country_code := 'BE',
     a_currency_code := 'EUR',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'ABNABEBRXXX',
@@ -94,10 +95,10 @@ SELECT payment.put_routing_ssi(
 -- PagoFX preferred direct correspondent
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'ABNABEBRXXX',
-    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
-    a_owner_institution_city := 'BRUSSELS',
-    a_owner_institution_country_code := 'BE',
+    a_beneficiary_bic := 'ABNABEBRXXX',
+    a_beneficiary_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_beneficiary_institution_city := 'BRUSSELS',
+    a_beneficiary_institution_country_code := 'BE',
     a_currency_code := 'EUR',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'PAGOFXCOXXX',
@@ -111,10 +112,10 @@ SELECT payment.put_routing_ssi(
 -- SWIFT routing SSI correspondent chain
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'ABNABEBRXXX',
-    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
-    a_owner_institution_city := 'BRUSSELS',
-    a_owner_institution_country_code := 'BE',
+    a_beneficiary_bic := 'ABNABEBRXXX',
+    a_beneficiary_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_beneficiary_institution_city := 'BRUSSELS',
+    a_beneficiary_institution_country_code := 'BE',
     a_currency_code := 'AED',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'CORRESPAXXX',
@@ -125,10 +126,10 @@ SELECT payment.put_routing_ssi(
 ) routing_ssi_id;
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'CORRESPAXXX',
-    a_owner_institution_name := 'Correspondent A',
-    a_owner_institution_city := 'MADRID',
-    a_owner_institution_country_code := 'ES',
+    a_beneficiary_bic := 'CORRESPAXXX',
+    a_beneficiary_institution_name := 'Correspondent A',
+    a_beneficiary_institution_city := 'MADRID',
+    a_beneficiary_institution_country_code := 'ES',
     a_currency_code := 'AED',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'CORRESPBXXX',
@@ -139,10 +140,10 @@ SELECT payment.put_routing_ssi(
 ) routing_ssi_id;
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'CORRESPBXXX',
-    a_owner_institution_name := 'Correspondent B',
-    a_owner_institution_city := 'LONDON',
-    a_owner_institution_country_code := 'UK',
+    a_beneficiary_bic := 'CORRESPBXXX',
+    a_beneficiary_institution_name := 'Correspondent B',
+    a_beneficiary_institution_city := 'LONDON',
+    a_beneficiary_institution_country_code := 'UK',
     a_currency_code := 'AED',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'CORRESPCXXX',
@@ -155,10 +156,10 @@ SELECT payment.put_routing_ssi(
 -- PAGOFX routing SSI correspondent chain
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'ABNABEBRXXX',
-    a_owner_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
-    a_owner_institution_city := 'BRUSSELS',
-    a_owner_institution_country_code := 'BE',
+    a_beneficiary_bic := 'ABNABEBRXXX',
+    a_beneficiary_institution_name := 'The Royal Bank of Scotland Plc, Belgium branch',
+    a_beneficiary_institution_city := 'BRUSSELS',
+    a_beneficiary_institution_country_code := 'BE',
     a_currency_code := 'AED',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'CORRESPDXXX',
@@ -170,10 +171,10 @@ SELECT payment.put_routing_ssi(
 ) routing_ssi_id;
 
 SELECT payment.put_routing_ssi(
-    a_owner_bic := 'CORRESPDXXX',
-    a_owner_institution_name := 'Correspondent D',
-    a_owner_institution_city := 'PARIS',
-    a_owner_institution_country_code := 'FR',
+    a_beneficiary_bic := 'CORRESPDXXX',
+    a_beneficiary_institution_name := 'Correspondent D',
+    a_beneficiary_institution_city := 'PARIS',
+    a_beneficiary_institution_country_code := 'FR',
     a_currency_code := 'AED',
     a_asset_category := 'ANYY',
     a_correspondent_bic := 'CORRESPEXXX',
@@ -183,10 +184,6 @@ SELECT payment.put_routing_ssi(
     a_routing_ssi_source := 'PAGOFX',
     a_is_preferred_correspondent := true
 ) routing_ssi_id;
-
--- Bank holiday
-SELECT payment.put_bank_holiday('BE', current_date, 'NORMAL_HOLIDAY') bank_holiday_id;
-SELECT payment.put_bank_holiday('FR', current_date, 'SPECIAL_HOLIDAY') bank_holiday_id;
 
 -- IBAN validation
 
@@ -198,23 +195,36 @@ FROM payment.validate_iban('BE88271080782541');
 
 -- Get routing SSI
 
-SELECT owner_bic,
+SELECT beneficiary_bic ben_bic,
     currency_code currency,
-    owner_country_code country,
-    correspondent_bic corresp_bic,
-    correspondent_type corresp_type,
+    beneficiary_country_code country,
+    correspondent_bic cor_bic,
+    correspondent_type cor_type,
     routing_ssi_source ssi_source,
-    is_preferred_correspondent is_preffered,
-    holiday_date,
-    holiday_type
+    is_preferred_correspondent pref_cor,
+    holiday_date hol_date,
+    holiday_type hol_type,
+    -- SEPA routing
+    sepa_scheme scheme,
+    payment_channel channel,
+    is_preferred_channel pref_chan,
+    beneficiary_institution_reachability reach,
+    intermediaryBic iterm_bic
 FROM payment.get_routing_ssi('ABNABEBRXXX', 'EUR', 'BE');
-SELECT owner_bic,
+
+SELECT beneficiary_bic ben_bic,
     currency_code currency,
-    owner_country_code country,
-    correspondent_bic corresp_bic,
-    correspondent_type corresp_type,
+    beneficiary_country_code country,
+    correspondent_bic cor_bic,
+    correspondent_type cor_type,
     routing_ssi_source ssi_source,
-    is_preferred_correspondent is_preffered,
-    holiday_date,
-    holiday_type
+    is_preferred_correspondent pref_cor,
+    holiday_date hol_date,
+    holiday_type hol_type,
+    -- SEPA routing
+    sepa_scheme scheme,
+    payment_channel channel,
+    is_preferred_channel pref_chan,
+    beneficiary_institution_reachability reach,
+    intermediaryBic iterm_bic
 FROM payment.get_routing_ssi('ABNABEBRXXX', 'AED', 'BE');

@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="447.54718mm"
+   height="252.78734mm"
+   viewBox="0 0 447.54718 252.78734"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="Payment routing - SSI routing - Architecture overview.svg"
+   inkscape:export-filename="/home/vlad/Projects/learning-programming/postgresql-basics/payment-routing/doc/Payment routing - Architecture overview.png"
+   inkscape:export-xdpi="220"
+   inkscape:export-ydpi="220">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2646"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path2644"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2132"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path2130"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker2030"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#c87137;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path2028" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker1584"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#c87137;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path1582" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1450"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1448"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1428"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1426"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path1150"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#aad400;fill-opacity:1;fill-rule:evenodd;stroke:#aad400;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     inkscape:guide-bbox="true"
+     showguides="true"
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.93446623"
+     inkscape:cx="596.98671"
+     inkscape:cy="592.41321"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="998"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showborder="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid833"
+       originx="-176.19429"
+       originy="5.7484345" />
+    <sodipodi:guide
+       id="guide116"
+       orientation="0,-1"
+       position="421.76406,85.643074" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-176.19429,5.7484341)">
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="g1133">
+      <rect
+         style="fill:#e5ff80;stroke-width:0.6255"
+         id="rect917"
+         width="95.250031"
+         height="68.791664"
+         x="375.70831"
+         y="79.375" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="378.86578"
+         y="85.77565"
+         id="text927"><tspan
+           sodipodi:role="line"
+           id="tspan919"
+           x="378.86578"
+           y="85.77565"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">routing_ssi</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="91.067314"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan921">- beneficiary_bic</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="96.358978"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan933">- currency_code</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="101.65063"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan160">- country_code</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="106.9423"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan935">- correspondent_bic</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="112.23396"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan937">- correspondent_type</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="117.52562"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan950">    - CORRESPONDENT,</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="122.81728"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan925">    - LOCAL_CORRESPONDENT</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="128.10895"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1025">- routing_ssi_source</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="133.4006"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1027">    - SWIFT - PAGOFX</tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="138.69228"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan952">- UQ (owner_bic, currency, country </tspan><tspan
+           sodipodi:role="line"
+           x="378.86578"
+           y="143.98393"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan1031">    correspondent_bic, routing_ssi_source)</tspan></text>
+    </g>
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="g1050"
+       transform="translate(373.0625,26.458333)">
+      <rect
+         y="134.9375"
+         x="13.229166"
+         height="26.458334"
+         width="74.083336"
+         id="rect1040"
+         style="fill:#ffccaa;stroke-width:0.342112" />
+      <text
+         id="text1048"
+         y="144.20412"
+         x="29.134157"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="144.20412"
+           x="29.134157"
+           id="tspan1042"
+           sodipodi:role="line">put_routing_ssi (</tspan><tspan
+           id="tspan1044"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="149.49577"
+           x="29.134157"
+           sodipodi:role="line">    swift_routing_ssi</tspan><tspan
+           id="tspan1046"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="154.78745"
+           x="29.134157"
+           sodipodi:role="line">)</tspan></text>
+    </g>
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       transform="translate(10.004549,-2.64583)"
+       id="g1080">
+      <rect
+         y="18.52083"
+         x="376.28711"
+         height="26.458334"
+         width="74.083336"
+         id="rect1124"
+         style="fill:#ffccaa;stroke-width:0.342112" />
+      <text
+         id="text1132"
+         y="24.980391"
+         x="381.40311"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="24.980391"
+           x="381.40311"
+           id="tspan1126"
+           sodipodi:role="line">get_routing_ssi (</tspan><tspan
+           id="tspan1128"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="30.272053"
+           x="381.40311"
+           sodipodi:role="line">    benef_bic, currency_code,</tspan><tspan
+           id="tspan1066"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="35.563713"
+           x="381.40311"
+           sodipodi:role="line">    country_code</tspan><tspan
+           id="tspan1130"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="40.855377"
+           x="381.40311"
+           sodipodi:role="line">) &gt; correspondent BIC</tspan></text>
+    </g>
+    <path
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2030)"
+       d="m 423.33338,161.39583 c -5.29166,-5.29166 0,-13.22916 0,-13.22916"
+       id="path2026" />
+    <path
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="path2128"
+       d="m 427.56673,42.333333 c 10.58333,21.166667 0,37.041667 0,37.041667"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2132)"
+       sodipodi:nodetypes="cc" />
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+       x="430.4946"
+       y="196.40498"
+       id="text1071"><tspan
+         sodipodi:role="line"
+         id="tspan1069"
+         x="430.4946"
+         y="196.40498"
+         style="stroke-width:0.264583">Idempotent data load from external data sources. Carefully selected UNIQUE keys for every entity ensure correct data load or update even on repeated data load of the same data</tspan></text>
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="340.07797"
+       y="209.93732"
+       id="text1095"><tspan
+         sodipodi:role="line"
+         id="tspan1093"
+         x="340.07797"
+         y="209.93732"
+         style="stroke-width:0.264583">Routing SSI holds a mapping between the owner BIC and</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="215.22897"
+         style="stroke-width:0.264583"
+         id="tspan1099">the LOCAL_CORRESPONDNET of final (direct) CORRESPONDENT</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="220.52065"
+         style="stroke-width:0.264583"
+         id="tspan1103">for a given currency and routing SSI source combination.</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="225.8123"
+         style="stroke-width:0.264583"
+         id="tspan1137">Routing SSI holds routing SSI from multiple sources (SWIFT, PAGOFX).</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="231.10397"
+         style="stroke-width:0.264583"
+         id="tspan1141">Routing SSI allows for routing SSI chains to be encoded recursively</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="236.39563"
+         style="stroke-width:0.264583"
+         id="tspan1143">where we start with the owner BIC and currency and recursively go</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="241.68729"
+         style="stroke-width:0.264583"
+         id="tspan1145">down the chain on LOCAL_CORRESPONDENTs till find the final (direct)</tspan><tspan
+         sodipodi:role="line"
+         x="340.07797"
+         y="246.97896"
+         style="stroke-width:0.264583"
+         id="tspan1147">CORRESPONDENT</tspan></text>
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="176.1324"
+       y="74.874992"
+       id="text1151"><tspan
+         sodipodi:role="line"
+         id="tspan1149"
+         x="176.1324"
+         y="74.874992"
+         style="font-size:4.93889px;fill:#ff0000;fill-opacity:1;stroke-width:0.264583">Internal data model</tspan></text>
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="text1155"
+       y="157.42731"
+       x="176.5146"
+       style="font-size:4.93889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:4.93889px;fill:#ff0000;fill-opacity:1;stroke-width:0.264583"
+         y="157.42731"
+         x="176.5146"
+         id="tspan1153"
+         sodipodi:role="line">Data load internal interface</tspan></text>
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="175.70956"
+       y="16.769308"
+       id="text1159"><tspan
+         sodipodi:role="line"
+         id="tspan1157"
+         x="175.70956"
+         y="16.769308"
+         style="font-size:4.93889px;fill:#ff0000;fill-opacity:1;stroke-width:0.264583">Data query public interface</tspan></text>
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+       x="310.11761"
+       y="-2.5320957"
+       id="text1175"><tspan
+         sodipodi:role="line"
+         id="tspan1173"
+         x="310.11761"
+         y="-2.5320957"
+         style="stroke-width:0.264583">Recursively get all available routing SSI options for a given owner BIC and currency combination</tspan><tspan
+         sodipodi:role="line"
+         x="310.11761"
+         y="2.7595665"
+         style="stroke-width:0.264583"
+         id="tspan1177">from all availalbe routing SSI sources (SWIFT, PAGOFX). Priority and preffered correspondent</tspan><tspan
+         sodipodi:role="line"
+         x="310.11761"
+         y="8.0512285"
+         style="stroke-width:0.264583"
+         id="tspan1179">may be indicated in the internal data model to order all availalbe routing SSI options in order</tspan><tspan
+         sodipodi:role="line"
+         x="310.11761"
+         y="13.342891"
+         style="stroke-width:0.264583"
+         id="tspan1181">priority and preferences</tspan></text>
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="g174"
+       transform="translate(129.64584,-5.2916639)">
+      <rect
+         style="fill:#e5ff80;stroke-width:0.371404"
+         id="rect162"
+         width="87.312508"
+         height="26.458334"
+         x="126.99999"
+         y="84.666664" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="130.15746"
+         y="91.067314"
+         id="text172"><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="91.067314"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan170">bank_holiday</tspan><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="96.358978"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan197">- country_code</tspan><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="101.65063"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan201">- holiday_date</tspan><tspan
+           sodipodi:role="line"
+           x="130.15746"
+           y="106.9423"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan199">- holiday_type</tspan></text>
+    </g>
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       transform="translate(248.70834,26.458339)"
+       id="g186">
+      <rect
+         style="fill:#ffccaa;stroke-width:0.342112"
+         id="rect176"
+         width="74.083336"
+         height="26.458334"
+         x="13.229166"
+         y="134.9375" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="29.134157"
+         y="144.20412"
+         id="text184"><tspan
+           sodipodi:role="line"
+           id="tspan178"
+           x="29.134157"
+           y="144.20412"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">put_bank_holiday (</tspan><tspan
+           sodipodi:role="line"
+           x="29.134157"
+           y="149.49577"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan180">    bank_holiday</tspan><tspan
+           sodipodi:role="line"
+           x="29.134157"
+           y="154.78745"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan182">)</tspan></text>
+    </g>
+    <path
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="path203"
+       d="m 298.97917,161.39583 c -10.58333,-29.10416 0,-55.5625 0,-55.5625"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2030)"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2132)"
+       d="m 386.29167,42.333334 c -47.625,0 -79.375,37.041666 -79.375,37.041666"
+       id="path205" />
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="247.44562"
+       y="75.928871"
+       id="text209"><tspan
+         sodipodi:role="line"
+         id="tspan207"
+         x="247.44562"
+         y="75.928871"
+         style="font-size:4.23333px;stroke-width:0.264583">Per country bank holidays</tspan></text>
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="g208"
+       transform="translate(126.99986)">
+      <rect
+         y="79.375"
+         x="375.70831"
+         height="68.791664"
+         width="95.250031"
+         id="rect178"
+         style="fill:#e5ff80;stroke-width:0.6255" />
+      <text
+         id="text206"
+         y="85.77565"
+         x="378.86578"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         xml:space="preserve"><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="85.77565"
+           x="378.86578"
+           id="tspan181"
+           sodipodi:role="line">sepa_routing</tspan><tspan
+           id="tspan183"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="91.067314"
+           x="378.86578"
+           sodipodi:role="line">- beneficiary_bic</tspan><tspan
+           id="tspan185"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="96.358978"
+           x="378.86578"
+           sodipodi:role="line">- institution_name</tspan><tspan
+           id="tspan187"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="101.65063"
+           x="378.86578"
+           sodipodi:role="line">- country_code</tspan><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="106.9423"
+           x="378.86578"
+           sodipodi:role="line"
+           id="tspan210">- sepa_scheme</tspan><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="112.23396"
+           x="378.86578"
+           sodipodi:role="line"
+           id="tspan212">- payment_channel</tspan><tspan
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="117.52562"
+           x="378.86578"
+           sodipodi:role="line"
+           id="tspan228">- reachability</tspan><tspan
+           id="tspan200"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="122.81728"
+           x="378.86578"
+           sodipodi:role="line">- intemediary_bic</tspan><tspan
+           id="tspan202"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="128.10895"
+           x="378.86578"
+           sodipodi:role="line">- UQ (beneficiary_bic, country </tspan><tspan
+           id="tspan204"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           y="133.4006"
+           x="378.86578"
+           sodipodi:role="line">    sepa_scheme, payment_channel)</tspan></text>
+    </g>
+    <g
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       transform="translate(500.06237,26.458333)"
+       id="g114">
+      <rect
+         style="fill:#ffccaa;stroke-width:0.342112"
+         id="rect104"
+         width="74.083336"
+         height="26.458334"
+         x="13.229166"
+         y="134.9375" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.23333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583"
+         x="29.134157"
+         y="144.20412"
+         id="text112"><tspan
+           sodipodi:role="line"
+           id="tspan106"
+           x="29.134157"
+           y="144.20412"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583">put_routing_ssi (</tspan><tspan
+           sodipodi:role="line"
+           x="29.134157"
+           y="149.49577"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan108">    swift_routing_ssi</tspan><tspan
+           sodipodi:role="line"
+           x="29.134157"
+           y="154.78745"
+           style="text-align:start;text-anchor:start;stroke-width:0.264583"
+           id="tspan110">)</tspan></text>
+    </g>
+    <path
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="path118"
+       d="m 552.97904,161.39583 c 5.29166,-5.29166 0,-13.22916 0,-13.22916"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2030)"
+       sodipodi:nodetypes="cc" />
+    <path
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="path120"
+       d="M 460.375,42.333334 C 510.64584,44.979167 547.6875,79.375 547.6875,79.375"
+       style="fill:none;stroke:#c87137;stroke-width:0.4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker2132)"
+       sodipodi:nodetypes="cc" />
+    <text
+       inkscape:export-ydpi="220"
+       inkscape:export-xdpi="220"
+       id="text124"
+       y="209.12546"
+       x="500.47882"
+       style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="209.12546"
+         x="500.47882"
+         id="tspan122"
+         sodipodi:role="line">SEPA routing provides the information about beneficiry</tspan><tspan
+         id="tspan126"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="214.41711"
+         x="500.47882"
+         sodipodi:role="line">payment institution BIC and address, as well as SEPA</tspan><tspan
+         id="tspan128"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="219.70879"
+         x="500.47882"
+         sodipodi:role="line">scheme, payment channel, and reachability of beneficiary</tspan><tspan
+         id="tspan130"
+         style="font-size:4.23333px;stroke-width:0.264583"
+         y="225.00044"
+         x="500.47882"
+         sodipodi:role="line">payment institution within the channel</tspan></text>
+  </g>
+</svg>

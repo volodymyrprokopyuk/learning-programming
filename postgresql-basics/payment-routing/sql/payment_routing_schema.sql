@@ -19,6 +19,10 @@ ENUM ('PAGOFX', 'SWIFT');
 CREATE TYPE payment.holiday_type_type AS
 ENUM ('NORMAL_HOLIDAY', 'SPECIAL_HOLIDAY', 'EXCHANGE_HOLIDAY', 'WEEKEND_HOLIDAY');
 
+
+CREATE TYPE payment.beneficiary_institution_reachability_type AS
+ENUM ('DIRECT', 'INDIRECT');
+
 CREATE TABLE payment.iban_structure (
     iban_structure_id uuid NOT NULL
         DEFAULT gen_random_uuid(),
@@ -102,42 +106,6 @@ CREATE TABLE payment.iban_exclusion_list (
         PRIMARY KEY (iban_exclusion_list_id)
 );
 
-CREATE TABLE payment.routing_ssi (
-    routing_ssi_id uuid NOT NULL
-        DEFAULT gen_random_uuid(),
-    owner_bic varchar(11) NOT NULL,
-    owner_institution_name varchar(105) NOT NULL,
-    owner_institution_city varchar(35) NOT NULL,
-    owner_institution_country_code varchar(2) NOT NULL,
-    currency_code varchar(3) NOT NULL,
-    asset_category varchar(4) NOT NULL,
-    -- BIC Account Holding Institution
-    -- Final correspondent or intermediary correspondent
-    -- BIC where the ownerBic holds the account
-    -- lookup localCorrespondent as ownerBic to follow the SSI chain
-    -- ownerBic has no direct correspondent relationship in the country of the currency,
-    -- but works with a local correspondent as an intermediary
-    correspondent_bic varchar(11) NOT NULL,
-    correspondent_institution_name varchar(105) NOT NULL,
-    correspondent_country_code varchar(2) NOT NULL,
-    correspondent_type payment.correspondent_type_t NOT NULL,
-    routing_ssi_source payment.routing_ssi_source_type NOT NULL,
-    owner_account_number_in_correspondent_bic varchar(70),
-    is_preferred_correspondent bool
-        DEFAULT false,
-    start_date date,
-    end_date date,
-    creation_ts timestamptz NOT NULL
-        DEFAULT date_trunc('milliseconds', current_timestamp),
-    update_ts timestamptz NOT NULL
-        DEFAULT date_trunc('milliseconds', current_timestamp),
-    CONSTRAINT pk_routing_ssi
-        PRIMARY KEY (routing_ssi_id),
-    CONSTRAINT uq_routing_ssi_bic_currency_country_ssi_source
-        UNIQUE (owner_bic, currency_code, owner_institution_country_code,
-            correspondent_bic, routing_ssi_source)
-);
-
 CREATE TABLE payment.bank_holiday (
     bank_holiday_id uuid NOT NULL
         DEFAULT gen_random_uuid(),
@@ -154,6 +122,68 @@ CREATE TABLE payment.bank_holiday (
         PRIMARY KEY (bank_holiday_id),
     CONSTRAINT uq_bank_holiday_country_code_holiday_date_holiday_type
         UNIQUE (country_code, holiday_date, holiday_type)
+);
+
+CREATE TABLE payment.sepa_routing (
+    sepa_routing_id uuid NOT NULL
+        DEFAULT gen_random_uuid(),
+    beneficiary_bic varchar(11) NOT NULL,
+    beneficiary_institution_name varchar(105) NOT NULL,
+    beneficiary_institution_country_code varchar(2) NOT NULL,
+    beneficiary_institution_city varchar(35) NOT NULL,
+    sepa_scheme varchar(8) NOT NULL,
+    payment_channel varchar(11) NOT NULL,
+    is_preferred_channel bool NOT NULL
+        DEFAULT false,
+    beneficiary_institution_reachability
+        payment.beneficiary_institution_reachability_type
+        DEFAULT 'DIRECT',
+    intermediaryBic varchar(11),
+    creation_ts timestamptz NOT NULL
+        DEFAULT date_trunc('milliseconds', current_timestamp),
+    update_ts timestamptz NOT NULL
+        DEFAULT date_trunc('milliseconds', current_timestamp),
+    CONSTRAINT pk_sepa_routing
+        PRIMARY KEY (sepa_routing_id),
+    CONSTRAINT uq_sepq_routing_beneficiary_bic_country_scheme_channel
+        UNIQUE (beneficiary_bic, beneficiary_institution_country_code,
+            sepa_scheme, payment_channel)
+);
+
+CREATE TABLE payment.routing_ssi (
+    routing_ssi_id uuid NOT NULL
+        DEFAULT gen_random_uuid(),
+    beneficiary_bic varchar(11) NOT NULL,
+    beneficiary_institution_name varchar(105) NOT NULL,
+    beneficiary_institution_city varchar(35) NOT NULL,
+    beneficiary_institution_country_code varchar(2) NOT NULL,
+    currency_code varchar(3) NOT NULL,
+    asset_category varchar(4) NOT NULL,
+    -- BIC Account Holding Institution
+    -- Final correspondent or intermediary correspondent
+    -- BIC where the beneficiaryBic holds the account
+    -- lookup localCorrespondent as beneficiaryBic to follow the SSI chain
+    -- beneficiaryBic has no direct correspondent relationship in the country of the currency,
+    -- but works with a local correspondent as an intermediary
+    correspondent_bic varchar(11) NOT NULL,
+    correspondent_institution_name varchar(105) NOT NULL,
+    correspondent_country_code varchar(2) NOT NULL,
+    correspondent_type payment.correspondent_type_t NOT NULL,
+    routing_ssi_source payment.routing_ssi_source_type NOT NULL,
+    beneficiary_account_number_in_correspondent_bic varchar(70),
+    is_preferred_correspondent bool
+        DEFAULT false,
+    start_date date,
+    end_date date,
+    creation_ts timestamptz NOT NULL
+        DEFAULT date_trunc('milliseconds', current_timestamp),
+    update_ts timestamptz NOT NULL
+        DEFAULT date_trunc('milliseconds', current_timestamp),
+    CONSTRAINT pk_routing_ssi
+        PRIMARY KEY (routing_ssi_id),
+    CONSTRAINT uq_routing_ssi_bic_currency_country_ssi_source
+        UNIQUE (beneficiary_bic, currency_code, beneficiary_institution_country_code,
+            correspondent_bic, routing_ssi_source)
 );
 
 -- Interface
@@ -298,11 +328,72 @@ INSERT INTO payment.iban_exclusion_list (
 RETURNING iban_exclusion_list_id;
 $$;
 
+CREATE OR REPLACE FUNCTION payment.put_bank_holiday(
+    a_country_code varchar(2),
+    a_holiday_date date,
+    a_holiday_type payment.holiday_type_type
+) RETURNS uuid
+LANGUAGE sql AS $$
+INSERT INTO payment.bank_holiday (country_code, holiday_date, holiday_type)
+VALUES (a_country_code, a_holiday_date, a_holiday_type)
+ON CONFLICT ON CONSTRAINT uq_bank_holiday_country_code_holiday_date_holiday_type
+DO UPDATE SET
+    country_code = excluded.country_code,
+    holiday_date = excluded.holiday_date,
+    holiday_type = excluded.holiday_type,
+    update_ts = date_trunc('milliseconds', current_timestamp)
+RETURNING bank_holiday_id;
+$$;
+
+CREATE OR REPLACE FUNCTION payment.put_sepa_routing (
+    a_beneficiary_bic varchar(11),
+    a_beneficiary_institution_name varchar(105),
+    a_beneficiary_institution_country_code varchar(2),
+    a_beneficiary_institution_city varchar(35),
+    a_sepa_scheme varchar(8),
+    a_payment_channel varchar(11),
+    a_is_preferred_channel bool DEFAULT false,
+    a_beneficiary_institution_reachability
+        payment.beneficiary_institution_reachability_type DEFAULT 'DIRECT',
+    a_intermediaryBic varchar(11) DEFAULT NULL
+) RETURNS uuid
+LANGUAGE sql AS $$
+INSERT INTO payment.sepa_routing (
+    beneficiary_bic,
+    beneficiary_institution_name,
+    beneficiary_institution_country_code,
+    beneficiary_institution_city,
+    sepa_scheme,
+    payment_channel,
+    is_preferred_channel,
+    beneficiary_institution_reachability,
+    intermediaryBic
+) VALUES (
+    a_beneficiary_bic,
+    a_beneficiary_institution_name,
+    a_beneficiary_institution_country_code,
+    a_beneficiary_institution_city,
+    a_sepa_scheme,
+    a_payment_channel,
+    a_is_preferred_channel,
+    a_beneficiary_institution_reachability,
+    a_intermediaryBic
+) ON CONFLICT ON CONSTRAINT uq_sepq_routing_beneficiary_bic_country_scheme_channel
+DO UPDATE SET
+    beneficiary_institution_name = excluded.beneficiary_institution_name,
+    beneficiary_institution_city = excluded.beneficiary_institution_city,
+    is_preferred_channel = excluded.is_preferred_channel,
+    beneficiary_institution_reachability = excluded.beneficiary_institution_reachability,
+    intermediaryBic = excluded.intermediaryBic,
+    update_ts = date_trunc('milliseconds', current_timestamp)
+RETURNING sepa_routing_id;
+$$;
+
 CREATE OR REPLACE FUNCTION payment.put_routing_ssi (
-    a_owner_bic varchar(11),
-    a_owner_institution_name varchar(105),
-    a_owner_institution_city varchar(35),
-    a_owner_institution_country_code varchar(2),
+    a_beneficiary_bic varchar(11),
+    a_beneficiary_institution_name varchar(105),
+    a_beneficiary_institution_city varchar(35),
+    a_beneficiary_institution_country_code varchar(2),
     a_currency_code varchar(3),
     a_asset_category varchar(4),
     a_correspondent_bic varchar(11),
@@ -310,17 +401,17 @@ CREATE OR REPLACE FUNCTION payment.put_routing_ssi (
     a_correspondent_country_code varchar(2),
     a_correspondent_type payment.correspondent_type_t,
     a_routing_ssi_source payment.routing_ssi_source_type,
-    a_owner_account_number_in_correspondent_bic varchar(70) DEFAULT NULL,
+    a_beneficiary_account_number_in_correspondent_bic varchar(70) DEFAULT NULL,
     a_is_preferred_correspondent bool DEFAULT false,
     a_start_date date DEFAULT NULL,
     a_end_date date DEFAULT NULL
 ) RETURNS uuid
 LANGUAGE sql AS $$
 INSERT INTO payment.routing_ssi (
-    owner_bic,
-    owner_institution_name,
-    owner_institution_city,
-    owner_institution_country_code,
+    beneficiary_bic,
+    beneficiary_institution_name,
+    beneficiary_institution_city,
+    beneficiary_institution_country_code,
     currency_code,
     asset_category,
     correspondent_bic,
@@ -328,15 +419,15 @@ INSERT INTO payment.routing_ssi (
     correspondent_country_code,
     correspondent_type,
     routing_ssi_source,
-    owner_account_number_in_correspondent_bic,
+    beneficiary_account_number_in_correspondent_bic,
     is_preferred_correspondent,
     start_date,
     end_date
  ) VALUES (
-    a_owner_bic,
-    a_owner_institution_name,
-    a_owner_institution_city,
-    a_owner_institution_country_code,
+    a_beneficiary_bic,
+    a_beneficiary_institution_name,
+    a_beneficiary_institution_city,
+    a_beneficiary_institution_country_code,
     a_currency_code,
     a_asset_category,
     a_correspondent_bic,
@@ -344,22 +435,22 @@ INSERT INTO payment.routing_ssi (
     a_correspondent_country_code,
     a_correspondent_type,
     a_routing_ssi_source,
-    a_owner_account_number_in_correspondent_bic,
+    a_beneficiary_account_number_in_correspondent_bic,
     a_is_preferred_correspondent,
     a_start_date,
     a_end_date
 ) ON CONFLICT
 ON CONSTRAINT uq_routing_ssi_bic_currency_country_ssi_source
 DO UPDATE SET
-    owner_institution_name = excluded.owner_institution_name,
-    owner_institution_city = excluded.owner_institution_city,
-    owner_institution_country_code = excluded.owner_institution_country_code,
+    beneficiary_institution_name = excluded.beneficiary_institution_name,
+    beneficiary_institution_city = excluded.beneficiary_institution_city,
+    beneficiary_institution_country_code = excluded.beneficiary_institution_country_code,
     asset_category = excluded.asset_category,
     correspondent_institution_name = excluded.correspondent_institution_name,
     correspondent_country_code = excluded.correspondent_country_code,
     correspondent_type = excluded.correspondent_type,
-    owner_account_number_in_correspondent_bic =
-        excluded.owner_account_number_in_correspondent_bic,
+    beneficiary_account_number_in_correspondent_bic =
+        excluded.beneficiary_account_number_in_correspondent_bic,
     is_preferred_correspondent = excluded.is_preferred_correspondent,
     start_date = excluded.start_date,
     end_date = excluded.end_date,
@@ -446,110 +537,138 @@ LANGUAGE sql AS $$
 $$;
 
 CREATE OR REPLACE FUNCTION payment.get_routing_ssi(
-    a_owner_bic varchar(11),
+    a_beneficiary_bic varchar(11),
     a_currency_code varchar(3),
     a_country_code varchar(2)
 ) RETURNS TABLE (
     routing_ssi_id uuid,
-    owner_bic varchar(11),
+    beneficiary_bic varchar(11),
     currency_code varchar(3),
-    owner_country_code varchar(2),
+    beneficiary_country_code varchar(2),
     correspondent_bic varchar(11),
     correspondent_country_code varchar(2),
     correspondent_type payment.correspondent_type_t,
     routing_ssi_source payment.routing_ssi_source_type,
     is_preferred_correspondent bool,
     holiday_date date,
-    holiday_type payment.holiday_type_type
+    holiday_type payment.holiday_type_type,
+    -- SEPA routing
+    sepa_scheme varchar(8),
+    payment_channel varchar(11),
+    is_preferred_channel bool,
+    beneficiary_institution_reachability
+        payment.beneficiary_institution_reachability_type,
+    intermediaryBic varchar(11)
 ) LANGUAGE sql AS $$
 WITH RECURSIVE routing_ssi(
     routing_ssi_id,
-    owner_bic,
+    beneficiary_bic,
     currency_code,
-    owner_country_code,
+    beneficiary_country_code,
     correspondent_bic,
     correspondent_country_code,
     correspondent_type,
     routing_ssi_source,
     is_preferred_correspondent,
     holiday_date,
-    holiday_type
+    holiday_type,
+    -- SEPA routing
+    sepa_scheme,
+    payment_channel,
+    is_preferred_channel,
+    beneficiary_institution_reachability,
+    intermediaryBic
 ) AS (
     -- Routing SSI chain label for routing SSI chain aggregation
     SELECT ossi.routing_ssi_id,
-        ossi.owner_bic,
+        ossi.beneficiary_bic,
         ossi.currency_code,
-        ossi.owner_institution_country_code,
+        ossi.beneficiary_institution_country_code,
         ossi.correspondent_bic,
         ossi.correspondent_country_code,
         ossi.correspondent_type,
         ossi.routing_ssi_source,
         ossi.is_preferred_correspondent,
         obh.holiday_date,
-        obh.holiday_type
+        obh.holiday_type,
+        -- SEPA routing
+        osr.sepa_scheme,
+        osr.payment_channel,
+        osr.is_preferred_channel,
+        osr.beneficiary_institution_reachability,
+        osr.intermediaryBic
     FROM payment.routing_ssi ossi
-        -- Check holidays for owner institution
+        -- Check holidays for beneficiary institution
         LEFT JOIN payment.bank_holiday obh
-            ON obh.country_code = ossi.owner_institution_country_code
+            ON obh.country_code = ossi.beneficiary_institution_country_code
             AND obh.holiday_date <@ daterange(
                 current_date, (current_date + INTERVAL '3 days')::date)
-    -- Start with owner BIC, term currency, and destination (owner) country
-    WHERE ossi.owner_bic = a_owner_bic
+        -- Add SEPA routing scheme and payment channel if available
+        -- for final CORRESPONDENT only
+        LEFT JOIN payment.sepa_routing osr
+            ON osr.beneficiary_bic = ossi.beneficiary_bic
+            AND osr.beneficiary_institution_country_code =
+                ossi.beneficiary_institution_country_code
+            AND ossi.correspondent_type = 'CORRESPONDENT'
+    -- Start with beneficiary BIC, term currency, and destination (beneficiary) country
+    WHERE ossi.beneficiary_bic = a_beneficiary_bic
         AND ossi.currency_code = a_currency_code
-        AND ossi.owner_institution_country_code = a_country_code
+        AND ossi.beneficiary_institution_country_code = a_country_code
     UNION
     SELECT ossi.routing_ssi_id,
-        cssi.owner_bic,
+        cssi.beneficiary_bic,
         cssi.currency_code,
-        ossi.owner_country_code,
+        ossi.beneficiary_country_code,
         cssi.correspondent_bic,
         cssi.correspondent_country_code,
         cssi.correspondent_type,
         ossi.routing_ssi_source,
         cssi.is_preferred_correspondent,
         cbh.holiday_date,
-        cbh.holiday_type
+        cbh.holiday_type,
+        -- SEPA routing
+        csr.sepa_scheme,
+        csr.payment_channel,
+        csr.is_preferred_channel,
+        csr.beneficiary_institution_reachability,
+        csr.intermediaryBic
     FROM routing_ssi ossi
         JOIN payment.routing_ssi cssi ON
             -- follow the routing SSI chain through LOCAL_CORRESPONDENTs
-            ossi.correspondent_bic = cssi.owner_bic
+            ossi.correspondent_bic = cssi.beneficiary_bic
             AND ossi.correspondent_type = 'LOCAL_CORRESPONDENT'
         -- Check holidays for correspondent instituiton
         LEFT JOIN payment.bank_holiday cbh
-            ON cbh.country_code = cssi.owner_institution_country_code
+            ON cbh.country_code = cssi.beneficiary_institution_country_code
             AND cbh.holiday_date <@ daterange(
                 current_date, (current_date + INTERVAL '3 days')::date)
+        -- Add SEPA routing scheme and payment channel if available
+        -- for final CORRESPONDENT only
+        LEFT JOIN payment.sepa_routing csr
+            ON csr.beneficiary_bic = cssi.beneficiary_bic
+            AND csr.beneficiary_institution_country_code =
+                cssi.beneficiary_institution_country_code
+            AND cssi.correspondent_type = 'CORRESPONDENT'
     WHERE cssi.currency_code = a_currency_code
 )
 SELECT ssi.routing_ssi_id,
-    ssi.owner_bic,
+    ssi.beneficiary_bic,
     ssi.currency_code,
-    ssi.owner_country_code,
+    ssi.beneficiary_country_code,
     ssi.correspondent_bic,
     ssi.correspondent_country_code,
     ssi.correspondent_type,
     ssi.routing_ssi_source,
     ssi.is_preferred_correspondent,
     ssi.holiday_date,
-    ssi.holiday_type
+    ssi.holiday_type,
+    -- SEPA routing
+    ssi.sepa_scheme,
+    ssi.payment_channel,
+    ssi.is_preferred_channel,
+    ssi.beneficiary_institution_reachability,
+    ssi.intermediaryBic
 FROM routing_ssi ssi
--- Prioritize by SSI source, show evary  SSI routing option one after another
+-- Prioritize by SSI source, show evary SSI routing option one after another
 ORDER BY ssi.routing_ssi_source, ssi.routing_ssi_id;
-$$;
-
-CREATE OR REPLACE FUNCTION payment.put_bank_holiday(
-    a_country_code varchar(2),
-    a_holiday_date date,
-    a_holiday_type payment.holiday_type_type
-) RETURNS uuid
-LANGUAGE sql AS $$
-INSERT INTO payment.bank_holiday (country_code, holiday_date, holiday_type)
-VALUES (a_country_code, a_holiday_date, a_holiday_type)
-ON CONFLICT ON CONSTRAINT uq_bank_holiday_country_code_holiday_date_holiday_type
-DO UPDATE SET
-    country_code = excluded.country_code,
-    holiday_date = excluded.holiday_date,
-    holiday_type = excluded.holiday_type,
-    update_ts = date_trunc('milliseconds', current_timestamp)
-RETURNING bank_holiday_id;
 $$;
