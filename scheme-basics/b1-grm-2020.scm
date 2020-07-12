@@ -384,3 +384,56 @@
 ;; Promise
 ;; (pp (let ([p (delay (+ 1 2))])
 ;;       (force p)))
+
+;; SRFI-1 List library
+(use-modules
+ (srfi srfi-1)
+ (srfi srfi-11) ;; let-values
+ (ice-9 receive))
+
+(let ([p (cons 1 2)]
+      [p2 (cons 1 2)]
+      [l (list 1 2 3 4)]
+      [l2 (list 1 2 3 4)])
+  (pp p)
+  (pp l)
+  (pp (eq? p p2))
+  (pp (eqv? p p2))
+  (pp (equal? p p2))
+  (pp (list-tabulate 5 (lambda (e) (* e 10))))
+  (pp (iota 5 0 10))
+  (pp (list= eq? l l2))
+  (pp (list-ref l 3))
+  (pp (take l 3))
+  (pp (drop l 1))
+  (pp (take-right l 2))
+  (pp (drop-right l 2))
+  (let-values ([(a b) (split-at l 1)])
+    (pp a) (pp b))
+  (receive (a b) (split-at l 3)
+    (pp a) (pp b))
+  (pp (last l))
+  (pp (last-pair l))
+  (pp (length l))
+  (pp (append l l2))
+  (pp (concatenate (list l l2)))
+  (pp (reverse l))
+  (pp (append-reverse l '()))
+  (pp (apply map list (list l l2)))
+  (pp (zip l l2))
+  (pp (zip l))
+  (let ([ll (zip l)]
+        [ll2 (zip l l2)])
+    (pp (unzip1 ll))
+    (receive (a b) (unzip2 ll2)
+      (pp a) (pp b)))
+  (pp (count even? l))
+  (pp (fold + 0 l))
+  (pp (fold + 0 (map (const 1) l)))
+  (pp (fold cons '() l))
+  (pp (fold-right cons '() l))
+  (pp (unfold (lambda (e) (> e 10)) (lambda (e) (expt e 2)) (lambda (s) (1+ s)) 1))
+  (pp (unfold null? car cdr l))
+  (pp (unfold-right zero? (lambda (e) (expt e 2)) (lambda (s) (1- s)) 10))
+  (pp (unfold-right null? car cdr l))
+  )
