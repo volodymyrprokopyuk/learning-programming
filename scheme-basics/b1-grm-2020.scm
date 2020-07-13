@@ -454,4 +454,6 @@
   (pp (memv 3 l))
   (pp (delete 3 '(1 2 3 4 3 5 3 6)))
   (pp (delete-duplicates '(1 2 3 4 3 5 3 6)))
-  )
+  (let* ([al '((a . 1) (b . 2) (c . 3))]
+         [al2 (alist-cons 'd 4 al)])
+    (pp (assq 'd al2))))
