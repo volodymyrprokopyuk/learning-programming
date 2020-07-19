@@ -623,41 +623,75 @@
 
 (use-modules (srfi srfi-133))
 
-(let ([v #(1 "Vlad" #xff)]
-      [v2 (vector 1 "Lana" #xff)]
-      [v3 #(1 2 3 4)])
-  (pp (vector? v))
-  (pp (vector 'a 'b 'c))
-  (pp (list->vector '(1 2 3)))
-  (pp (vector->list v))
-  (pp (vector-length v))
-  (pp (vector-ref v 0))
-  (vector-set! v2 0 10)
-  (pp v2)
-  (pp (make-vector 5 'Vlad))
-  (pp (vector-unfold (lambda (i s) (values (* s 10) (1- s))) 10 0))
-  (pp (vector-unfold values 10))
-  (pp (vector-unfold (lambda (i s) (values (vector-ref s i) s)) (vector-length v) v))
-  (pp (vector-unfold-right (lambda (i s) (values (vector-ref s i) s)) (vector-length v) v))
-  (pp (vector-copy v2))
-  (pp (vector-append v v2))
-  (pp (vector-concatenate (list v v2)))
-  (pp (vector-empty? v))
-  (pp (vector= equal? #(1 #t "S") #(1 #t "S")))
-  (pp (vector-fold + 0 v3))
-  (pp (vector-fold max -1 v3))
-  (pp (vector-fold (lambda (b e) (cons e b))'() v3))
-  (pp (vector-fold-right (lambda (b e) (cons e b))'() v3))
-  (pp (vector-map (lambda (e) (* e 10)) v3))
-  (vector-for-each pp v3)
-  (pp (vector-count even? v3))
-  (pp (vector-index odd? v3))
-  (pp (vector-index-right odd? v3))
-  (pp (vector-skip odd? v3))
-  (pp (vector-skip-right odd? v3))
-  (pp (vector-any even? v3))
-  (pp (vector-every even? v3))
-  (receive [v i] (vector-partition even? v3)
-    (pp v) (pp i))
-  (vector-swap! v2 0 2)
-  (pp v2))
+;; (let ([v #(1 "Vlad" #xff)]
+;;       [v2 (vector 1 "Lana" #xff)]
+;;       [v3 #(1 2 3 4)])
+;;   (pp (vector? v))
+;;   (pp (vector 'a 'b 'c))
+;;   (pp (list->vector '(1 2 3)))
+;;   (pp (vector->list v))
+;;   (pp (vector-length v))
+;;   (pp (vector-ref v 0))
+;;   (vector-set! v2 0 10)
+;;   (pp v2)
+;;   (pp (make-vector 5 'Vlad))
+;;   (pp (vector-unfold (lambda (i s) (values (* s 10) (1- s))) 10 0))
+;;   (pp (vector-unfold values 10))
+;;   (pp (vector-unfold (lambda (i s) (values (vector-ref s i) s)) (vector-length v) v))
+;;   (pp (vector-unfold-right (lambda (i s) (values (vector-ref s i) s)) (vector-length v) v))
+;;   (pp (vector-copy v2))
+;;   (pp (vector-append v v2))
+;;   (pp (vector-concatenate (list v v2)))
+;;   (pp (vector-empty? v))
+;;   (pp (vector= equal? #(1 #t "S") #(1 #t "S")))
+;;   (pp (vector-fold + 0 v3))
+;;   (pp (vector-fold max -1 v3))
+;;   (pp (vector-fold (lambda (b e) (cons e b))'() v3))
+;;   (pp (vector-fold-right (lambda (b e) (cons e b))'() v3))
+;;   (pp (vector-map (lambda (e) (* e 10)) v3))
+;;   (vector-for-each pp v3)
+;;   (pp (vector-count even? v3))
+;;   (pp (vector-index odd? v3))
+;;   (pp (vector-index-right odd? v3))
+;;   (pp (vector-skip odd? v3))
+;;   (pp (vector-skip-right odd? v3))
+;;   (pp (vector-any even? v3))
+;;   (pp (vector-every even? v3))
+;;   (receive [v i] (vector-partition even? v3)
+;;     (pp v) (pp i))
+;;   (vector-swap! v2 0 2)
+;;   (pp v2))
+
+(use-modules (ice-9 match)) ;; Pattern matching
+
+(define-record-type <person>
+  (make-person name friends)
+  person?
+  (name person-name)
+  (friends person-friends))
+
+;; Pattern matching
+;; (pp (letrec ([l '(hello (world))]
+;;              [l2 '(1 2 3 4 5)]
+;;              [alice (make-person "Alice" (delay (list bob)))]
+;;              [bob (make-person "Bob" (delay (list alice)))])
+;;       (match l
+;;         #;[('hello (who)) who]
+;;         [(x y) (list x y)])
+;;       (match l2
+;;         #;[(h t ...) (list h t)]
+;;         #;[m m]
+;;         [_ 'ok])
+;;       (match alice
+;;         #;[($ <person> name (= force (fs))) (list name fs)]
+;;         [($ <person> name (= force (($ <person> fname)))) (list name fname)])))
+
+;; (define hello-world
+;;   (match-lambda
+;;     [('hello (who)) (cons 'hello who)]))
+
+;; (pp (hello-world '(hello (Vlad))))
+
+;; (pp (match-let ([(x y) '(1 2)]
+;;                 [(a b) '(a b)])
+;;       (list x a y b)))
