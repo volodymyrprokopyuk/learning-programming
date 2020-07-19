@@ -695,3 +695,9 @@
 ;; (pp (match-let ([(x y) '(1 2)]
 ;;                 [(a b) '(a b)])
 ;;       (list x a y b)))
+
+(pp (call-with-values (lambda () (values 1 2 3)) (lambda (a b c) (list a b c))))
+(pp (receive (a b c) (values 1 2 3) (list a b c)))
+(pp (receive (a . r) (values 1 2 3) (list a r)))
+(pp (let-values ([(a b c) (values 1 2 3)]) (list a b c)))
+(pp (let-values ([(a . r) (values 1 2 3)]) (list a r)))
