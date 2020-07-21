@@ -696,8 +696,21 @@
 ;;                 [(a b) '(a b)])
 ;;       (list x a y b)))
 
-(pp (call-with-values (lambda () (values 1 2 3)) (lambda (a b c) (list a b c))))
-(pp (receive (a b c) (values 1 2 3) (list a b c)))
-(pp (receive (a . r) (values 1 2 3) (list a r)))
-(pp (let-values ([(a b c) (values 1 2 3)]) (list a b c)))
-(pp (let-values ([(a . r) (values 1 2 3)]) (list a r)))
+;; (pp (call-with-values (lambda () (values 1 2 3)) (lambda (a b c) (list a b c))))
+;; (pp (receive (a b c) (values 1 2 3) (list a b c)))
+;; (pp (receive (a . r) (values 1 2 3) (list a r)))
+;; (pp (let-values ([(a b c) (values 1 2 3)]) (list a b c)))
+;; (pp (let-values ([(a . r) (values 1 2 3)]) (list a r)))
+
+(let ([l '(4 6 2 1 3 5)]
+      [v #(4 6 2 1 3 5)]
+      [l2 '(2 4 6)]
+      [l3 '(1 3 5)])
+  (pp (sorted? l <))
+  (pp (sorted? v <))
+  (pp (sort l >))
+  (pp (sort v >))
+  (pp (stable-sort l <))
+  (pp (stable-sort v <))
+  (pp (merge l2 l3 <))
+  (pp (merge l2 l3 >)))
