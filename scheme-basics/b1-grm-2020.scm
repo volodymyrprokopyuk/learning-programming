@@ -702,15 +702,51 @@
 ;; (pp (let-values ([(a b c) (values 1 2 3)]) (list a b c)))
 ;; (pp (let-values ([(a . r) (values 1 2 3)]) (list a r)))
 
-(let ([l '(4 6 2 1 3 5)]
-      [v #(4 6 2 1 3 5)]
-      [l2 '(2 4 6)]
-      [l3 '(1 3 5)])
-  (pp (sorted? l <))
-  (pp (sorted? v <))
-  (pp (sort l >))
-  (pp (sort v >))
-  (pp (stable-sort l <))
-  (pp (stable-sort v <))
-  (pp (merge l2 l3 <))
-  (pp (merge l2 l3 >)))
+;; (let ([l '(4 6 2 1 3 5)]
+;;       [v #(4 6 2 1 3 5)]
+;;       [l2 '(2 4 6)]
+;;       [l3 '(1 3 5)])
+;;   (pp (sorted? l <))
+;;   (pp (sorted? v <))
+;;   (pp (sort l >))
+;;   (pp (sort v >))
+;;   (pp (stable-sort l <))
+;;   (pp (stable-sort v <))
+;;   (pp (merge l2 l3 <))
+;;   (pp (merge l2 l3 >)))
+
+(use-modules (srfi srfi-115)) ;; SRFI-115 IrRegEx
+
+;; (pp (let* ([s "Vlad and Lana 2020-07-22"]
+;;            [r (irregex "(\\w+) (\\w+) (\\w+)")]
+;;            [m (irregex-search r s)])
+;;       #;(irregex-substring m 3)
+;;       #;(irregex-replace r s
+;;                        3 " " 2 "/or "
+;;                        (lambda (m)
+;;                          (string-reverse (irregex-substring m 1))))
+;;       #;(irregex-replace/all "a" s "*")
+;;       #;(irregex-split "[- ]" s)
+;;       #;(irregex-extract "\\w+" s)
+;;       (irregex-fold "\\w+"
+;;                     (lambda (_ m b) (cons (irregex-substring m) b)) '()
+;;                     s
+;;                     (lambda (_ s) (reverse s)))))
+
+;; (pp (let* ([s  "Vlad and Lana 2020-07-22"]
+;;            #;[r (irregex "(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})")]
+;;            #;[r (irregex "\\d{4}(?=-\\d{2})")]
+;;            #;[r (irregex "(?<=\\d{4}-)\\d{2}")]
+;;            #;[r (irregex "Lana")]
+;;            #;[r (irregex '(w/nocase "lana"))]
+;;            #;[r (irregex '(: (+ alpha) space (+ alpha) space (+ alpha)))]
+;;            #;[r (irregex '(: ($ (+ alpha)) space ($ (+ alpha)) space ($ (+ alpha))))]
+;;            #;[r (irregex '(or "Lana" "Vlad"))]
+;;            #;[r (irregex '(: ($ (= 4 num)) "-" ($ (= 2 num))))]
+;;            #;[m (irregex-search '(: "<" (* (~ #\>)) ">") "<html>")]
+;;            #;[m (irregex-search "<[^>]*>" "<html>")]
+;;            #;[r (irregex '(* ("adVl")))]
+;;            [r (irregex '(+ (/ "azAZ")))]
+;;            [m (irregex-search r s)])
+;;       #;(irregex-substring m 'year)
+;;       (irregex-substring m)))
