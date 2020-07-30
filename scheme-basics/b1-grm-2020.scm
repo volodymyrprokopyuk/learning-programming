@@ -778,3 +778,47 @@
 ;; (pp (list-ec (:while (: i 10) (< i 5)) i))
 ;; (pp (list-ec (:until (: i 10) (> i 5)) i))
 ;; (pp (list-ec (: i 10) (if (even? i)) (: j 4) (list i j)))
+
+;; Input, output and ports
+
+;; File ports
+
+;; (pp (call-with-input-file "bin/run.sh"
+;;       (lambda (port)
+;;         (let ([text (get-string-all port)])
+;;           text))))
+
+;; (call-with-output-file "out.txt"
+;;   (lambda (port)
+;;     (put-string port "Vlad\nand\nLana")))
+
+;; (pp (with-input-from-file "bin/run.sh"
+;;       (lambda ()
+;;         (let ([text (get-string-all (current-input-port))])
+;;           text))))
+
+;; (with-output-to-file "out.txt"
+;;   (lambda ()
+;;     (format #t "~a" "Vlad\nand\nLana")))
+
+;; String ports
+
+;; (pp (call-with-output-string
+;;      (lambda (port)
+;;        (put-string port "Vlad\nand\nLana"))))
+
+;; (pp (call-with-input-string
+;;      "Vlad\nand\nLana"
+;;      (lambda (port)
+;;        (let ([text (get-string-all port)])
+;;          text))))
+
+;; (pp (with-output-to-string
+;;       (lambda ()
+;;         (format #t "~a" "Vlad\nand\nLana"))))
+
+;; (pp (with-input-from-string
+;;       "Vlad\nand\nLana"
+;;       (lambda ()
+;;         (let ([text (get-string-all (current-input-port))])
+;;           text))))
