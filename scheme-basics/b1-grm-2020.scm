@@ -822,3 +822,24 @@
 ;;       (lambda ()
 ;;         (let ([text (get-string-all (current-input-port))])
 ;;           text))))
+
+(use-modules (srfi srfi-19)) ;; Date and time
+
+;; (pp (current-date))
+;; (pp (current-time))
+
+(use-modules (srfi srfi-34))
+
+;; Exceptions
+
+;; (call/cc
+;;  (lambda (k)
+;;    (with-exception-handler
+;;      (lambda (c) (format #t "ERROR: ~s" c) (k c))
+;;      (lambda () (raise 'oh-condition)))))
+
+;; (guard
+;;  (c
+;;   [(eq? c 'oh) (format #t "OH ERROR: ~s" c)]
+;;   [else (format #t "ERROR: ~s" c)])
+;;  (raise 'oh))
