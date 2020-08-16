@@ -135,15 +135,15 @@
 (use-modules (srfi srfi-9) ;; define-record-type
              (srfi srfi-9 gnu)) ;; set-record-type-printer!
 
-(define-record-type employee
-  ;; Constructor
-  (make-employee name salary)
-  ;; Type predicate
-  employee?
-  ;; Accessor only (immutable field)
-  (name employee-name)
-  ;; Accessor + mutator
-  (salary employee-salary set-employee-salary!))
+;; (define-record-type employee
+;;   ;; Constructor
+;;   (make-employee name salary)
+;;   ;; Type predicate
+;;   employee?
+;;   ;; Accessor only (immutable field)
+;;   (name employee-name)
+;;   ;; Accessor + mutator
+;;   (salary employee-salary set-employee-salary!))
 
 ;; (pp (let ([vlad (make-employee "Vlad" 5000)])
 ;;       (pp vlad)
@@ -151,12 +151,12 @@
 ;;       vlad))
 
 ;; Custom record printer
-(set-record-type-printer!
- employee
- (lambda (record port)
-   (write-char #\[ port)
-   (display (employee-name record) port)
-   (write-char #\] port)))
+;; (set-record-type-printer!
+;;  employee
+;;  (lambda (record port)
+;;    (write-char #\[ port)
+;;    (display (employee-name record) port)
+;;    (write-char #\] port)))
 
 ;; (pp (let ([vlad (make-employee "Vlad" 5000)])
 ;;       vlad))
@@ -843,3 +843,47 @@
 ;;   [(eq? c 'oh) (format #t "OH ERROR: ~s" c)]
 ;;   [else (format #t "ERROR: ~s" c)])
 ;;  (raise 'oh))
+
+;; GOOPS
+(use-modules (oop goops) (oop goops describe))
+
+(define-class <person> ()
+  (name #:init-value "Unknown" #:init-keyword #:name
+        #:getter get-person-name #:setter set-person-name))
+
+(define-class <employee> (<person>)
+  (salary #:init-thunk (lambda () 0) #:init-keyword #:salary
+          #:accessor employee-salary)
+  (senior? #:allocation #:virtual
+           #:accessor employee-senior?
+           #:slot-ref (lambda (e) (> (employee-salary e) 2000))
+           #:slot-set! (lambda (e v) (error "employee-senior?: operation not allowed"))))
+
+(define-method (display-employee (e <employee>))
+  (format #f "Employee: name = ~s salary = ~s"
+          (get-person-name e) (employee-salary e)))
+
+;; (let ([p (make <person> #:name "Volodymyr")]
+;;       [e (make <employee> #:name "Vlad" #:salary 1000)])
+;;   (slot-set! p 'name "Vlad")
+;;   (pp (slot-ref p 'name))
+;;   (set-person-name p "Volodymyr Prokopyuk")
+;;   (pp (get-person-name p))
+;;   (slot-set! e 'salary 2000)
+;;   (pp (slot-ref e 'salary))
+;;   (set! (employee-salary e) 3000)
+;;   (pp (employee-salary e))
+;;   (pp (employee-senior? e))
+;;   ;; (set! (employee-senior? e) #f)
+;;   (pp (describe p))
+;;   (pp (describe e))
+;;   (pp (display-employee e))
+;;   (pp (class-of p))
+;;   (pp (class-of e))
+;;   (pp (is-a? p <employee>)))
+
+(use-modules (srfi srfi-17)) ;; Generalized set! syntax
+
+;; (pp (let ([l (list 1 2 3 4)])
+;;       (set! (car l) 10)
+;;       l))
