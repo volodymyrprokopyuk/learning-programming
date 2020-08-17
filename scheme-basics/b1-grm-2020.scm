@@ -887,3 +887,7 @@
 ;; (pp (let ([l (list 1 2 3 4)])
 ;;       (set! (car l) 10)
 ;;       l))
+
+(pp (let* ([l '(chicken soup ice cream)]
+           [l2 (cons (cons (car l) (cons (cadr l) '())) (cons (cddr l) '()))])
+      l2))
